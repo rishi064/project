@@ -2,75 +2,39 @@
 import { useVueFlow, useNodeId } from "@vue-flow/core";
 import { inject, onMounted, ref } from "vue";
 
-const {
-  getNodes,
-  addNodes,
-  addEdges,
-  removeEdges,
-  applyNodeChanges,
-  removeNodes,
-} = useVueFlow();
+const { getNodes, getEdges, addNodes, addEdges, removeEdges, toObject } =
+  useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
-console.log("last node ko y-position", props.position.y);
-console.log("last node ko y-position ko difference", 545 - props.position.y);
+
+const endNode = getNodes.value.filter((node) => node.id === "end");
+const endNodeYPosition = endNode[0].position.y;
 
 const nodes = inject("nodes");
-const shouldMoveLastNode = ref(false);
 
-if (550 - props.position.y < 100) {
-  console.log("move last node ");
-  shouldMoveLastNode.value = true;
+const shouldMoveEndNode = ref(false);
+
+if (endNodeYPosition - props.position.y < 100) {
+  shouldMoveEndNode.value = true;
 }
 
-console.log("shouldmovelastnode", shouldMoveLastNode.value);
-
-// if (545 - props.position.y < 100) {
-//   // 1. remove the last node
-//   removeNodes("end");
-
-//   // 2. add the last node to position + 195
-//   addNodes([
-//     {
-//       id: "end",
-//       type: "output",
-//       label: "end",
-//       position: { x: 380, y: props.position.y + 195 },
-//     },
-//   ]);
-// }
-
-// function updatePos() {
-//   nodes.value = nodes.value.map((node) => {
-//     return node.id === "end"
-//       ? {
-//           ...node,
-//           position: {
-//             x: 380,
-//             y: getNodes.value[getNodes.value.length - 1] + 100,
-//           },
-//         }
-//       : node;
-//   });
-// }
-
 const nodeId = useNodeId();
-console.log("just added nodeId", nodeId);
 
 function addChildrenNode() {
-  // if (550 - props.position.y < 100), we move last node farther
-  // if (550 - props.position.y < 100) {
-  //   console.log("move last node ");
-  //   updatePos();
-  //   console.log(getNodes.value.map((node) => node.position));
-  // }
-
   // 1. remove end edge:
   removeEdges(["end-edge"]);
 
   const nodeIdForNewNode = (Math.random() * 1000).toFixed(2);
 
-  //2 add new node:
+  shouldMoveEndNode.value &&
+    addNodes({
+      id: "end",
+      type: "output",
+      label: "Stop",
+      position: { x: 400, y: endNodeYPosition + 100 },
+    });
+
+  //2 add new children node:
   addNodes({
     id: `node-${nodeIdForNewNode}`,
     label: `node-${nodeIdForNewNode}`,
@@ -80,10 +44,11 @@ function addChildrenNode() {
 
   //3.1 add edge connecting new node and current node
   //3.2 add edge connecting new node and end node
+  const edgeIdForNewEdge = (Math.random() * 1000).toFixed(3);
   addEdges([
     {
-      id: `edge-${(Math.random() * 1000).toFixed(3)}`,
-      label: "edge",
+      id: `edge-${edgeIdForNewEdge}`,
+      label: `edge-${edgeIdForNewEdge}`,
       type: "straight",
       source: nodeId,
       target: `node-${nodeIdForNewNode}`,
@@ -97,7 +62,10 @@ function addChildrenNode() {
     },
   ]);
 
-  console.log("last nodes ko value", getNodes.value[getNodes.value.length - 1]);
+  // data to update to database at last on each children added
+  // console.log("whole vueflow component's info:", toObject());
+  // console.log("all nodes", getNodes.value);
+  // console.log("all edges", getEdges.value);
 }
 </script>
 
