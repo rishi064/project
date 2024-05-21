@@ -3,8 +3,7 @@ import { useVueFlow } from "@vue-flow/core";
 
 const { addEdges, addNodes, removeEdges, updateNodePositions } = useVueFlow();
 
-const props = defineProps(["data", "label", "position"]);
-console.log("data of start node", props.position);
+const props = defineProps(["position"]);
 
 function addChildrenNode() {
   removeEdges(["end-edge"]);

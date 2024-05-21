@@ -2,13 +2,21 @@
 import { useVueFlow, useNodeId } from "@vue-flow/core";
 import { inject, onMounted, ref } from "vue";
 
-const { getNodes, getEdges, addNodes, addEdges, removeEdges, toObject } =
-  useVueFlow();
+const {
+  getNodes,
+  getEdges,
+  addNodes,
+  addEdges,
+  removeEdges,
+  toObject,
+  setViewport,
+} = useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
+const endNodeXPosition = endNode[0].position.x;
 
 const nodes = inject("nodes");
 
@@ -24,8 +32,6 @@ function addChildrenNode() {
   // 1. remove end edge:
   removeEdges(["end-edge"]);
 
-  const nodeIdForNewNode = (Math.random() * 1000).toFixed(2);
-
   shouldMoveEndNode.value &&
     addNodes({
       id: "end",
@@ -35,6 +41,7 @@ function addChildrenNode() {
     });
 
   //2 add new children node:
+  const nodeIdForNewNode = (Math.random() * 1000).toFixed(2);
   addNodes({
     id: `node-${nodeIdForNewNode}`,
     label: `node-${nodeIdForNewNode}`,
@@ -66,7 +73,15 @@ function addChildrenNode() {
   // console.log("whole vueflow component's info:", toObject());
   // console.log("all nodes", getNodes.value);
   // console.log("all edges", getEdges.value);
+
+  setViewport({
+    x: -(endNodeXPosition - 400),
+    y: -(endNodeYPosition - 400),
+    zoom: 1,
+  });
 }
+
+function add2ChildrenNode() {}
 </script>
 
 <template>
@@ -76,7 +91,9 @@ function addChildrenNode() {
       <button class="btn-add btn-add-children-node" @click="addChildrenNode">
         +
       </button>
-      <button class="btn-add btn-add-sibling-node">2</button>
+      <button class="btn-add btn-add-sibling-node" @click="add2ChildrenNode">
+        2
+      </button>
     </div>
   </div>
 </template>
@@ -110,18 +127,4 @@ function addChildrenNode() {
   cursor: pointer;
   font-weight: bold;
 }
-
-/* .btn-add-children-node {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 50%);
-}
-
-.btn-add-sibling-node {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translate(50%, -50%);
-} */
 </style>
