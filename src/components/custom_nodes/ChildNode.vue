@@ -1,5 +1,5 @@
 <script setup>
-import { useVueFlow, useNodeId } from "@vue-flow/core";
+import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
 import { inject, onMounted, ref } from "vue";
 
 const {
@@ -10,9 +10,13 @@ const {
   removeEdges,
   toObject,
   setViewport,
+  getOutgoers,
+  getIncomers,
 } = useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
+
+const edgesConnectedToEnd = ref([]);
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
@@ -28,9 +32,25 @@ if (endNodeYPosition - props.position.y < 100) {
 
 const nodeId = useNodeId();
 
+const outgoingEdgesOfClickedNode = useHandleConnections({
+  type: "source",
+});
+
+const incomingedgetoLastNode = useHandleConnections({
+  type: "target",
+  nodeId,
+});
+
+console.log("incoming edges to last node", incomingedgetoLastNode.value);
+
+const outgoingEdgesOfClickedNodeId =
+  outgoingEdgesOfClickedNode.value[0]?.edgeId;
+
 function addChildrenNode() {
+  console.log("clicked node's id", nodeId);
+
   // 1. remove end edge:
-  removeEdges(["end-edge"]);
+  removeEdges(["end-edge", "end-edge-1", "end-edge-2"]);
 
   shouldMoveEndNode.value &&
     addNodes({
@@ -81,7 +101,72 @@ function addChildrenNode() {
   });
 }
 
-function add2ChildrenNode() {}
+function add2ChildrenNode() {
+  removeEdges(["end-edge", "end-edge-1", "end-edge-2"]);
+
+  const nodeIdForNewChildNode1 = (Math.random() * 1000).toFixed(3);
+  const nodeIdForNewChildNode2 = (Math.random() * 1000).toFixed(3);
+  addNodes([
+    {
+      id: `node-${nodeIdForNewChildNode1}`,
+      label: `node-${nodeIdForNewChildNode1}`,
+      type: "child",
+      position: { x: 380, y: props.position.y + 100 },
+    },
+    {
+      id: `node-${nodeIdForNewChildNode2}`,
+      label: `node-${nodeIdForNewChildNode2}`,
+      type: "child",
+      position: { x: 150, y: props.position.y + 100 },
+    },
+  ]);
+
+  const edgeIdForNewEdge1 = (Math.random() * 1000).toFixed(4);
+  const edgeIdForNewEdge2 = (Math.random() * 1000).toFixed(4);
+
+  addEdges([
+    {
+      id: `edge-${edgeIdForNewEdge1}`,
+      label: `edge-${edgeIdForNewEdge1}`,
+      type: "straight",
+      source: nodeId,
+      target: `node-${nodeIdForNewChildNode1}`,
+    },
+    {
+      id: `edge-${edgeIdForNewEdge2}`,
+      label: `edge-${edgeIdForNewEdge2}`,
+      type: "straight",
+      source: nodeId,
+      target: `node-${nodeIdForNewChildNode2}`,
+    },
+    {
+      id: `end-edge-1`,
+      label: "end-edge-1",
+      type: "straight",
+      source: `node-${nodeIdForNewChildNode1}`,
+      target: "end",
+    },
+    {
+      id: `end-edge-2`,
+      label: "end-edge-2",
+      type: "straight",
+      source: `node-${nodeIdForNewChildNode2}`,
+      target: "end",
+    },
+  ]);
+
+  console.log(
+    "connected edges of clicked node",
+    outgoingEdgesOfClickedNode.value
+  );
+
+  console.log(
+    "connected edge id of clicked node",
+    outgoingEdgesOfClickedNodeId
+  );
+
+  console.log("incoming edges of end node", edgesConnectedToEnd.value);
+}
 </script>
 
 <template>

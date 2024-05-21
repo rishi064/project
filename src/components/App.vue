@@ -45,7 +45,7 @@ provide("nodes", nodes);
 
 <template>
   <div class="vueflow-container">
-    <VueFlow :nodes="nodes" :edges="edges" :nodes-draggable="false">
+    <VueFlow :nodes="nodes" :edges="edges" :nodes-draggable="true">
       <template #node-start="props">
         <StartNode :data="props.data" v-bind="props" />
       </template>
