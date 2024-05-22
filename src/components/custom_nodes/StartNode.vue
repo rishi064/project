@@ -1,5 +1,5 @@
 <script setup>
-import { useVueFlow } from "@vue-flow/core";
+import { MarkerType, useVueFlow } from "@vue-flow/core";
 
 const { addEdges, addNodes, removeEdges, updateNodePositions } = useVueFlow();
 
@@ -22,6 +22,8 @@ function addChildrenNode() {
       label: "first-edge",
       source: "start",
       target: "node-1",
+      animated: true,
+      markerEnd: MarkerType.ArrowClosed,
     },
     {
       id: `end-edge`,
@@ -29,6 +31,7 @@ function addChildrenNode() {
       type: "straight",
       source: "node-1",
       target: "end",
+      markerEnd: MarkerType.ArrowClosed,
     },
   ]);
 }

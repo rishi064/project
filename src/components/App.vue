@@ -3,7 +3,13 @@ import { provide, ref } from "vue";
 
 import { Background } from "@vue-flow/background";
 import { ControlButton, Controls } from "@vue-flow/controls";
-import { Position, VueFlow, useVueFlow } from "@vue-flow/core";
+import {
+  MarkerType,
+  Position,
+  VueFlow,
+  useHandleConnections,
+  useVueFlow,
+} from "@vue-flow/core";
 
 import StartNode from "./custom_nodes/StartNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
@@ -22,7 +28,7 @@ const nodes = ref([
     id: "end",
     type: "output",
     label: "Stop",
-    position: { x: 400, y: 545 },
+    position: { x: 400, y: 745 },
   },
 ]);
 
@@ -33,14 +39,14 @@ const edges = ref([
     type: "straight",
     source: `start`,
     target: "end",
+    markerEnd: MarkerType.ArrowClosed,
   },
 ]);
 
-const incrementY = ref(100);
-provide(incrementY, "incrementY");
-
-//to update position of end node to accomodate added node
-provide("nodes", nodes);
+//crucial for updating the DB on  node change of desired type
+// function onNodesChange(changes) {
+//   console.log("just occured changes", changes);
+// }
 </script>
 
 <template>
