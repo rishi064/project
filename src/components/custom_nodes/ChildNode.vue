@@ -52,18 +52,21 @@ function adjustViewPort() {
 
 function addChildrenNode() {
   console.log("clicked node's id", nodeId);
-  console.log(
-    `target of clicked node-${nodeId} before click =>`,
-    getOutgoers(nodeId)[0].id === "end"
-  );
+
+  const outgoerIds = getOutgoers(nodeId).map((node) => node.id);
+
+  console.log(`target of clicked node-${nodeId} before click =>`, outgoerIds);
+
+  console.log("outgoing edges", outgoingEdgesOfClickedNode.value);
 
   // specifically scope to the event
-  const idOutgoingEdgesOfClickedNode =
-    outgoingEdgesOfClickedNode.value[0]?.edgeId;
+  const outgoingEdgesId = outgoingEdgesOfClickedNode.value.map(
+    (edge) => edge.edgeId
+  );
 
-  if (getOutgoers(nodeId)[0].id === "end") {
+  if (outgoerIds.includes("end")) {
     // 1.remove end edge :
-    removeEdges([idOutgoingEdgesOfClickedNode]);
+    removeEdges([...outgoingEdgesId]);
 
     shouldMoveEndNode.value &&
       addNodes({
@@ -106,10 +109,7 @@ function addChildrenNode() {
       },
     ]);
   } else {
-    console.log(
-      "id of outgoing edge of clicked node",
-      idOutgoingEdgesOfClickedNode
-    );
+    console.log("else section ko", outgoerIds);
 
     //1. add child node:
     const nodeIdForNewNode = (Math.random() * 1000).toFixed(2);
@@ -122,7 +122,6 @@ function addChildrenNode() {
 
     //3. connect current node and the child node:
     const edgeIdForNewEdge1 = (Math.random() * 1000).toFixed(3);
-    const edgeIdForNewEdge2 = (Math.random() * 1000).toFixed(3);
     addEdges([
       {
         id: `edge-${edgeIdForNewEdge1}`,
@@ -133,18 +132,27 @@ function addChildrenNode() {
         markerEnd: MarkerType.ArrowClosed,
         style: { strokeWidth: 2 },
       },
-      {
-        id: `edge-${edgeIdForNewEdge2}`,
-        label: `edge-${edgeIdForNewEdge2}`,
-        source: `node-${nodeIdForNewNode}`,
-        target: getOutgoers(nodeId)[0].id,
-        animated: true,
-        markerEnd: MarkerType.ArrowClosed,
-      },
     ]);
 
+    if (!outgoerIds.includes("end")) {
+      outgoerIds.forEach((value) => {
+        const newEdge = (Math.random() * 1000).toFixed(5);
+
+        addEdges({
+          id: `edge-${newEdge}`,
+          label: `edge-${newEdge}`,
+          type: "default",
+          source: `node-${nodeIdForNewNode}`,
+          target: value,
+          animated: true,
+          markerEnd: MarkerType.ArrowClosed,
+        });
+      });
+    }
+
+    console.log("else ko ", outgoingEdgesId);
     // 4. Remove the previous outgoing edge
-    removeEdges([idOutgoingEdgesOfClickedNode]);
+    removeEdges([...outgoingEdgesId]);
 
     // 5. Align every upcoming once the new middle node is added
   }
@@ -160,12 +168,14 @@ function addChildrenNode() {
 
 function add2ChildrenNode() {
   // specifically scope to the event
-  const idOutgoingEdgesOfClickedNode =
-    outgoingEdgesOfClickedNode.value[0]?.edgeId;
+  console.log(outgoingEdgesOfClickedNode.value);
+  const outgoingEdgesOfClickedNodeIds = outgoingEdgesOfClickedNode.value.map(
+    (edge) => edge.edgeId
+  );
 
   console.log(
     "connected edge id of clicked node",
-    idOutgoingEdgesOfClickedNode
+    outgoingEdgesOfClickedNodeIds
   );
 
   console.log(
@@ -173,12 +183,13 @@ function add2ChildrenNode() {
     incomingedgetoLastNode.value
   );
 
-  console.log("outgoers of ", nodeId, getOutgoers(nodeId)[0].id);
-  const outgoerId = getOutgoers(nodeId)[0].id;
+  console.log("outgoers of [before click]", nodeId, getOutgoers(nodeId));
 
-  getOutgoers(nodeId)[0].id === "end"
+  const outgoerIds = getOutgoers(nodeId).map((element) => element.id);
+
+  outgoerIds.includes("end")
     ? removeEdges(["end-edge"])
-    : removeEdges([idOutgoingEdgesOfClickedNode]);
+    : removeEdges([...outgoingEdgesOfClickedNodeIds]);
 
   const nodeIdForNewChildNode1 = (Math.random() * 1000).toFixed(3);
   const nodeIdForNewChildNode2 = (Math.random() * 1000).toFixed(3);
@@ -209,7 +220,6 @@ function add2ChildrenNode() {
 
   const edgeIdForNewEndEdge1 = (Math.random() * 1000).toFixed(5);
   const edgeIdForNewEndEdge2 = (Math.random() * 1000).toFixed(5);
-  const newEdgeHandle = (Math.random() * 1000).toFixed(5);
 
   addEdges([
     //first childnode to current node
@@ -264,14 +274,20 @@ function add2ChildrenNode() {
     },
   ]);
 
-  if (outgoerId !== "end") {
-    addEdges({
-      id: `edge-${newEdgeHandle}`,
-      label: `edge-${newEdgeHandle}`,
-      type: "default",
-      source: `handle-${nodeIdForNewHandleNode}`,
-      target: outgoerId,
-      animated: true,
+  console.log(outgoerIds, outgoerIds.includes("end"));
+
+  if (!outgoerIds.includes("end")) {
+    outgoerIds.forEach((value) => {
+      const newEdgeHandle = (Math.random() * 1000).toFixed(5);
+
+      addEdges({
+        id: `edge-${newEdgeHandle}`,
+        label: `edge-${newEdgeHandle}`,
+        type: "default",
+        source: `handle-${nodeIdForNewHandleNode}`,
+        target: value,
+        animated: true,
+      });
     });
   }
 
