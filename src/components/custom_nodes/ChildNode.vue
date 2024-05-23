@@ -173,132 +173,108 @@ function add2ChildrenNode() {
     incomingedgetoLastNode.value
   );
 
-  if (getOutgoers(nodeId)[0].id === "end") {
-    removeEdges(["end-edge", idOutgoingEdgesOfClickedNode]);
+  console.log("outgoers of ", nodeId, getOutgoers(nodeId)[0].id);
+  const outgoerId = getOutgoers(nodeId)[0].id;
 
-    const nodeIdForNewChildNode1 = (Math.random() * 1000).toFixed(3);
-    const nodeIdForNewChildNode2 = (Math.random() * 1000).toFixed(3);
-    const nodeIdForNewHandleNode = (Math.random() * 1000).toFixed(3);
-    addNodes([
-      {
-        id: `node-${nodeIdForNewChildNode1}`,
-        label: `node-${nodeIdForNewChildNode1}`,
-        type: "child",
-        position: { x: props.position.x + 180, y: props.position.y + 100 },
-      },
-      {
-        id: `node-${nodeIdForNewChildNode2}`,
-        label: `node-${nodeIdForNewChildNode2}`,
-        type: "child",
-        position: { x: props.position.x - 200, y: props.position.y + 100 },
-      },
-      {
-        id: `handle-${nodeIdForNewHandleNode}`,
-        label: `handle-${nodeIdForNewHandleNode}`,
-        type: "child",
-        position: { x: props.position.x - 100, y: props.position.y + 200 },
-      },
-    ]);
+  getOutgoers(nodeId)[0].id === "end"
+    ? removeEdges(["end-edge"])
+    : removeEdges([idOutgoingEdgesOfClickedNode]);
 
-    const edgeIdForNewEdge1 = (Math.random() * 1000).toFixed(4);
-    const edgeIdForNewEdge2 = (Math.random() * 1000).toFixed(4);
+  const nodeIdForNewChildNode1 = (Math.random() * 1000).toFixed(3);
+  const nodeIdForNewChildNode2 = (Math.random() * 1000).toFixed(3);
+  const nodeIdForNewHandleNode = (Math.random() * 1000).toFixed(3);
+  addNodes([
+    {
+      id: `node-${nodeIdForNewChildNode1}`,
+      label: `node-${nodeIdForNewChildNode1}`,
+      type: "child",
+      position: { x: props.position.x + 180, y: props.position.y + 100 },
+    },
+    {
+      id: `node-${nodeIdForNewChildNode2}`,
+      label: `node-${nodeIdForNewChildNode2}`,
+      type: "child",
+      position: { x: props.position.x - 200, y: props.position.y + 100 },
+    },
+    {
+      id: `handle-${nodeIdForNewHandleNode}`,
+      label: `handle-${nodeIdForNewHandleNode}`,
+      type: "child",
+      position: { x: props.position.x - 100, y: props.position.y + 200 },
+    },
+  ]);
 
-    const edgeIdForNewEndEdge1 = (Math.random() * 1000).toFixed(5);
-    const edgeIdForNewEndEdge2 = (Math.random() * 1000).toFixed(5);
+  const edgeIdForNewEdge1 = (Math.random() * 1000).toFixed(4);
+  const edgeIdForNewEdge2 = (Math.random() * 1000).toFixed(4);
 
-    addEdges([
-      //first childnode to current node
-      {
-        id: `edge-${edgeIdForNewEdge1}`,
-        label: `edge-${edgeIdForNewEdge1}`,
-        type: "default",
-        source: nodeId,
-        target: `node-${nodeIdForNewChildNode1}`,
-        animated: true,
-        markerEnd: MarkerType.ArrowClosed,
-      },
-      //second childnode to current node
-      {
-        id: `edge-${edgeIdForNewEdge2}`,
-        label: `edge-${edgeIdForNewEdge2}`,
-        type: "default",
-        source: nodeId,
-        target: `node-${nodeIdForNewChildNode2}`,
-        animated: true,
-        markerEnd: MarkerType.ArrowClosed,
-      },
-      //first childnode to handle node
-      {
-        id: `handle-edge-${edgeIdForNewEndEdge1}`,
-        label: `handle-edge-${edgeIdForNewEndEdge1}`,
-        type: "smoothstep",
-        source: `node-${nodeIdForNewChildNode1}`,
-        target: `handle-${nodeIdForNewHandleNode}`,
-        animated: true,
-        markerEnd: MarkerType.ArrowClosed,
-      },
-      //second childnode to handle node
-      {
-        id: `handle-edge-${edgeIdForNewEndEdge2}`,
-        label: `handle-edge-${edgeIdForNewEndEdge2}`,
-        type: "straight",
-        source: `node-${nodeIdForNewChildNode2}`,
-        target: `handle-${nodeIdForNewHandleNode}`,
-        animated: true,
-        markerEnd: MarkerType.ArrowClosed,
-      },
-      //handlenode to end node
-      {
-        id: "end-edge",
-        label: `end-edge`,
-        type: "straight",
-        source: `handle-${nodeIdForNewHandleNode}`,
-        target: "end",
-        animated: true,
-        markerEnd: MarkerType.ArrowClosed,
-      },
-    ]);
-  } else {
-    console.log(
-      "connected edges of clicked node",
-      outgoingEdgesOfClickedNode.value
-    );
+  const edgeIdForNewEndEdge1 = (Math.random() * 1000).toFixed(5);
+  const edgeIdForNewEndEdge2 = (Math.random() * 1000).toFixed(5);
+  const newEdgeHandle = (Math.random() * 1000).toFixed(5);
 
-    console.log(
-      "clicked node ko child node[multiple ma]",
-      nodeId,
-      getOutgoers(nodeId)
-    );
+  addEdges([
+    //first childnode to current node
+    {
+      id: `edge-${edgeIdForNewEdge1}`,
+      label: `edge-${edgeIdForNewEdge1}`,
+      type: "default",
+      source: nodeId,
+      target: `node-${nodeIdForNewChildNode1}`,
+      animated: true,
+      markerEnd: MarkerType.ArrowClosed,
+    },
+    //second childnode to current node
+    {
+      id: `edge-${edgeIdForNewEdge2}`,
+      label: `edge-${edgeIdForNewEdge2}`,
+      type: "default",
+      source: nodeId,
+      target: `node-${nodeIdForNewChildNode2}`,
+      animated: true,
+      markerEnd: MarkerType.ArrowClosed,
+    },
+    //first childnode to handle node
+    {
+      id: `handle-edge-${edgeIdForNewEndEdge1}`,
+      label: `handle-edge-${edgeIdForNewEndEdge1}`,
+      type: "default",
+      source: `node-${nodeIdForNewChildNode1}`,
+      target: `handle-${nodeIdForNewHandleNode}`,
+      animated: true,
+      markerEnd: MarkerType.ArrowClosed,
+    },
+    //second childnode to handle node
+    {
+      id: `handle-edge-${edgeIdForNewEndEdge2}`,
+      label: `handle-edge-${edgeIdForNewEndEdge2}`,
+      type: "default",
+      source: `node-${nodeIdForNewChildNode2}`,
+      target: `handle-${nodeIdForNewHandleNode}`,
+      animated: true,
+      markerEnd: MarkerType.ArrowClosed,
+    },
+    //handlenode to end node. addEdge isn't over-written so no need to worry about removing it if the node clicked isn't parent of end edge
+    {
+      id: "end-edge",
+      label: `end-edge`,
+      type: "straight",
+      source: `handle-${nodeIdForNewHandleNode}`,
+      target: "end",
+      animated: true,
+      markerEnd: MarkerType.ArrowClosed,
+    },
+  ]);
 
-    // 1. remove outgoing edges:
-
-    // 2. add the nodes
-    const nodeIdForNewChildNode1 = (Math.random() * 1000).toFixed(3);
-    const nodeIdForNewChildNode2 = (Math.random() * 1000).toFixed(3);
-    const nodeIdForNewHandleNode = (Math.random() * 1000).toFixed(3);
-    addNodes([
-      {
-        id: `node-${nodeIdForNewChildNode1}`,
-        label: `node-${nodeIdForNewChildNode1}`,
-        type: "child",
-        position: { x: props.position.x + 180, y: props.position.y + 100 },
-      },
-      {
-        id: `node-${nodeIdForNewChildNode2}`,
-        label: `node-${nodeIdForNewChildNode2}`,
-        type: "child",
-        position: { x: props.position.x - 200, y: props.position.y + 100 },
-      },
-      {
-        id: `handle-${nodeIdForNewHandleNode}`,
-        label: `handle-${nodeIdForNewHandleNode}`,
-        type: "child",
-        position: { x: props.position.x - 100, y: props.position.y + 200 },
-      },
-    ]);
+  if (outgoerId !== "end") {
+    addEdges({
+      id: `edge-${newEdgeHandle}`,
+      label: `edge-${newEdgeHandle}`,
+      type: "default",
+      source: `handle-${nodeIdForNewHandleNode}`,
+      target: outgoerId,
+      animated: true,
+    });
   }
 
-  //edge add garda samasya
   // commented temporarily:
   // adjustViewPort();
 }
