@@ -4,14 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@vue-flow/background": "^1.3.0",
     "@vue-flow/controls": "^1.1.1",
     "@vue-flow/core": "^1.33.8",
+    "vite-plugin-vuetify": "^2.0.3",
     "vue": "^3.4.21"
   },
   "devDependencies": {

@@ -14,6 +14,8 @@ import {
 import StartNode from "./custom_nodes/StartNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 
+const { toObject } = useVueFlow();
+
 const nodes = ref([
   {
     id: "start",
@@ -28,7 +30,7 @@ const nodes = ref([
     id: "end",
     type: "output",
     label: "Stop",
-    position: { x: 400, y: 745 },
+    position: { x: 400, y: 845 },
   },
 ]);
 
@@ -42,6 +44,27 @@ const edges = ref([
     markerEnd: MarkerType.ArrowClosed,
   },
 ]);
+
+function saveFlowchart() {
+  console.log("nodes", toObject().nodes);
+  console.log("edges", toObject().edges);
+
+  const nodes = [];
+  const edges = [];
+
+  toObject().nodes.map((node) => nodes.push(node));
+  toObject().edges.map((edge) => edges.push(edge));
+
+  console.log("nodes", nodes);
+  console.log("edges", edges);
+  localStorage.setItem("nodes", JSON.stringify(nodes));
+  localStorage.setItem("edges", JSON.stringify(edges));
+}
+
+function restoreFromLocal() {
+  nodes.value = JSON.parse(localStorage.getItem("nodes"));
+  edges.value = JSON.parse(localStorage.getItem("edges"));
+}
 
 //crucial for updating the DB on  node change of desired type
 // function onNodesChange(changes) {
@@ -60,7 +83,13 @@ const edges = ref([
       </template>
 
       <Background />
-      <Controls position="top-right" :show-interactive="false"> </Controls>
+      <Controls position="top-right" :show-interactive="false">
+        <ControlButton title="Save " @click="saveFlowchart">S</ControlButton>
+
+        <ControlButton title="Get saved data" @click="restoreFromLocal"
+          >U</ControlButton
+        >
+      </Controls>
     </VueFlow>
   </div>
 </template>
