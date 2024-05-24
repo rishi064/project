@@ -45,7 +45,7 @@ const incomingedgetoLastNode = useHandleConnections({
 function adjustViewPort() {
   setViewport({
     x: -(endNodeXPosition - 400),
-    y: -(endNodeYPosition - 600),
+    y: -(endNodeYPosition - 700),
     zoom: 1,
   });
 }
@@ -324,7 +324,7 @@ function add2ChildrenNode() {
     ]);
   }
 }
-// adjustViewPort();
+adjustViewPort();
 </script>
 
 <template>

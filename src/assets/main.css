@@ -16,6 +16,14 @@
   justify-content: center;
 }
 
+.vue-flow__node-child {
+  background: purple;
+  color: white;
+  box-shadow: 0 0 0 1px purple;
+  border-radius: 20px;
+  padding: 0;
+}
+
 .vue-flow__controls .vue-flow__controls-button {
   border: none;
   border-right: 1px solid #eee;
