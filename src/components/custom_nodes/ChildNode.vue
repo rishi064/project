@@ -5,29 +5,19 @@ import {
   useHandleConnections,
   MarkerType,
 } from "@vue-flow/core";
-import { inject, onMounted, ref } from "vue";
+import { ref } from "vue";
 
-const {
-  getNodes,
-  getEdges,
-  addNodes,
-  addEdges,
-  removeEdges,
-  toObject,
-  setViewport,
-  getOutgoers,
-} = useVueFlow();
+const { getNodes, addNodes, addEdges, removeEdges, getOutgoers } = useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
-const endNodeXPosition = endNode[0].position.x;
 
-const shouldMoveEndNode = ref(false);
+const offset = ref(0);
 
-if (endNodeYPosition - props.position.y < 100) {
-  shouldMoveEndNode.value = true;
+if (endNodeYPosition - props.position.y < 250) {
+  offset.value = endNodeYPosition - props.position.y;
 }
 
 const nodeId = useNodeId();
@@ -41,14 +31,6 @@ const incomingedgetoLastNode = useHandleConnections({
   type: "target",
   nodeId: "end",
 });
-
-function adjustViewPort() {
-  setViewport({
-    x: -(endNodeXPosition - 400),
-    y: -(endNodeYPosition - 700),
-    zoom: 1,
-  });
-}
 
 function addChildrenNode() {
   // console.log("clicked node's id", nodeId);
@@ -68,12 +50,12 @@ function addChildrenNode() {
     // 1.remove end edge :
     removeEdges([...outgoingEdgesId]);
 
-    shouldMoveEndNode.value &&
+    offset.value < 251 &&
       addNodes({
         id: "end",
         type: "output",
         label: "Stop",
-        position: { x: 400, y: endNodeYPosition + 100 },
+        position: { x: 400, y: endNodeYPosition + 250 },
       });
 
     //2 add new children node:
@@ -82,7 +64,7 @@ function addChildrenNode() {
       id: `node-${nodeIdForNewNode}`,
       label: `node-${nodeIdForNewNode}`,
       type: "child",
-      position: { x: props.position.x, y: props.position.y + 100 },
+      position: { x: props.position.x, y: props.position.y + 250 },
     });
 
     //3.1 add edge connecting new node and current node
@@ -109,15 +91,14 @@ function addChildrenNode() {
       },
     ]);
   } else {
-    // console.log("else section ko", outgoerIds);
-
+    console.log("bichma");
     //1. add child node:
     const nodeIdForNewNode = (Math.random() * 1000).toFixed(2);
     addNodes({
       id: `node-${nodeIdForNewNode}`,
       label: `node-${nodeIdForNewNode}`,
       type: "child",
-      position: { x: props.position.x - 250, y: props.position.y + 50 },
+      position: { x: props.position.x, y: props.position.y + 250 },
     });
 
     //3. connect current node and the child node:
@@ -155,6 +136,26 @@ function addChildrenNode() {
     removeEdges([...outgoingEdgesId]);
 
     // 5. Align every upcoming once the new middle node is added
+    //Logic of redrawing every child[Outgoing] node
+    let goerIds = getOutgoers(nodeId).map((node) => node.id);
+    console.log(goerIds, "outgoer");
+
+    while (!goerIds.includes("end")) {
+      const tempNodes = getOutgoers(goerIds[0]);
+      console.log(tempNodes);
+
+      tempNodes.map((tempNode) => {
+        //redrawing of nodes(not edges) coz edges will arrange w.r.t. nodes
+        addNodes({
+          id: tempNode.id,
+          label: tempNode.id === "end" ? "Stop" : tempNode.id,
+          type: tempNode.id === "end" ? "output" : "child",
+          position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
+        });
+
+        goerIds[0] = tempNode.id;
+      });
+    }
   }
 }
 
@@ -164,18 +165,6 @@ function add2ChildrenNode() {
   const outgoingEdgesOfClickedNodeIds = outgoingEdgesOfClickedNode.value.map(
     (edge) => edge.edgeId
   );
-
-  // console.log(
-  //   "connected edge id of clicked node",
-  //   outgoingEdgesOfClickedNodeIds
-  // );
-
-  // console.log(
-  //   "incoming edges to last node before click",
-  //   incomingedgetoLastNode.value
-  // );
-
-  // console.log("outgoers of [before click]", nodeId, getOutgoers(nodeId));
 
   const outgoerIds = getOutgoers(nodeId).map((element) => element.id);
 
@@ -193,21 +182,42 @@ function add2ChildrenNode() {
         id: `node-${nodeIdForNewChildNode1}`,
         label: `node-${nodeIdForNewChildNode1}`,
         type: "child",
-        position: { x: props.position.x + 180, y: props.position.y + 100 },
+        style: { backgroundColor: "blue" },
+        position: { x: props.position.x - 200, y: props.position.y + 125 },
       },
       {
         id: `node-${nodeIdForNewChildNode2}`,
         label: `node-${nodeIdForNewChildNode2}`,
         type: "child",
-        position: { x: props.position.x - 200, y: props.position.y + 100 },
+        style: { backgroundColor: "blue" },
+        position: { x: props.position.x + 200, y: props.position.y + 125 },
       },
       {
         id: `handle-${nodeIdForNewHandleNode}`,
-        label: ``,
+        label: `handle-${nodeIdForNewHandleNode}`,
         type: "child",
-        position: { x: props.position.x, y: props.position.y + 200 },
+        position: { x: props.position.x, y: props.position.y + 250 },
       },
     ]);
+
+    const handleNodePositionY = getNodes.value.find(
+      (node) => node.id === `handle-${nodeIdForNewHandleNode}`
+    ).position.y;
+    const offset = endNodeYPosition - handleNodePositionY;
+
+    // const handleNode = getNodes.value.find(
+    //   (node) => node.id === `handle-${nodeIdForNewHandleNode}`
+    // );
+    // console.log("handleNode", handleNode);
+
+    //it would re-render the node. won't have to worry of first removing the node before doing it.
+    offset < 251 &&
+      addNodes({
+        id: "end",
+        type: "output",
+        label: "Stop",
+        position: { x: 310, y: endNodeYPosition + 250 + Math.abs(offset) },
+      });
 
     const edgeIdForNewEdge1 = (Math.random() * 1000).toFixed(4);
     const edgeIdForNewEdge2 = (Math.random() * 1000).toFixed(4);
@@ -220,7 +230,7 @@ function add2ChildrenNode() {
       {
         id: `edge-${edgeIdForNewEdge1}`,
         label: `edge-${edgeIdForNewEdge1}`,
-        type: "default",
+        type: "straight",
         source: nodeId,
         target: `node-${nodeIdForNewChildNode1}`,
         animated: true,
@@ -230,7 +240,7 @@ function add2ChildrenNode() {
       {
         id: `edge-${edgeIdForNewEdge2}`,
         label: `edge-${edgeIdForNewEdge2}`,
-        type: "default",
+        type: "straight",
         source: nodeId,
         target: `node-${nodeIdForNewChildNode2}`,
         animated: true,
@@ -284,6 +294,29 @@ function add2ChildrenNode() {
           markerEnd: MarkerType.ArrowClosed,
         });
       });
+
+      //Logic of redrawing every child[Outgoing] node
+      let goerIds = getNodes.value
+        .filter((node) => node.id === `handle-${nodeIdForNewHandleNode}`)
+        .map((node) => node.id);
+      console.log(goerIds, "outgoer");
+
+      while (!goerIds.includes("end")) {
+        const tempNodes = getOutgoers(goerIds[0]); //0 coz numHandle always gonna be 1
+        console.log(tempNodes);
+
+        tempNodes.map((tempNode) => {
+          //redrawing of nodes(not edges) coz edges will arrange w.r.t. nodes
+          addNodes({
+            id: tempNode.id,
+            label: tempNode.id === "end" ? "Stop" : tempNode.id,
+            type: tempNode.id === "end" ? "output" : "child",
+            position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
+          });
+
+          goerIds[0] = tempNode.id;
+        });
+      }
     }
   } else {
     console.log("multiple outgoers po xan ta");
@@ -291,22 +324,29 @@ function add2ChildrenNode() {
 
     const newNode = (Math.random() * 1000).toFixed(4);
 
+    const referenceNode = getOutgoers(nodeId)[getOutgoers(nodeId).length - 1];
+    console.log("reference node", referenceNode);
+
     addNodes({
       id: `node-${newNode}`,
       label: `node-${newNode}`,
       type: "child",
-      position: { x: props.position.x + 180, y: props.position.y + 100 },
+      position: {
+        x: referenceNode.position.x + 250,
+        y: referenceNode.position.y,
+      },
     });
 
     const edgeNewtoCur = (Math.random() * 10000).toFixed(2);
     const curToHandle = (Math.random() * 10000).toFixed(2);
 
     const targetHandleid = getOutgoers(getOutgoers(nodeId)[0].id)[0].id;
+
     addEdges([
       {
         id: `edge-${edgeNewtoCur}`,
         label: `edge-${edgeNewtoCur}`,
-        type: "default",
+        type: "straight",
         source: nodeId,
         target: `node-${newNode}`,
         animated: true,
@@ -324,7 +364,6 @@ function add2ChildrenNode() {
     ]);
   }
 }
-adjustViewPort();
 </script>
 
 <template>

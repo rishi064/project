@@ -11,7 +11,7 @@ import {
   useVueFlow,
 } from "@vue-flow/core";
 
-import StartNode from "./custom_nodes/StartNode.vue";
+import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 
 const { toObject } = useVueFlow();
@@ -19,8 +19,14 @@ const { toObject } = useVueFlow();
 const nodes = ref([
   {
     id: "start",
-    type: "start",
-    position: { x: 400, y: 10 },
+    type: "input",
+    position: { x: 300, y: 0 },
+    label: "Start",
+  },
+  {
+    id: "initiator",
+    type: "initiator",
+    position: { x: 300, y: 100 },
     draggable: false,
     data: {
       color: "red",
@@ -30,16 +36,25 @@ const nodes = ref([
     id: "end",
     type: "output",
     label: "Stop",
-    position: { x: 400, y: 845 },
+    position: { x: 300, y: 400 },
   },
 ]);
 
 const edges = ref([
   {
+    id: "first-edge",
+    label: "first-edge",
+    source: "start",
+    target: "initiator",
+    type: "straight",
+    style: { strokeWidth: 2 },
+    markerEnd: MarkerType.ArrowClosed,
+  },
+  {
     id: `end-edge`,
     label: "end-edge",
     type: "straight",
-    source: `start`,
+    source: `initiator`,
     target: "end",
     markerEnd: MarkerType.ArrowClosed,
   },
@@ -75,8 +90,8 @@ function restoreFromLocal() {
 <template>
   <div class="vueflow-container">
     <VueFlow :nodes="nodes" :edges="edges" :nodes-draggable="true">
-      <template #node-start="props">
-        <StartNode :data="props.data" v-bind="props" />
+      <template #node-initiator="props">
+        <InitiatorNode :data="props.data" v-bind="props" />
       </template>
       <template #node-child="props">
         <ChildNode :data="props.data" v-bind="props"></ChildNode>
