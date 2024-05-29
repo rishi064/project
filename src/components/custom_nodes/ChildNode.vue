@@ -5,7 +5,11 @@ import {
   useHandleConnections,
   MarkerType,
 } from "@vue-flow/core";
+
 import { ref } from "vue";
+import Icon from "./../Icon.vue";
+
+const showButtons = ref(false);
 
 const { getNodes, addNodes, addEdges, removeEdges, getOutgoers } = useVueFlow();
 
@@ -182,14 +186,12 @@ function add2ChildrenNode() {
         id: `node-${nodeIdForNewChildNode1}`,
         label: `node-${nodeIdForNewChildNode1}`,
         type: "child",
-        style: { backgroundColor: "blue" },
         position: { x: props.position.x - 200, y: props.position.y + 125 },
       },
       {
         id: `node-${nodeIdForNewChildNode2}`,
         label: `node-${nodeIdForNewChildNode2}`,
         type: "child",
-        style: { backgroundColor: "blue" },
         position: { x: props.position.x + 200, y: props.position.y + 125 },
       },
       {
@@ -367,7 +369,30 @@ function add2ChildrenNode() {
 </script>
 
 <template>
-  <div class="child-node">
+  <div
+    class="child-node"
+    @mouseenter="showButtons = true"
+    @mouseleave="showButtons = false"
+  >
+    <div class="node">
+      <p class="node-content">{{ props.label }}</p>
+
+      <div class="line-container" v-show="showButtons">
+        <div class="line-one">
+          <button class="btn-add">
+            <Icon name="circle" class="circle" @click="addChildrenNode" />
+          </button>
+        </div>
+        <div class="line-two">
+          <button class="btn-add">
+            <Icon name="multiple" class="multiple" @click="add2ChildrenNode" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="child-node">
     <h2>{{ props.label }}</h2>
     <div class="btns">
       <button class="btn-add btn-add-children-node" @click="addChildrenNode">
@@ -377,36 +402,82 @@ function add2ChildrenNode() {
         2
       </button>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>
-.child-node {
-  background-color: orange;
-  padding: 0 20px;
-  border-radius: 20px;
-  border: 2px solid blue;
-}
-
-.child-node h2 {
+/* .child-node h2 {
   font-size: 20px;
   font-weight: 600;
+} */
+
+.node {
+  margin: 0;
+  position: relative;
+
+  width: fit-content;
+  background-color: #ddd;
+  border: none;
+  border-radius: 10px;
+  font-size: 24px;
 }
 
-.btns {
-  display: flex;
-  gap: 4px;
+.node-content {
+  padding: 10px 50px;
+}
 
-  left: 50%;
+.line-container {
   position: absolute;
-  transform: translate(-50%, -50%);
+  bottom: 0;
+  left: 50%;
+
+  transform: translate(-50%, 50%);
+
+  display: flex;
+  z-index: -1;
 }
 
 .btn-add {
-  border-radius: 5px;
-  border: none;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  font-weight: bold;
+}
+
+.line-one {
+  height: 54px;
+  width: 36px;
+  border-bottom-right-radius: 100px;
+  border: 3px solid #000;
+  border-top: 0;
+  border-left: 0;
+
+  position: relative;
+}
+
+.circle {
+  height: 24px;
+
+  position: absolute;
+  bottom: 0;
+
+  transform: translate(-50%, 50%);
+}
+
+.line-two {
+  height: 54px;
+  width: 36px;
+  border-bottom-left-radius: 110px;
+  border: 3px solid #000;
+  border-top: 0;
+  border-right: 0;
+
+  background-color: transparent;
+  position: relative;
+}
+
+.multiple {
+  height: 36px;
+  position: absolute;
+  bottom: 0;
+
+  transform: translate(50%, 65%) rotate(75deg);
 }
 </style>

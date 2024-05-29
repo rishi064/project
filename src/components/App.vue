@@ -13,6 +13,7 @@ import {
 
 import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
+import HandleNode from "./custom_nodes/HandleNode.vue";
 
 const { toObject } = useVueFlow();
 
@@ -89,6 +90,8 @@ function restoreFromLocal() {
 
 <template>
   <div class="vueflow-container">
+    <!-- <HandleNode /> -->
+
     <VueFlow :nodes="nodes" :edges="edges" :nodes-draggable="true">
       <template #node-initiator="props">
         <InitiatorNode :data="props.data" v-bind="props" />

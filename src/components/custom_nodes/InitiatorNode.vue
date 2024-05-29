@@ -6,6 +6,10 @@ import {
   useNodeId,
   useVueFlow,
 } from "@vue-flow/core";
+import Icon from "../Icon.vue";
+import { ref } from "vue";
+
+const showAddBtn = ref(false);
 
 const { addEdges, getOutgoers, addNodes, removeEdges, updateNodePositions } =
   useVueFlow();
@@ -16,6 +20,10 @@ const nodeId = useNodeId();
 const sourceConnections = useHandleConnections({
   type: "source",
 });
+
+function toggleShowAddBtn() {
+  showAddBtn.value = !showAddBtn.value;
+}
 
 function addChildrenNode() {
   const outgoingEdge = sourceConnections.value[0].edgeId; // 0 coz only one outgoing edge no matter what
@@ -102,10 +110,17 @@ function addChildrenNode() {
 </script>
 
 <template>
-  <div class="initiator-node">
+  <div
+    class="initiator-node"
+    @mouseenter="toggleShowAddBtn"
+    @mouseleave="toggleShowAddBtn"
+  >
     <h2>Initiator</h2>
-    <div class="btns">
-      <button class="single-node" @click="addChildrenNode">+</button>
+    <div class="hover-container" v-if="showAddBtn">
+      <div class="line"></div>
+      <button class="add-single-node" @click="addChildrenNode">
+        <Icon name="circle" class="circle" />
+      </button>
     </div>
   </div>
 </template>
@@ -114,27 +129,42 @@ function addChildrenNode() {
 .initiator-node h2 {
   font-size: 12px;
   font-weight: 700;
+  position: relative;
 }
 
 .initiator-node {
   background-color: aqua;
-  padding: 0 20px;
+  padding: 5px 20px;
   border-radius: 20px;
   border: 2px solid rgb(255, 0, 0);
 }
 
-.btns {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.hover-container {
+  left: 50%;
+  position: absolute;
 }
 
-.single-node {
+.line {
+  height: 16px;
+  width: 4px;
+  background-color: black;
+  margin: 0;
+  padding: 0;
+}
+
+.add-single-node {
   position: absolute;
-  border-radius: 5px;
+  transform: translate(-50%, -50%);
+  left: 50%;
   border: none;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   font-weight: bold;
+  background: transparent;
+  padding: 0;
+}
+
+.circle {
+  height: 12px;
+  width: 12px;
 }
 </style>
