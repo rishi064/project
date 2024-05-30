@@ -4,6 +4,8 @@ import {
   useNodeId,
   useHandleConnections,
   MarkerType,
+  Handle,
+  Position,
 } from "@vue-flow/core";
 
 import { ref } from "vue";
@@ -36,51 +38,48 @@ const incomingedgetoLastNode = useHandleConnections({
   nodeId: "end",
 });
 
+function updateEndNodePosition(newYPosition) {
+  addNodes({
+    id: "end",
+    type: "output",
+    label: "Stop",
+    position: { x: 400, y: newYPosition },
+  });
+}
+
 function addChildrenNode() {
-  // console.log("clicked node's id", nodeId);
-
   const outgoerIds = getOutgoers(nodeId).map((node) => node.id);
-
-  // console.log(`target of clicked node-${nodeId} before click =>`, outgoerIds);
-
-  // console.log("outgoing edges", outgoingEdgesOfClickedNode.value);
-
-  // specifically scope to the event
   const outgoingEdgesId = outgoingEdgesOfClickedNode.value.map(
     (edge) => edge.edgeId
   );
 
+  const endNode = getNodes.value.find((node) => node.id === "end");
+  const endNodeYPosition = endNode.position.y;
+
   if (outgoerIds.includes("end")) {
-    // 1.remove end edge :
     removeEdges([...outgoingEdgesId]);
 
-    offset.value < 251 &&
-      addNodes({
-        id: "end",
-        type: "output",
-        label: "Stop",
-        position: { x: 400, y: endNodeYPosition + 250 },
-      });
+    offset.value = endNodeYPosition - props.position.y;
 
-    //2 add new children node:
-    const nodeIdForNewNode = (Math.random() * 1000).toFixed(2);
+    if (offset.value < 251) {
+      updateEndNodePosition(endNodeYPosition + 250);
+    }
+
+    const newChildNodeId = (Math.random() * 1000).toFixed(2);
     addNodes({
-      id: `node-${nodeIdForNewNode}`,
-      label: `node-${nodeIdForNewNode}`,
+      id: `node-${newChildNodeId}`,
+      label: `node-${newChildNodeId}`,
       type: "child",
       position: { x: props.position.x, y: props.position.y + 250 },
     });
 
-    //3.1 add edge connecting new node and current node
-    //3.2 add edge connecting new node and end node
-    const edgeIdForNewEdge = (Math.random() * 1000).toFixed(3);
     addEdges([
       {
-        id: `edge-${edgeIdForNewEdge}`,
-        label: `edge-${edgeIdForNewEdge}`,
+        id: `edge-${(Math.random() * 1000).toFixed(3)}`,
+        label: `edge-${(Math.random() * 1000).toFixed(3)}`,
         type: "straight",
         source: nodeId,
-        target: `node-${nodeIdForNewNode}`,
+        target: `node-${newChildNodeId}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
       },
@@ -88,31 +87,27 @@ function addChildrenNode() {
         id: `end-edge`,
         label: "end-edge",
         type: "straight",
-        source: `node-${nodeIdForNewNode}`,
+        source: `node-${newChildNodeId}`,
         target: "end",
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
       },
     ]);
   } else {
-    console.log("bichma");
-    //1. add child node:
-    const nodeIdForNewNode = (Math.random() * 1000).toFixed(2);
+    const newChildNodeId = (Math.random() * 1000).toFixed(2);
     addNodes({
-      id: `node-${nodeIdForNewNode}`,
-      label: `node-${nodeIdForNewNode}`,
+      id: `node-${newChildNodeId}`,
+      label: `node-${newChildNodeId}`,
       type: "child",
       position: { x: props.position.x, y: props.position.y + 250 },
     });
 
-    //3. connect current node and the child node:
-    const edgeIdForNewEdge1 = (Math.random() * 1000).toFixed(3);
     addEdges([
       {
-        id: `edge-${edgeIdForNewEdge1}`,
-        label: `edge-${edgeIdForNewEdge1}`,
+        id: `edge-${(Math.random() * 1000).toFixed(3)}`,
+        label: `edge-${(Math.random() * 1000).toFixed(3)}`,
         source: nodeId,
-        target: `node-${nodeIdForNewNode}`,
+        target: `node-${newChildNodeId}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
         style: { strokeWidth: 2 },
@@ -121,13 +116,11 @@ function addChildrenNode() {
 
     if (!outgoerIds.includes("end")) {
       outgoerIds.forEach((value) => {
-        const newEdge = (Math.random() * 1000).toFixed(5);
-
         addEdges({
-          id: `edge-${newEdge}`,
-          label: `edge-${newEdge}`,
+          id: `edge-${(Math.random() * 1000).toFixed(5)}`,
+          label: `edge-${(Math.random() * 1000).toFixed(5)}`,
           type: "default",
-          source: `node-${nodeIdForNewNode}`,
+          source: `node-${newChildNodeId}`,
           target: value,
           animated: true,
           markerEnd: MarkerType.ArrowClosed,
@@ -135,28 +128,18 @@ function addChildrenNode() {
       });
     }
 
-    // console.log("else ko ", outgoingEdgesId);
-    // 4. Remove the previous outgoing edge
     removeEdges([...outgoingEdgesId]);
 
-    // 5. Align every upcoming once the new middle node is added
-    //Logic of redrawing every child[Outgoing] node
     let goerIds = getOutgoers(nodeId).map((node) => node.id);
-    console.log(goerIds, "outgoer");
-
     while (!goerIds.includes("end")) {
       const tempNodes = getOutgoers(goerIds[0]);
-      console.log(tempNodes);
-
-      tempNodes.map((tempNode) => {
-        //redrawing of nodes(not edges) coz edges will arrange w.r.t. nodes
+      tempNodes.forEach((tempNode) => {
         addNodes({
           id: tempNode.id,
           label: tempNode.id === "end" ? "Stop" : tempNode.id,
           type: tempNode.id === "end" ? "output" : "child",
           position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
         });
-
         goerIds[0] = tempNode.id;
       });
     }
@@ -374,6 +357,9 @@ function add2ChildrenNode() {
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
   >
+    <!-- 1.// For being the target of previous node -->
+    <!-- <Handle id="b" type="target" :position="Position.Top" /> -->
+
     <div class="node">
       <p class="node-content">{{ props.label }}</p>
 
@@ -391,6 +377,7 @@ function add2ChildrenNode() {
       </div>
     </div>
   </div>
+  <!-- <Handle id="a" type="target" :position="Position.Right" /> -->
 </template>
 
 <style scoped>

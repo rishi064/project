@@ -90,9 +90,7 @@ function restoreFromLocal() {
 
 <template>
   <div class="vueflow-container">
-    <!-- <HandleNode /> -->
-
-    <VueFlow :nodes="nodes" :edges="edges" :nodes-draggable="true">
+    <VueFlow :nodes="nodes" :edges="edges" :nodes-draggable="false">
       <template #node-initiator="props">
         <InitiatorNode :data="props.data" v-bind="props" />
       </template>

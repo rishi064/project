@@ -86,12 +86,11 @@ function addChildrenNode() {
     ]);
 
     //Logic of redrawing every child[Outgoing] node
+    //1. get the immediate outgoer:
     let goerIds = getOutgoers(nodeId).map((node) => node.id);
-    console.log(goerIds, "outgoer");
 
     while (!goerIds.includes("end")) {
       const tempNodes = getOutgoers(goerIds[0]);
-      console.log(tempNodes);
 
       tempNodes.map((tempNode) => {
         //redrawing of nodes(not edges) coz edges will arrange w.r.t. nodes
