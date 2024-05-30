@@ -391,26 +391,9 @@ function add2ChildrenNode() {
       </div>
     </div>
   </div>
-
-  <!-- <div class="child-node">
-    <h2>{{ props.label }}</h2>
-    <div class="btns">
-      <button class="btn-add btn-add-children-node" @click="addChildrenNode">
-        +
-      </button>
-      <button class="btn-add btn-add-sibling-node" @click="add2ChildrenNode">
-        2
-      </button>
-    </div>
-  </div> -->
 </template>
 
 <style scoped>
-/* .child-node h2 {
-  font-size: 20px;
-  font-weight: 600;
-} */
-
 .node {
   margin: 0;
   position: relative;
@@ -423,7 +406,8 @@ function add2ChildrenNode() {
 }
 
 .node-content {
-  padding: 10px 50px;
+  padding: 10px 20px;
+  margin: 0;
 }
 
 .line-container {
@@ -442,8 +426,8 @@ function add2ChildrenNode() {
 }
 
 .line-one {
-  height: 54px;
-  width: 36px;
+  height: 44px;
+  width: 42px;
   border-bottom-right-radius: 100px;
   border: 3px solid #000;
   border-top: 0;
@@ -462,8 +446,8 @@ function add2ChildrenNode() {
 }
 
 .line-two {
-  height: 54px;
-  width: 36px;
+  height: 44px;
+  width: 42px;
   border-bottom-left-radius: 110px;
   border: 3px solid #000;
   border-top: 0;
