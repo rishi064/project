@@ -10,10 +10,19 @@ import {
 
 import { ref } from "vue";
 import Icon from "./../Icon.vue";
+import { generateRandomColor } from "@/helpers/randomColor";
 
 const showButtons = ref(false);
 
-const { getNodes, addNodes, addEdges, removeEdges, getOutgoers } = useVueFlow();
+const {
+  getNodes,
+  addNodes,
+  addEdges,
+  removeEdges,
+  getOutgoers,
+  findNode,
+  updateNodeData,
+} = useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
 
@@ -82,6 +91,7 @@ function addChildrenNode() {
         target: `node-${newChildNodeId}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: generateRandomColor() },
       },
       {
         id: `end-edge`,
@@ -91,6 +101,7 @@ function addChildrenNode() {
         target: "end",
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: generateRandomColor() },
       },
     ]);
   } else {
@@ -110,6 +121,7 @@ function addChildrenNode() {
         target: `node-${newChildNodeId}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: generateRandomColor() },
         style: { strokeWidth: 2 },
       },
     ]);
@@ -124,6 +136,7 @@ function addChildrenNode() {
           target: value,
           animated: true,
           markerEnd: MarkerType.ArrowClosed,
+          style: { stroke: generateRandomColor() },
         });
       });
     }
@@ -148,7 +161,6 @@ function addChildrenNode() {
 
 function add2ChildrenNode() {
   // specifically scope to the event
-  // console.log(outgoingEdgesOfClickedNode.value);
   const outgoingEdgesOfClickedNodeIds = outgoingEdgesOfClickedNode.value.map(
     (edge) => edge.edgeId
   );
@@ -185,15 +197,16 @@ function add2ChildrenNode() {
       },
     ]);
 
+    updateNodeData(nodeId, {
+      idHandleToAddMultiple: `handle-${nodeIdForNewHandleNode}`,
+    });
+
+    console.log(findNode(nodeId));
+
     const handleNodePositionY = getNodes.value.find(
       (node) => node.id === `handle-${nodeIdForNewHandleNode}`
     ).position.y;
     const offset = endNodeYPosition - handleNodePositionY;
-
-    // const handleNode = getNodes.value.find(
-    //   (node) => node.id === `handle-${nodeIdForNewHandleNode}`
-    // );
-    // console.log("handleNode", handleNode);
 
     //it would re-render the node. won't have to worry of first removing the node before doing it.
     offset < 251 &&
@@ -209,6 +222,8 @@ function add2ChildrenNode() {
 
     const edgeIdForNewEndEdge1 = (Math.random() * 1000).toFixed(5);
     const edgeIdForNewEndEdge2 = (Math.random() * 1000).toFixed(5);
+    const randColor1 = generateRandomColor();
+    const randColor2 = generateRandomColor();
 
     addEdges([
       //first childnode to current node
@@ -220,6 +235,7 @@ function add2ChildrenNode() {
         target: `node-${nodeIdForNewChildNode1}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: randColor1 },
       },
       //second childnode to current node
       {
@@ -230,6 +246,7 @@ function add2ChildrenNode() {
         target: `node-${nodeIdForNewChildNode2}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: randColor2 },
       },
       //first childnode to handle node
       {
@@ -240,6 +257,7 @@ function add2ChildrenNode() {
         target: `handle-${nodeIdForNewHandleNode}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: randColor1 },
       },
       //second childnode to handle node
       {
@@ -250,6 +268,7 @@ function add2ChildrenNode() {
         target: `handle-${nodeIdForNewHandleNode}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: randColor2 },
       },
       //handlenode to end node. addEdge isn't over-written so no need to worry about removing it if the node clicked isn't parent of end edge
       {
@@ -260,6 +279,7 @@ function add2ChildrenNode() {
         target: "end",
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: generateRandomColor() },
       },
     ]);
 
@@ -277,10 +297,11 @@ function add2ChildrenNode() {
           target: value,
           animated: true,
           markerEnd: MarkerType.ArrowClosed,
+          style: { stroke: generateRandomColor() },
         });
       });
 
-      //Logic of redrawing every child[Outgoing] node
+      //Logic of redrawing every child[Outgoing] node further down
       let goerIds = getNodes.value
         .filter((node) => node.id === `handle-${nodeIdForNewHandleNode}`)
         .map((node) => node.id);
@@ -305,8 +326,7 @@ function add2ChildrenNode() {
     }
   } else {
     console.log("multiple outgoers po xan ta");
-    console.log("clicked node", nodeId);
-
+    const handleIdToBeConnected = findNode(nodeId).data.idHandleToAddMultiple;
     const newNode = (Math.random() * 1000).toFixed(4);
 
     const referenceNode = getOutgoers(nodeId)[getOutgoers(nodeId).length - 1];
@@ -324,8 +344,7 @@ function add2ChildrenNode() {
 
     const edgeNewtoCur = (Math.random() * 10000).toFixed(2);
     const curToHandle = (Math.random() * 10000).toFixed(2);
-
-    const targetHandleid = getOutgoers(getOutgoers(nodeId)[0].id)[0].id;
+    const randColor = generateRandomColor();
 
     addEdges([
       {
@@ -336,15 +355,17 @@ function add2ChildrenNode() {
         target: `node-${newNode}`,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: randColor },
       },
       {
         id: `edge-${curToHandle}`,
         label: `edge-${curToHandle}`,
         type: "default",
         source: `node-${newNode}`,
-        target: targetHandleid,
+        target: handleIdToBeConnected,
         animated: true,
         markerEnd: MarkerType.ArrowClosed,
+        style: { stroke: randColor },
       },
     ]);
   }

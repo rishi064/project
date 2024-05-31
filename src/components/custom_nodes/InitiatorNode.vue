@@ -8,6 +8,7 @@ import {
 } from "@vue-flow/core";
 import Icon from "../Icon.vue";
 import { ref } from "vue";
+import { generateRandomColor } from "@/helpers/randomColor";
 
 const showAddBtn = ref(false);
 
@@ -54,6 +55,7 @@ function addChildrenNode() {
       style: { strokeWidth: 2 },
       animated: true,
       markerEnd: MarkerType.ArrowClosed,
+      style: { stroke: generateRandomColor() },
     },
   ]);
 
@@ -67,6 +69,7 @@ function addChildrenNode() {
       target: "end",
       style: { strokeWidth: 2 },
       markerEnd: MarkerType.ArrowClosed,
+      style: { stroke: generateRandomColor() },
     },
   ]);
 
@@ -82,6 +85,7 @@ function addChildrenNode() {
         target: `${outgoerIds[0]}`, //0 coz only one outgoer no matter what
         markerEnd: MarkerType.ArrowClosed,
         animated: true,
+        style: { stroke: generateRandomColor() },
       },
     ]);
 

@@ -14,6 +14,7 @@ import {
 import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
+import { generateRandomColor } from "@/helpers/randomColor";
 
 const { toObject } = useVueFlow();
 
@@ -48,8 +49,9 @@ const edges = ref([
     source: "start",
     target: "initiator",
     type: "straight",
-    style: { strokeWidth: 2 },
+    style: { strokeWidth: 4 },
     markerEnd: MarkerType.ArrowClosed,
+    style: { stroke: generateRandomColor() },
   },
   {
     id: `end-edge`,
@@ -58,6 +60,9 @@ const edges = ref([
     source: `initiator`,
     target: "end",
     markerEnd: MarkerType.ArrowClosed,
+    style: {
+      stroke: generateRandomColor(),
+    },
   },
 ]);
 
@@ -99,7 +104,7 @@ function restoreFromLocal() {
       </template>
 
       <Background />
-      <Controls position="top-right" :show-interactive="false">
+      <Controls position="top-right">
         <ControlButton title="Save " @click="saveFlowchart">S</ControlButton>
 
         <ControlButton title="Get saved data" @click="restoreFromLocal"
