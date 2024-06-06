@@ -22,6 +22,7 @@ const {
   getOutgoers,
   findNode,
   updateNodeData,
+  updateNode,
 } = useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
@@ -30,6 +31,9 @@ const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
 
 const offset = ref(0);
+
+const showLabelInput = ref(false);
+const label = ref(props.label);
 
 if (endNodeYPosition - props.position.y < 250) {
   offset.value = endNodeYPosition - props.position.y;
@@ -327,6 +331,7 @@ function add2ChildrenNode() {
   } else {
     console.log("multiple outgoers po xan ta");
     const handleIdToBeConnected = findNode(nodeId).data.idHandleToAddMultiple;
+    console.log("handleId", handleIdToBeConnected);
     const newNode = (Math.random() * 1000).toFixed(4);
 
     const referenceNode = getOutgoers(nodeId)[getOutgoers(nodeId).length - 1];
@@ -370,6 +375,18 @@ function add2ChildrenNode() {
     ]);
   }
 }
+
+function onDoubleClick() {
+  showLabelInput.value = true;
+  console.log("double clicked", nodeId);
+}
+
+function handleLabelSubmit() {
+  showLabelInput.value = false;
+  updateNode(nodeId, { label: label.value });
+
+  console.log(getNodes.value.map((node) => node.label));
+}
 </script>
 
 <template>
@@ -381,8 +398,18 @@ function add2ChildrenNode() {
     <!-- 1.// For being the target of previous node -->
     <!-- <Handle id="b" type="target" :position="Position.Top" /> -->
 
-    <div class="node">
-      <p class="node-content">{{ props.label }}</p>
+    <div class="node" @dblclick="onDoubleClick">
+      <div class="node-content">
+        <span v-if="showLabelInput">
+          <form @submit.prevent="handleLabelSubmit">
+            <input
+              type="text"
+              v-model.trim="label"
+              placeholder="Enter new label name"
+            /></form
+        ></span>
+        <span v-else> {{ label || nodeId }}</span>
+      </div>
 
       <div class="line-container" v-show="showButtons">
         <div class="line-one">

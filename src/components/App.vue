@@ -5,9 +5,9 @@ import { Background } from "@vue-flow/background";
 import { ControlButton, Controls } from "@vue-flow/controls";
 import {
   MarkerType,
-  Position,
   VueFlow,
-  useHandleConnections,
+  applyChanges,
+  applyNodeChanges,
   useVueFlow,
 } from "@vue-flow/core";
 
@@ -16,7 +16,8 @@ import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
 import { generateRandomColor } from "@/helpers/randomColor";
 
-const { toObject } = useVueFlow();
+const { toObject, removeNodes, getOutgoers, getIncomers, addEdges } =
+  useVueFlow();
 
 const nodes = ref([
   {
@@ -29,7 +30,6 @@ const nodes = ref([
     id: "initiator",
     type: "initiator",
     position: { x: 300, y: 100 },
-    draggable: false,
     data: {
       color: "red",
     },
@@ -66,6 +66,9 @@ const edges = ref([
   },
 ]);
 
+const sourceOfSelected = ref(undefined);
+const targetOfSelected = ref(undefined);
+
 function saveFlowchart() {
   console.log("nodes", toObject().nodes);
   console.log("edges", toObject().edges);
@@ -86,19 +89,24 @@ function restoreFromLocal() {
   nodes.value = JSON.parse(localStorage.getItem("nodes"));
   edges.value = JSON.parse(localStorage.getItem("edges"));
 }
-
-//crucial for updating the DB on  node change of desired type
-// function onNodesChange(changes) {
-//   console.log("just occured changes", changes);
-// }
 </script>
 
 <template>
+  <!-- <p>source: {{ sourceOfSelected }}</p>
+  <p>target: {{ targetOfSelected }}</p> -->
   <div class="vueflow-container">
-    <VueFlow :nodes="nodes" :edges="edges" :nodes-draggable="false">
+    <VueFlow
+      :nodes="nodes"
+      :edges="edges"
+      :nodes-draggable="false"
+      @nodes-change="onNodesChange"
+      @apply-changes="false"
+      :zoom-on-double-click="false"
+    >
       <template #node-initiator="props">
         <InitiatorNode :data="props.data" v-bind="props" />
       </template>
+
       <template #node-child="props">
         <ChildNode :data="props.data" v-bind="props"></ChildNode>
       </template>

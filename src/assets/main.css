@@ -2,11 +2,15 @@
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/core@1.33.7/dist/theme-default.css";
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/controls@latest/dist/style.css";
 
-.vue-flow {
-  height: 950px;
+/* .vueflow-container {
+  height: 900px;
   width: 100%;
-  background-color: beige;
+} */
 
+.vue-flow {
+  background-color: #e9f9f9;
+  height: 900px;
+  width: 100%;
   font-family: "Courier New", Courier, monospace;
 }
 
