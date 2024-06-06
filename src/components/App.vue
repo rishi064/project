@@ -16,8 +16,7 @@ import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
 import { generateRandomColor } from "@/helpers/randomColor";
 
-const { toObject, removeNodes, getOutgoers, getIncomers, addEdges } =
-  useVueFlow();
+const { toObject } = useVueFlow();
 
 const nodes = ref([
   {
@@ -25,6 +24,7 @@ const nodes = ref([
     type: "input",
     position: { x: 300, y: 0 },
     label: "Start",
+    data: {},
   },
   {
     id: "initiator",
@@ -99,9 +99,9 @@ function restoreFromLocal() {
       :nodes="nodes"
       :edges="edges"
       :nodes-draggable="false"
-      @nodes-change="onNodesChange"
       @apply-changes="false"
       :zoom-on-double-click="false"
+      :delete-key-code="null"
     >
       <template #node-initiator="props">
         <InitiatorNode :data="props.data" v-bind="props" />
@@ -109,6 +109,10 @@ function restoreFromLocal() {
 
       <template #node-child="props">
         <ChildNode :data="props.data" v-bind="props"></ChildNode>
+      </template>
+
+      <template #node-handle="props">
+        <HandleNode :data="props.data" v-bind="props"></HandleNode>
       </template>
 
       <Background />

@@ -23,9 +23,13 @@ const {
   findNode,
   updateNodeData,
   updateNode,
+  removeNodes,
+  getIncomers,
 } = useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
+
+console.log(props.data);
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
@@ -62,6 +66,7 @@ function updateEndNodePosition(newYPosition) {
 
 function addChildrenNode() {
   const outgoerIds = getOutgoers(nodeId).map((node) => node.id);
+  console.log("outgoerIds", outgoerIds);
   const outgoingEdgesId = outgoingEdgesOfClickedNode.value.map(
     (edge) => edge.edgeId
   );
@@ -110,6 +115,8 @@ function addChildrenNode() {
     ]);
   } else {
     const newChildNodeId = (Math.random() * 1000).toFixed(2);
+    console.log("newChildNodeId", newChildNodeId);
+    console.log("outgoerIds", outgoerIds);
     addNodes({
       id: `node-${newChildNodeId}`,
       label: `node-${newChildNodeId}`,
@@ -132,6 +139,7 @@ function addChildrenNode() {
 
     if (!outgoerIds.includes("end")) {
       outgoerIds.forEach((value) => {
+        console.log("value", value);
         addEdges({
           id: `edge-${(Math.random() * 1000).toFixed(5)}`,
           label: `edge-${(Math.random() * 1000).toFixed(5)}`,
@@ -151,10 +159,11 @@ function addChildrenNode() {
     while (!goerIds.includes("end")) {
       const tempNodes = getOutgoers(goerIds[0]);
       tempNodes.forEach((tempNode) => {
+        console.log("tempNode", tempNode);
         addNodes({
           id: tempNode.id,
-          label: tempNode.id === "end" ? "Stop" : tempNode.id,
-          type: tempNode.id === "end" ? "output" : "child",
+          label: tempNode.label,
+          type: tempNode.type, //here is the problem
           position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
         });
         goerIds[0] = tempNode.id;
@@ -186,17 +195,19 @@ function add2ChildrenNode() {
         label: `node-${nodeIdForNewChildNode1}`,
         type: "child",
         position: { x: props.position.x - 200, y: props.position.y + 125 },
+        data: { hasSibling: true },
       },
       {
         id: `node-${nodeIdForNewChildNode2}`,
         label: `node-${nodeIdForNewChildNode2}`,
         type: "child",
         position: { x: props.position.x + 200, y: props.position.y + 125 },
+        data: { hasSibling: true },
       },
       {
         id: `handle-${nodeIdForNewHandleNode}`,
         label: `handle-${nodeIdForNewHandleNode}`,
-        type: "child",
+        type: "handle",
         position: { x: props.position.x, y: props.position.y + 250 },
       },
     ]);
@@ -387,6 +398,206 @@ function handleLabelSubmit() {
 
   console.log(getNodes.value.map((node) => node.label));
 }
+
+////////////////////////////////////////////
+//Logic to deleteNode
+///////////////////////////////////////////
+//function to know whether particular node has sibling or not
+function hasSiblingNode(id) {
+  const parentId = getIncomers(id)?.[0]?.id; //no nodes contain more than one parent node except handle node
+  return getOutgoers(parentId).length > 1;
+}
+
+function hasMoreThanEqual2Sibling(id) {
+  const parentId = getIncomers(id)[0].id;
+  return getOutgoers(parentId).length > 2;
+}
+
+//function to get all siblings of particular id
+function getAllSiblings(id) {
+  const parentId = getIncomers(id)[0]?.id; //no nodes contain more than one parent node except handle node
+  return getOutgoers(parentId);
+}
+
+function isHandleDirectChild(id) {
+  const childTypes = getOutgoers(id).map((node) => node.type);
+  return childTypes.includes("handle");
+}
+
+// Function to get all descendant nodes of a given node
+function getAllDescendants(nodeId) {
+  let descendants = [];
+  const children = getOutgoers(nodeId);
+
+  children.forEach((child) => {
+    descendants.push(child.id);
+    descendants = descendants.concat(getAllDescendants(child.id));
+  });
+
+  return [...new Set(descendants)];
+}
+
+function handleDeleteNode() {
+  const targetOfSelected = getOutgoers(nodeId).map((node) => node.id);
+  const sourceOfSelected = getIncomers(nodeId).map((node) => node.id);
+
+  console.log(
+    "clicked node",
+    nodeId,
+    "; outgoers",
+    targetOfSelected,
+    "; incomers",
+    sourceOfSelected,
+    "; hasSibling node",
+    hasSiblingNode(nodeId),
+    "; hasmore than 2 sibling node",
+    hasMoreThanEqual2Sibling(nodeId),
+    "; is target direct child",
+    isHandleDirectChild(nodeId),
+    "; all descendants:",
+    getAllDescendants(nodeId)
+  );
+
+  //case-I: there are no sibling nodes of the clicked node.[ie. No multiple node case]
+  if (!hasSiblingNode(nodeId)) {
+    removeNodes([nodeId]);
+
+    //connect source and target after removal
+    targetOfSelected.map((targetId) => {
+      const edgeId = (Math.random() * 100).toFixed(4);
+
+      addEdges([
+        {
+          id: `edge-${edgeId}`,
+          label: `edge-${edgeId}`,
+          source: sourceOfSelected[0], //coz source always gonna be single except for handle
+          target: targetId,
+          type: "smoothstep",
+          animated: true,
+          markerEnd: MarkerType.ArrowClosed,
+        },
+      ]);
+    });
+  }
+
+  //   case-II: There are sibling nodes of the clicked node. [ie. Multple node case]
+  if (hasSiblingNode(nodeId)) {
+    console.log("clicked node ko sibling", getAllSiblings(nodeId));
+
+    // case II.1:more than 2 sibling nodes: just remove node.
+    if (hasMoreThanEqual2Sibling(nodeId)) {
+      if (isHandleDirectChild(nodeId)) {
+        // II.1.1: No child in between[handle is direct child]
+        removeNodes(nodeId); //no need to track edges
+        // II.1.2: Remove the handle child
+      } else {
+        //II.1.2: there are child in between
+
+        removeNodes(nodeId);
+
+        //connect source and target after removal
+        targetOfSelected.map((targetId) => {
+          const edgeId = (Math.random() * 100).toFixed(4);
+
+          addEdges([
+            {
+              id: `edge-${edgeId}`,
+              label: `edge-${edgeId}`,
+              source: sourceOfSelected[0], //coz source always gonna be single except for handle
+              target: targetId,
+              type: "smoothstep",
+              animated: true,
+              markerEnd: MarkerType.ArrowClosed,
+            },
+          ]);
+        });
+      }
+    } else {
+      // case-II.2:just 2 sibling nodes: remove both nodes along with handle node. track edges
+
+      if (isHandleDirectChild(nodeId)) {
+        // II.2.1: ask for confirmation:
+        const removeSiblingNode = prompt(
+          `Press\n1 to remove sibling node upto ${targetOfSelected[0]}  \n2 to remove only the clicked node`
+        );
+
+        if (removeSiblingNode === "1") {
+          const parentNodeId = sourceOfSelected[0]; //always a single parent node for every nodes which can be deleted
+          const directHandleNodeId = targetOfSelected[0];
+
+          //calculate outgoing nodes of direct handle node id in order to connect them to parent
+          const newTargetIds = getOutgoers(directHandleNodeId).map(
+            (node) => node.id
+          );
+          console.log("target to be", newTargetIds);
+
+          const descendantIdsDirectHandleNode =
+            getAllDescendants(directHandleNodeId);
+
+          // Get all nodes between parentNodeId and directHandleNodeId
+          const nodesToRemove = getAllDescendants(parentNodeId).filter(
+            (node) => !descendantIdsDirectHandleNode.includes(node)
+          );
+
+          console.log("nodes to remove", nodesToRemove);
+
+          removeNodes([...nodesToRemove]);
+
+          //connect the parent node to new target node:
+          newTargetIds.map((targetId) => {
+            const edgeId = (Math.random() * 100).toFixed(4);
+
+            addEdges({
+              id: `edge-${edgeId}`,
+              source: parentNodeId,
+              target: targetId,
+              animated: true,
+            });
+          });
+        } else if (removeSiblingNode === "2") {
+          //remove only the clicked node and also the handle node
+          removeNodes(nodeId);
+          const directHandleId = targetOfSelected[0];
+
+          const idParentNodeToBe = getIncomers(directHandleId).map(
+            (node) => node.id
+          )[0]; // target always a single in case where the node is direct child
+
+          const idChildrenNodeToBe = getOutgoers(directHandleId).map(
+            (node) => node.id
+          );
+
+          removeNodes(directHandleId);
+
+          idChildrenNodeToBe.map((targetId) => {
+            const edgeId = (Math.random() * 100).toFixed(4);
+            addEdges({
+              id: `edge-${edgeId}`,
+              source: idParentNodeToBe,
+              target: targetId,
+              animated: true,
+            });
+          });
+        } else alert("Enter the correct number");
+      } else {
+        // 1. remove the clicked node
+        removeNodes(nodeId);
+
+        //2. connect new target to the parent node
+        targetOfSelected.map((targetId) => {
+          const edgeId = (Math.random() * 100).toFixed(4);
+          addEdges({
+            id: `edge-${edgeId}`,
+            label: `edge-${edgeId}`,
+            source: sourceOfSelected[0],
+            target: targetId,
+            animated: true,
+          });
+        });
+      }
+    }
+  }
+}
 </script>
 
 <template>
@@ -398,7 +609,11 @@ function handleLabelSubmit() {
     <!-- 1.// For being the target of previous node -->
     <!-- <Handle id="b" type="target" :position="Position.Top" /> -->
 
-    <div class="node" @dblclick="onDoubleClick">
+    <div
+      :class="['node', `${data.hasSibling ? 'hasSibling' : ''}`]"
+      @dblclick="onDoubleClick"
+      :style="{ backgroundColor: data.bgColor }"
+    >
       <div class="node-content">
         <span v-if="showLabelInput">
           <form @submit.prevent="handleLabelSubmit">
@@ -411,15 +626,23 @@ function handleLabelSubmit() {
         <span v-else> {{ label || nodeId }}</span>
       </div>
 
-      <div class="line-container" v-show="showButtons">
+      <button class="trash-btn" v-if="showButtons" @click="handleDeleteNode">
+        <Icon name="trash" class="delete-icon" />
+      </button>
+
+      <div class="line-container" v-if="showButtons">
         <div class="line-one">
           <button class="btn-add">
-            <Icon name="circle" class="circle" @click="addChildrenNode" />
+            <Icon name="circle" class="circle-icon" @click="addChildrenNode" />
           </button>
         </div>
         <div class="line-two">
           <button class="btn-add">
-            <Icon name="multiple" class="multiple" @click="add2ChildrenNode" />
+            <Icon
+              name="multiple"
+              class="multiple-icon"
+              @click="add2ChildrenNode"
+            />
           </button>
         </div>
       </div>
@@ -440,9 +663,18 @@ function handleLabelSubmit() {
   font-size: 24px;
 }
 
+.hasSibling {
+  background-color: blueviolet;
+}
+
 .node-content {
   padding: 10px 20px;
   margin: 0;
+}
+
+button {
+  background: none;
+  border: none;
 }
 
 .line-container {
@@ -471,7 +703,7 @@ function handleLabelSubmit() {
   position: relative;
 }
 
-.circle {
+.circle-icon {
   height: 24px;
 
   position: absolute;
@@ -492,11 +724,33 @@ function handleLabelSubmit() {
   position: relative;
 }
 
-.multiple {
+.multiple-icon {
   height: 36px;
   position: absolute;
   bottom: 0;
 
   transform: translate(50%, 65%) rotate(75deg);
+}
+
+.trash-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(-50%, -50%);
+}
+
+.delete-icon {
+  height: 18px;
+  cursor: pointer;
+  position: absolute;
+  background-color: #ddd;
+  border: 1px solid black;
+
+  padding: 2px;
+  border-radius: 10px;
+}
+
+.delete-icon:hover {
+  box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, 0.7);
 }
 </style>
