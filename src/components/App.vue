@@ -14,7 +14,7 @@ import {
 import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
-import { generateRandomColor } from "@/helpers/randomColor";
+import { generateRandomColor } from "@/composables/helpers/randomColor";
 
 const { toObject } = useVueFlow();
 

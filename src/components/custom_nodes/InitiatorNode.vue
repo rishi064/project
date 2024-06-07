@@ -8,7 +8,7 @@ import {
 } from "@vue-flow/core";
 import Icon from "../Icon.vue";
 import { ref } from "vue";
-import { generateRandomColor } from "@/helpers/randomColor";
+import { generateRandomColor } from "@/composables/helpers/randomColor";
 
 const showAddBtn = ref(false);
 
