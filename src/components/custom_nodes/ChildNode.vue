@@ -351,6 +351,7 @@ function add2ChildrenNode() {
   } else {
     console.log("multiple outgoers po xan ta");
     const handleIdToBeConnected = findNode(nodeId).data.idHandleToAddMultiple;
+    console.log(findNode(nodeId));
     console.log("handleId", handleIdToBeConnected);
     const newNode = (Math.random() * 1000).toFixed(4);
 

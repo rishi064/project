@@ -36,7 +36,6 @@ export function useVueFlowHelper() {
       descendants.push(child.id);
       descendants = descendants.concat(getAllDescendants(child.id));
     });
-
     return [...new Set(descendants)];
   }
 

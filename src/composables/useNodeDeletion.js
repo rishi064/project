@@ -11,7 +11,6 @@ export function useNodeDeletion() {
     getAllDescendants,
   } = useVueFlowHelper();
 
-  // 1.
   function deleteNode(nodeId) {
     const targetOfSelected = getOutgoers(nodeId).map((node) => node.id);
     const sourceOfSelected = getIncomers(nodeId).map((node) => node.id);
@@ -35,20 +34,24 @@ export function useNodeDeletion() {
 
     //case-I: there are no sibling nodes of the clicked node.[ie. No multiple node case]
     if (!hasSiblingNode(nodeId)) {
+      //then remove the node
       removeNodes([nodeId]);
 
-      //connect source and target after removal
+      //first connect source and target
       targetOfSelected.map((targetId) => {
         const edgeId = (Math.random() * 100).toFixed(4);
 
         addEdges([
           {
-            id: `edge-${edgeId}`,
-            label: `edge-${edgeId}`,
+            id: targetOfSelected.includes("end")
+              ? "end-edge"
+              : `edge-${edgeId}`,
+            label: targetOfSelected.includes("end")
+              ? "end-edge"
+              : `edge-${edgeId}`,
             source: sourceOfSelected[0], //coz source always gonna be single except for handle
             target: targetId,
-            type: "smoothstep",
-            animated: true,
+            type: "straight",
             markerEnd: MarkerType.ArrowClosed,
           },
         ]);
