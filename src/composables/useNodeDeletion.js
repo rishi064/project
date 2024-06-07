@@ -73,6 +73,7 @@ export function useNodeDeletion() {
 
           //connect source and target after removal
           targetOfSelected.map((targetId) => {
+            console.log("targetId", targetId);
             const edgeId = (Math.random() * 100).toFixed(4);
 
             addEdges([
@@ -106,6 +107,8 @@ export function useNodeDeletion() {
               (node) => node.id
             );
 
+            console.log(newTargetIds);
+
             const descendantIdsDirectHandleNode =
               getAllDescendants(directHandleNodeId);
 
@@ -121,10 +124,11 @@ export function useNodeDeletion() {
               const edgeId = (Math.random() * 100).toFixed(4);
 
               addEdges({
-                id: `edge-${edgeId}`,
+                id: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
+                label: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
                 source: parentNodeId,
                 target: targetId,
-                animated: true,
+                animated: targetId === "end" ? false : true,
               });
             });
           } else if (removeSiblingNode === "2") {
@@ -139,16 +143,18 @@ export function useNodeDeletion() {
             const idChildrenNodeToBe = getOutgoers(directHandleId).map(
               (node) => node.id
             );
+            console.log("id of children node to become", idChildrenNodeToBe);
 
             removeNodes(directHandleId);
 
             idChildrenNodeToBe.map((targetId) => {
               const edgeId = (Math.random() * 100).toFixed(4);
               addEdges({
-                id: `edge-${edgeId}`,
+                id: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
+                label: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
                 source: idParentNodeToBe,
                 target: targetId,
-                animated: true,
+                animated: targetId === "end" ? false : true,
               });
             });
           } else alert("Enter the correct number");
