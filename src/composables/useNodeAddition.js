@@ -144,7 +144,6 @@ export function useNodeAddition() {
 
   //2.
   function addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props) {
-    // specifically scope to the event
     const outgoingEdgesOfClickedNodeIds = outgoingEdgesOfClickedNode.value.map(
       (edge) => edge.edgeId
     );
