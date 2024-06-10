@@ -390,6 +390,7 @@ function add2ChildrenNode() {
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
   >
+    <p>{{ props.label }}</p>
     <div class="line-container" v-if="showButtons">
       <div class="line-one">
         <button class="btn-add">

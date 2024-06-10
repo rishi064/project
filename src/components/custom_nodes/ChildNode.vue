@@ -126,12 +126,22 @@ function addChildrenNode() {
     const newChildNodeId = (Math.random() * 1000).toFixed(2);
     console.log("newChildNodeId", newChildNodeId);
     console.log("outgoerIds", outgoerIds);
-    addNodes({
+    const parentDataIdHandleToMultiple =
+      findNode(nodeId).data?.idHandleToAddMultiple;
+
+    const newNode = {
       id: `node-${newChildNodeId}`,
       label: `node-${newChildNodeId}`,
       type: "child",
       position: { x: props.position.x, y: props.position.y + 250 },
-    });
+      data: {
+        ...(parentDataIdHandleToMultiple !== undefined && {
+          idHandleToAddMultiple: parentDataIdHandleToMultiple,
+        }),
+      },
+    };
+
+    addNodes(newNode);
 
     addEdges([
       {
@@ -351,7 +361,7 @@ function add2ChildrenNode() {
   } else {
     console.log("multiple outgoers po xan ta");
     const handleIdToBeConnected = findNode(nodeId).data.idHandleToAddMultiple;
-    console.log(findNode(nodeId));
+    console.log(findNode(nodeId).data);
     console.log("handleId", handleIdToBeConnected);
     const newNode = (Math.random() * 1000).toFixed(4);
 
@@ -424,7 +434,6 @@ const handleDeleteNode = () => deleteNode(nodeId);
     <div
       :class="['node', `${data.hasSibling ? 'hasSibling' : ''}`]"
       @dblclick="onDoubleClick"
-      :style="{ backgroundColor: data.bgColor }"
     >
       <div class="node-content">
         <span v-if="showLabelInput">
@@ -445,7 +454,11 @@ const handleDeleteNode = () => deleteNode(nodeId);
       <div class="line-container" v-if="showButtons">
         <div class="line-one">
           <button class="btn-add">
-            <Icon name="circle" class="circle-icon" @click="addChildrenNode" />
+            <Icon
+              name="circle"
+              class="circle-icon"
+              @click.stop="addChildrenNode"
+            />
           </button>
         </div>
         <div class="line-two">
@@ -453,7 +466,7 @@ const handleDeleteNode = () => deleteNode(nodeId);
             <Icon
               name="multiple"
               class="multiple-icon"
-              @click="add2ChildrenNode"
+              @click.stop="add2ChildrenNode"
             />
           </button>
         </div>
