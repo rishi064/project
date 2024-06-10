@@ -1,7 +1,7 @@
 import { useVueFlow } from "@vue-flow/core";
 
 export function useVueFlowHelper() {
-  const { getIncomers, getOutgoers } = useVueFlow();
+  const { getIncomers, getOutgoers, toObject } = useVueFlow();
 
   //   1.
   function hasSiblingNode(nodeID) {
@@ -39,11 +39,32 @@ export function useVueFlowHelper() {
     return [...new Set(descendants)];
   }
 
+  // 6.
+  function saveFlowchart() {
+    const nodes = [];
+    const edges = [];
+
+    toObject().nodes.map((node) => nodes.push(node));
+    toObject().edges.map((edge) => edges.push(edge));
+
+    localStorage.setItem("nodes", JSON.stringify(nodes));
+    localStorage.setItem("edges", JSON.stringify(edges));
+    console.log("saved");
+  }
+
+  // 7.
+  function restoreFromLocal() {
+    nodes.value = JSON.parse(localStorage.getItem("nodes"));
+    edges.value = JSON.parse(localStorage.getItem("edges"));
+  }
+
   return {
     hasSiblingNode,
     hasMoreThanEqual2Sibling,
     getAllSiblings,
     isHandleDirectChild,
     getAllDescendants,
+    saveFlowchart,
+    restoreFromLocal,
   };
 }

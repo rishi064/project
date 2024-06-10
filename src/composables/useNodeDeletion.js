@@ -2,7 +2,14 @@ import { useVueFlow, MarkerType } from "@vue-flow/core";
 import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
 
 export function useNodeDeletion() {
-  const { removeNodes, addEdges, getIncomers, getOutgoers } = useVueFlow();
+  const {
+    removeNodes,
+    addNodes,
+    addEdges,
+    getIncomers,
+    getOutgoers,
+    findNode,
+  } = useVueFlow();
 
   const {
     hasSiblingNode,
@@ -15,32 +22,46 @@ export function useNodeDeletion() {
     const targetOfSelected = getOutgoers(nodeId).map((node) => node.id);
     const sourceOfSelected = getIncomers(nodeId).map((node) => node.id);
 
-    console.log(
-      "clicked node",
-      nodeId,
-      "; outgoers",
-      targetOfSelected,
-      "; incomers",
-      sourceOfSelected,
-      "; hasSibling node",
-      hasSiblingNode(nodeId),
-      "; hasmore than 2 sibling node",
-      hasMoreThanEqual2Sibling(nodeId),
-      "; is target direct child",
-      isHandleDirectChild(nodeId),
-      "; all descendants:",
-      getAllDescendants(nodeId)
-    );
+    // console.log(
+    //   "clicked node",
+    //   nodeId,
+    //   "; outgoers",
+    //   targetOfSelected,
+    //   "; incomers",
+    //   sourceOfSelected,
+    //   "; hasSibling node",
+    //   hasSiblingNode(nodeId),
+    //   "; hasmore than 2 sibling node",
+    //   hasMoreThanEqual2Sibling(nodeId),
+    //   "; is target direct child",
+    //   isHandleDirectChild(nodeId),
+    //   "; all descendants:",
+    //   getAllDescendants(nodeId)
+    // );
 
     //case-I: there are no sibling nodes of the clicked node.[ie. No multiple node case]
     if (!hasSiblingNode(nodeId)) {
-      //then remove the node
+      console.log("descendant of ", nodeId, getAllDescendants(nodeId));
+
+      //1st:Redraw every node above previous position wrt nodeId
+      getAllDescendants(nodeId)
+        .reverse()
+        .forEach((id) => {
+          const newPositionY = getIncomers(id)[0].position.y;
+          addNodes({
+            id,
+            position: { x: findNode(id).position.x, y: newPositionY },
+            label: findNode(id).label,
+            type: findNode(id).type,
+          });
+        });
+
+      // 2nd: remove the node
       removeNodes([nodeId]);
 
-      //first connect source and target
+      // 3rd: connect source and target
       targetOfSelected.map((targetId) => {
         const edgeId = (Math.random() * 100).toFixed(4);
-
         addEdges([
           {
             id: targetOfSelected.includes("end")
@@ -70,7 +91,6 @@ export function useNodeDeletion() {
           //II.1.2: there are child in between
 
           removeNodes(nodeId);
-
           //connect source and target after removal
           targetOfSelected.map((targetId) => {
             console.log("targetId", targetId);

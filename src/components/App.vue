@@ -15,8 +15,9 @@ import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
 import { generateRandomColor } from "@/composables/helpers/randomColor";
+import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
-const { toObject } = useVueFlow();
+const { saveFlowchart, restoreFromLocal } = useVueFlowHelper();
 
 const nodes = ref([
   {
@@ -65,30 +66,6 @@ const edges = ref([
     },
   },
 ]);
-
-const sourceOfSelected = ref(undefined);
-const targetOfSelected = ref(undefined);
-
-function saveFlowchart() {
-  console.log("nodes", toObject().nodes);
-  console.log("edges", toObject().edges);
-
-  const nodes = [];
-  const edges = [];
-
-  toObject().nodes.map((node) => nodes.push(node));
-  toObject().edges.map((edge) => edges.push(edge));
-
-  console.log("nodes", nodes);
-  console.log("edges", edges);
-  localStorage.setItem("nodes", JSON.stringify(nodes));
-  localStorage.setItem("edges", JSON.stringify(edges));
-}
-
-function restoreFromLocal() {
-  nodes.value = JSON.parse(localStorage.getItem("nodes"));
-  edges.value = JSON.parse(localStorage.getItem("edges"));
-}
 </script>
 
 <template>
