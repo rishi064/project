@@ -158,11 +158,6 @@ button {
   justify-content: center;
 }
 
-.extended-handle:hover {
-  cursor: pointer;
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), -1px -1px 0 rgba(0, 0, 0, 0.7);
-}
-
 .line-container {
   position: absolute;
   bottom: 0;
@@ -198,6 +193,11 @@ button {
   transform: translate(-50%, 50%);
 }
 
+.circle-icon:hover {
+  stroke: palevioletred;
+  stroke-width: 4;
+}
+
 .line-two {
   height: 24px;
   width: 32px;
@@ -216,6 +216,11 @@ button {
   bottom: 0;
 
   transform: translate(50%, 65%) rotate(75deg);
+}
+
+.multiple-icon:hover {
+  stroke: palevioletred;
+  stroke-width: 2;
 }
 
 .trash-btn {
