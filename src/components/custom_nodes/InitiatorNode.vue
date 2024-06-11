@@ -113,26 +113,30 @@ function addChildrenNode() {
 </script>
 
 <template>
-  <div
-    class="initiator-node"
-    @mouseenter="toggleShowAddBtn"
-    @mouseleave="toggleShowAddBtn"
-  >
+  <div class="initiator-node">
     <h2>Initiator</h2>
-    <div class="hover-container" v-if="showAddBtn">
-      <div class="line"></div>
-      <button class="add-single-node" @click="addChildrenNode">
-        <Icon name="circle" class="circle" />
-      </button>
+    <div @mouseenter="showAddBtn = true" @mouseleave="showAddBtn = false">
+      <div class="extended-handle">
+        <strong>+</strong>
+      </div>
+      <div class="hover-container" v-if="showAddBtn">
+        <div class="line"></div>
+        <button class="add-single-node" @click="addChildrenNode">
+          <Icon name="circle" class="circle" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.initiator-node h2 {
+.initiator-node {
+  position: relative;
+}
+
+h2 {
   font-size: 12px;
   font-weight: 700;
-  position: relative;
 }
 
 .initiator-node {
@@ -145,6 +149,7 @@ function addChildrenNode() {
 .hover-container {
   left: 50%;
   position: absolute;
+  transform: translateY(30px);
 }
 
 .line {
@@ -153,6 +158,26 @@ function addChildrenNode() {
   background-color: black;
   margin: 0;
   padding: 0;
+}
+
+.extended-handle {
+  height: 20px;
+  width: 20px;
+  background-color: gold;
+  border-radius: 4px;
+
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extended-handle:hover {
+  cursor: pointer;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), -1px -1px 0 rgba(0, 0, 0, 0.7);
 }
 
 .add-single-node {
@@ -167,7 +192,7 @@ function addChildrenNode() {
 }
 
 .circle {
-  height: 12px;
-  width: 12px;
+  height: 18px;
+  width: 18px;
 }
 </style>

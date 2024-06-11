@@ -53,8 +53,8 @@ export function useNodeAddition() {
       addEdges([
         {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
-          label: `edge-${(Math.random() * 1000).toFixed(3)}`,
-          type: "straight",
+          label: ``,
+          type: "smoothstep",
           source: nodeId,
           target: `node-${newChildNodeId}`,
           animated: true,
@@ -67,7 +67,6 @@ export function useNodeAddition() {
           type: "straight",
           source: `node-${newChildNodeId}`,
           target: "end",
-          animated: true,
           markerEnd: MarkerType.ArrowClosed,
           style: { stroke: generateRandomColor() },
         },
@@ -97,7 +96,7 @@ export function useNodeAddition() {
       addEdges([
         {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
-          label: `edge-${(Math.random() * 1000).toFixed(3)}`,
+          label: ``,
           source: nodeId,
           target: `node-${newChildNodeId}`,
           animated: true,
@@ -112,8 +111,8 @@ export function useNodeAddition() {
           console.log("value", value);
           addEdges({
             id: `edge-${(Math.random() * 1000).toFixed(5)}`,
-            label: `edge-${(Math.random() * 1000).toFixed(5)}`,
-            type: "default",
+            label: ``,
+            type: "smoothstep",
             source: `node-${newChildNodeId}`,
             target: value,
             animated: true,
@@ -176,9 +175,9 @@ export function useNodeAddition() {
         },
         {
           id: `handle-${nodeIdForNewHandleNode}`,
-          label: `handle-${nodeIdForNewHandleNode}`,
+          label: `+`,
           type: "handle",
-          position: { x: props.position.x, y: props.position.y + 250 },
+          position: { x: props.position.x + 100, y: props.position.y + 250 },
         },
       ]);
 
@@ -217,8 +216,8 @@ export function useNodeAddition() {
         //first childnode to current node
         {
           id: `edge-${edgeIdForNewEdge1}`,
-          label: `edge-${edgeIdForNewEdge1}`,
-          type: "straight",
+          label: ``,
+          type: "smoothstep",
           source: nodeId,
           target: `node-${nodeIdForNewChildNode1}`,
           animated: true,
@@ -228,8 +227,8 @@ export function useNodeAddition() {
         //second childnode to current node
         {
           id: `edge-${edgeIdForNewEdge2}`,
-          label: `edge-${edgeIdForNewEdge2}`,
-          type: "straight",
+          label: ``,
+          type: "smoothstep",
           source: nodeId,
           target: `node-${nodeIdForNewChildNode2}`,
           animated: true,
@@ -239,7 +238,7 @@ export function useNodeAddition() {
         //first childnode to handle node
         {
           id: `handle-edge-${edgeIdForNewEndEdge1}`,
-          label: `handle-edge-${edgeIdForNewEndEdge1}`,
+          label: ``,
           type: "default",
           source: `node-${nodeIdForNewChildNode1}`,
           target: `handle-${nodeIdForNewHandleNode}`,
@@ -250,7 +249,7 @@ export function useNodeAddition() {
         //second childnode to handle node
         {
           id: `handle-edge-${edgeIdForNewEndEdge2}`,
-          label: `handle-edge-${edgeIdForNewEndEdge2}`,
+          label: ``,
           type: "default",
           source: `node-${nodeIdForNewChildNode2}`,
           target: `handle-${nodeIdForNewHandleNode}`,
@@ -265,7 +264,6 @@ export function useNodeAddition() {
           type: "straight",
           source: `handle-${nodeIdForNewHandleNode}`,
           target: "end",
-          animated: true,
           markerEnd: MarkerType.ArrowClosed,
           style: { stroke: generateRandomColor() },
         },
@@ -279,8 +277,8 @@ export function useNodeAddition() {
 
           addEdges({
             id: `edge-${newEdgeHandle}`,
-            label: `edge-${newEdgeHandle}`,
-            type: "default",
+            label: ``,
+            type: "smoothstep",
             source: `handle-${nodeIdForNewHandleNode}`,
             target: value,
             animated: true,
@@ -303,7 +301,7 @@ export function useNodeAddition() {
             //redrawing of nodes(not edges) coz edges will arrange w.r.t. nodes
             addNodes({
               id: tempNode.id,
-              label: tempNode.id === "end" ? "Stop" : tempNode.id,
+              label: tempNode.label,
               type: tempNode.type,
               position: {
                 x: tempNode.position.x,
@@ -345,8 +343,8 @@ export function useNodeAddition() {
       addEdges([
         {
           id: `edge-${edgeNewtoCur}`,
-          label: `edge-${edgeNewtoCur}`,
-          type: "straight",
+          label: ``,
+          type: "smoothstep",
           source: nodeId,
           target: `node-${newNode}`,
           animated: true,
@@ -355,7 +353,7 @@ export function useNodeAddition() {
         },
         {
           id: `edge-${curToHandle}`,
-          label: `edge-${curToHandle}`,
+          label: ``,
           type: "default",
           source: `node-${newNode}`,
           target: handleIdToBeConnected,

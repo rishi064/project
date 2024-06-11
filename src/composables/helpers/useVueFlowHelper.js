@@ -6,7 +6,7 @@ export function useVueFlowHelper() {
   //   1.
   function hasSiblingNode(nodeID) {
     const parentnodeID = getIncomers(nodeID)?.[0]?.id; //no nodes contain more than 1 parent node except handle node
-    return getOutgoers(parentnodeID).length > 1;
+    return getOutgoers(parentnodeID)?.length > 1;
   }
 
   //   2.

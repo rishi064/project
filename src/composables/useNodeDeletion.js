@@ -22,23 +22,6 @@ export function useNodeDeletion() {
     const targetOfSelected = getOutgoers(nodeId).map((node) => node.id);
     const sourceOfSelected = getIncomers(nodeId).map((node) => node.id);
 
-    // console.log(
-    //   "clicked node",
-    //   nodeId,
-    //   "; outgoers",
-    //   targetOfSelected,
-    //   "; incomers",
-    //   sourceOfSelected,
-    //   "; hasSibling node",
-    //   hasSiblingNode(nodeId),
-    //   "; hasmore than 2 sibling node",
-    //   hasMoreThanEqual2Sibling(nodeId),
-    //   "; is target direct child",
-    //   isHandleDirectChild(nodeId),
-    //   "; all descendants:",
-    //   getAllDescendants(nodeId)
-    // );
-
     //case-I: there are no sibling nodes of the clicked node.[ie. No multiple node case]
     if (!hasSiblingNode(nodeId)) {
       console.log("descendant of ", nodeId, getAllDescendants(nodeId));
@@ -48,9 +31,18 @@ export function useNodeDeletion() {
         .reverse()
         .forEach((id) => {
           const newPositionY = getIncomers(id)[0].position.y;
+          console.log(newPositionY);
           addNodes({
             id,
-            position: { x: findNode(id).position.x, y: newPositionY },
+            position: {
+              x: findNode(id).position.x,
+              y:
+                id === "end"
+                  ? newPositionY > 400
+                    ? newPositionY
+                    : 400
+                  : newPositionY,
+            },
             label: findNode(id).label,
             type: findNode(id).type,
           });
@@ -60,7 +52,7 @@ export function useNodeDeletion() {
       removeNodes([nodeId]);
 
       // 3rd: connect source and target
-      targetOfSelected.map((targetId) => {
+      targetOfSelected.forEach((targetId) => {
         const edgeId = (Math.random() * 100).toFixed(4);
         addEdges([
           {

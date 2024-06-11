@@ -39,7 +39,7 @@ const nodes = ref([
     id: "end",
     type: "output",
     label: "Stop",
-    position: { x: 300, y: 400 },
+    position: { x: 290, y: 400 },
   },
 ]);
 
@@ -69,8 +69,6 @@ const edges = ref([
 </script>
 
 <template>
-  <!-- <p>source: {{ sourceOfSelected }}</p>
-  <p>target: {{ targetOfSelected }}</p> -->
   <div class="vueflow-container">
     <VueFlow
       :nodes="nodes"

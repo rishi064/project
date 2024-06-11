@@ -88,6 +88,10 @@ const handleDeleteNode = () => deleteNode(nodeId);
         <Icon name="trash" class="delete-icon" />
       </button>
 
+      <div class="extended-handle">
+        <strong>+</strong>
+      </div>
+
       <div class="line-container" v-if="showButtons">
         <div class="line-one">
           <button class="btn-add">
@@ -139,12 +143,32 @@ button {
   border: none;
 }
 
+.extended-handle {
+  height: 20px;
+  width: 20px;
+  background-color: gold;
+  border-radius: 4px;
+  transform: translate(-50%, 10%);
+
+  position: absolute;
+  left: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extended-handle:hover {
+  cursor: pointer;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), -1px -1px 0 rgba(0, 0, 0, 0.7);
+}
+
 .line-container {
   position: absolute;
   bottom: 0;
   left: 50%;
 
-  transform: translate(-50%, 50%);
+  transform: translate(-50%, 36px);
 
   display: flex;
   z-index: -1;
@@ -155,8 +179,8 @@ button {
 }
 
 .line-one {
-  height: 44px;
-  width: 42px;
+  height: 24px;
+  width: 32px;
   border-bottom-right-radius: 100px;
   border: 3px solid #000;
   border-top: 0;
@@ -175,8 +199,8 @@ button {
 }
 
 .line-two {
-  height: 44px;
-  width: 42px;
+  height: 24px;
+  width: 32px;
   border-bottom-left-radius: 110px;
   border: 3px solid #000;
   border-top: 0;

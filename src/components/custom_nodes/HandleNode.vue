@@ -44,6 +44,9 @@ function add2ChildrenNode() {
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
   >
+    <div class="handle-node-content">
+      <strong>{{ props.label }}</strong>
+    </div>
     <div class="line-container" v-if="showButtons">
       <div class="line-one">
         <button class="btn-add">
@@ -74,6 +77,12 @@ function add2ChildrenNode() {
   border: none;
   border-radius: 10px;
   font-size: 24px;
+}
+
+.handle-node-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 button {
