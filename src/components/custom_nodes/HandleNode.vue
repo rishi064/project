@@ -72,8 +72,8 @@ function add2ChildrenNode() {
   position: relative;
 
   background-color: gold;
-  height: 32px;
-  width: 32px;
+  height: 28px;
+  width: 28px;
   border: none;
   border-radius: 10px;
   font-size: 24px;
@@ -106,7 +106,7 @@ button {
 }
 
 .line-one {
-  height: 44px;
+  height: 24px;
   width: 42px;
   border-bottom-right-radius: 100px;
   border: 3px solid #000;
@@ -125,8 +125,13 @@ button {
   transform: translate(-50%, 50%);
 }
 
+.circle-icon:hover{
+stroke: palevioletred;
+stroke-width: 5px;
+}
+
 .line-two {
-  height: 44px;
+  height: 24px;
   width: 42px;
   border-bottom-left-radius: 110px;
   border: 3px solid #000;
@@ -143,5 +148,9 @@ button {
   bottom: 0;
 
   transform: translate(50%, 65%) rotate(75deg);
+}
+
+.multiple-icon:hover{
+  fill: palevioletred;
 }
 </style>

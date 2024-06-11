@@ -219,8 +219,7 @@ button {
 }
 
 .multiple-icon:hover {
-  stroke: palevioletred;
-  stroke-width: 2;
+  fill: palevioletred;
 }
 
 .trash-btn {

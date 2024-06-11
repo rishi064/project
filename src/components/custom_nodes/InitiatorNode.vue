@@ -175,11 +175,6 @@ h2 {
   justify-content: center;
 }
 
-.extended-handle:hover {
-  cursor: pointer;
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7), -1px -1px 0 rgba(0, 0, 0, 0.7);
-}
-
 .add-single-node {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -194,5 +189,10 @@ h2 {
 .circle {
   height: 18px;
   width: 18px;
+}
+
+.circle:hover {
+  stroke: palevioletred;
+  stroke-width: 5;
 }
 </style>
