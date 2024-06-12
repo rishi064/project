@@ -1,5 +1,6 @@
 import { generateRandomColor } from "./helpers/randomColor";
 import { useVueFlow, MarkerType } from "@vue-flow/core";
+import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
 
 export function useNodeAddition() {
   const {
@@ -21,6 +22,8 @@ export function useNodeAddition() {
       position: { x: 400, y: newYPosition },
     });
   }
+
+  const { getAllDescendants } = useVueFlowHelper();
 
   // 1.
   function addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props) {
@@ -124,20 +127,30 @@ export function useNodeAddition() {
 
       removeEdges([...outgoingEdgesId]);
 
-      let goerIds = getOutgoers(nodeId).map((node) => node.id);
-      while (!goerIds.includes("end")) {
-        const tempNodes = getOutgoers(goerIds[0]);
-        tempNodes.forEach((tempNode) => {
-          console.log("tempNode", tempNode);
-          addNodes({
-            id: tempNode.id,
-            label: tempNode.label,
-            type: tempNode.type,
-            position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
-          });
-          goerIds[0] = tempNode.id;
+      console.log(
+        "descendants of",
+        nodeId,
+        getAllDescendants(nodeId),
+        newChildNodeId
+      );
+
+      const IdsNodeToShift = getAllDescendants(nodeId).filter(
+        (id) => id !== `node-${newChildNodeId}`
+      );
+
+      console.log("id of node to shift", IdsNodeToShift);
+
+      IdsNodeToShift.forEach((id) => {
+        const tempNode = findNode(id);
+        console.log(tempNode);
+
+        addNodes({
+          id: tempNode.id,
+          label: tempNode.label,
+          type: tempNode.type,
+          position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
         });
-      }
+      });
     }
   }
 

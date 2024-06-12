@@ -12,7 +12,6 @@ const showButtons = ref(false);
 const { getNodes, updateNode } = useVueFlow();
 
 const props = defineProps(["data", "label", "position"]);
-console.log(props.data, props.label);
 
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
