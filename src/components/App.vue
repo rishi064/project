@@ -30,7 +30,7 @@ const nodes = ref([
   {
     id: "initiator",
     type: "initiator",
-    position: { x: 300, y: 100 },
+    position: { x: 320, y: 100 },
     data: {
       color: "red",
     },
@@ -39,7 +39,7 @@ const nodes = ref([
     id: "end",
     type: "output",
     label: "Stop",
-    position: { x: 290, y: 400 },
+    position: { x: 300, y: 400 },
   },
 ]);
 

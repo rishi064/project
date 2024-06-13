@@ -7,7 +7,7 @@ import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
 const { getNodes } = useVueFlow();
 
 const showButtons = ref(false);
-const props = defineProps(["data", "label", "position"]);
+const props = defineProps(["data", "label", "position", "type"]);
 
 import { useNodeAddition } from "@/composables/useNodeAddition";
 
@@ -125,9 +125,9 @@ button {
   transform: translate(-50%, 50%);
 }
 
-.circle-icon:hover{
-stroke: palevioletred;
-stroke-width: 5px;
+.circle-icon:hover {
+  stroke: palevioletred;
+  stroke-width: 5px;
 }
 
 .line-two {
@@ -150,7 +150,7 @@ stroke-width: 5px;
   transform: translate(50%, 65%) rotate(75deg);
 }
 
-.multiple-icon:hover{
+.multiple-icon:hover {
   fill: palevioletred;
 }
 </style>

@@ -19,7 +19,7 @@ export function useNodeAddition() {
       id: "end",
       type: "output",
       label: "Stop",
-      position: { x: 400, y: newYPosition },
+      position: { x: 300, y: newYPosition },
     });
   }
 
@@ -45,19 +45,26 @@ export function useNodeAddition() {
         updateEndNodePosition(endNodeYPosition + 250);
       }
 
-      const newChildNodeId = (Math.random() * 1000).toFixed(2);
+      const newChildNodeId = (Math.random() * 100).toFixed(2);
+      console.log(newChildNodeId);
       addNodes({
         id: `node-${newChildNodeId}`,
         label: `node-${newChildNodeId}`,
         type: "child",
-        position: { x: props.position.x, y: props.position.y + 250 },
+        position: {
+          x:
+            findNode(nodeId).type === "handle"
+              ? props.position.x - 70
+              : props.position.x,
+          y: props.position.y + 250,
+        },
       });
 
       addEdges([
         {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
           label: ``,
-          type: "smoothstep",
+          type: "straight",
           source: nodeId,
           target: `node-${newChildNodeId}`,
           animated: true,
@@ -101,6 +108,7 @@ export function useNodeAddition() {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
           label: ``,
           source: nodeId,
+          type: "straight",
           target: `node-${newChildNodeId}`,
           animated: true,
           markerEnd: MarkerType.ArrowClosed,
@@ -115,7 +123,7 @@ export function useNodeAddition() {
           addEdges({
             id: `edge-${(Math.random() * 1000).toFixed(5)}`,
             label: ``,
-            type: "smoothstep",
+            type: "straight",
             source: `node-${newChildNodeId}`,
             target: value,
             animated: true,
@@ -171,6 +179,7 @@ export function useNodeAddition() {
       const nodeIdForNewChildNode2 = (Math.random() * 1000).toFixed(3);
       const nodeIdForNewHandleNode = (Math.random() * 1000).toFixed(3);
 
+      console.log("props.type", props);
       addNodes([
         {
           id: `node-${nodeIdForNewChildNode1}`,
@@ -190,7 +199,13 @@ export function useNodeAddition() {
           id: `handle-${nodeIdForNewHandleNode}`,
           label: `+`,
           type: "handle",
-          position: { x: props.position.x + 100, y: props.position.y + 250 },
+          position: {
+            x:
+              props.type === "handle"
+                ? props.position.x
+                : props.position.x + 80,
+            y: props.position.y + 250,
+          },
         },
       ]);
 
@@ -291,7 +306,7 @@ export function useNodeAddition() {
           addEdges({
             id: `edge-${newEdgeHandle}`,
             label: ``,
-            type: "smoothstep",
+            type: "straight",
             source: `handle-${nodeIdForNewHandleNode}`,
             target: value,
             animated: true,
