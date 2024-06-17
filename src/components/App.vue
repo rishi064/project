@@ -17,8 +17,6 @@ import HandleNode from "./custom_nodes/HandleNode.vue";
 import { generateRandomColor } from "@/composables/helpers/randomColor";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
-const { saveFlowchart, restoreFromLocal } = useVueFlowHelper();
-
 const nodes = ref([
   {
     id: "start",
@@ -29,8 +27,9 @@ const nodes = ref([
   },
   {
     id: "initiator",
+    label: "initiator",
     type: "initiator",
-    position: { x: 320, y: 100 },
+    position: { x: 300, y: 100 },
     data: {
       color: "red",
     },
@@ -39,7 +38,7 @@ const nodes = ref([
     id: "end",
     type: "output",
     label: "Stop",
-    position: { x: 300, y: 400 },
+    position: { x: 300, y: 500 },
   },
 ]);
 
@@ -66,6 +65,10 @@ const edges = ref([
     },
   },
 ]);
+
+const { saveFlowchart, restoreFromLocal } = useVueFlowHelper(nodes, edges);
+
+const isModalVisible = ref(false);
 </script>
 
 <template>

@@ -1,12 +1,12 @@
 import { useVueFlow } from "@vue-flow/core";
 
-export function useVueFlowHelper() {
+export function useVueFlowHelper(nodes, edges) {
   const { getIncomers, getOutgoers, toObject } = useVueFlow();
 
   //   1.
   function hasSiblingNode(nodeID) {
     const parentnodeID = getIncomers(nodeID)?.[0]?.id; //no nodes contain more than 1 parent node except handle node
-    return getOutgoers(parentnodeID)?.length > 1;
+    return parentnodeID ? getOutgoers(parentnodeID)?.length > 1 : null;
   }
 
   //   2.

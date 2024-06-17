@@ -16,13 +16,14 @@ const props = defineProps(["data", "label", "position", "type"]);
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
 
-const endNode = getNodes.value.filter((node) => node.id === "end");
-const endNodeYPosition = endNode[0].position.y;
-
 const offset = ref(0);
 
 const showLabelInput = ref(false);
 const label = ref(props.label);
+const password = ref("");
+
+const endNode = getNodes.value.filter((node) => node.id === "end");
+const endNodeYPosition = endNode[0].position.y;
 
 if (endNodeYPosition - props.position.y < 250) {
   offset.value = endNodeYPosition - props.position.y;
@@ -52,7 +53,10 @@ function handleLabelSubmit() {
   showLabelInput.value = false;
   updateNode(nodeId, { label: label.value });
 
-  console.log(getNodes.value.map((node) => node.label));
+  console.log(
+    getNodes.value.map((node) => node.label),
+    password.value
+  );
 }
 
 const handleDeleteNode = () => deleteNode(nodeId);
@@ -75,11 +79,20 @@ const handleDeleteNode = () => deleteNode(nodeId);
         <span v-if="showLabelInput">
           <form @submit.prevent="handleLabelSubmit">
             <input
+              class="input-label"
               type="text"
               v-model.trim="label"
               placeholder="Enter new label name"
-            /></form
-        ></span>
+            />
+            <input
+              class="input-password"
+              type="password"
+              v-model.trim="password"
+              placeholder="Enter password"
+            />
+            <button class="btn-submit" type="submit">submit</button>
+          </form></span
+        >
         <span v-else> {{ label || nodeId }}</span>
       </div>
 
@@ -140,6 +153,20 @@ const handleDeleteNode = () => deleteNode(nodeId);
 button {
   background: none;
   border: none;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: start;
+}
+
+.btn-submit {
+  cursor: pointer;
+  background-color: orange;
+  padding: 5px;
+  border-radius: 4px;
 }
 
 .extended-handle {

@@ -31,7 +31,6 @@ export function useNodeDeletion() {
         .reverse()
         .forEach((id) => {
           const newPositionY = getIncomers(id)[0].position.y;
-          console.log(newPositionY);
           addNodes({
             id,
             position: {
@@ -64,8 +63,9 @@ export function useNodeDeletion() {
               : `edge-${edgeId}`,
             source: sourceOfSelected[0], //coz source always gonna be single except for handle
             target: targetId,
-            type: "straight",
+            type: targetOfSelected.length > 1 ? "smoothstep" : "straight",
             markerEnd: MarkerType.ArrowClosed,
+            animated: "true",
           },
         ]);
       });

@@ -93,7 +93,13 @@ export function useNodeAddition() {
         id: `node-${newChildNodeId}`,
         label: `node-${newChildNodeId}`,
         type: "child",
-        position: { x: props.position.x, y: props.position.y + 250 },
+        position: {
+          x:
+            findNode(nodeId).type === "handle"
+              ? props.position.x - 70
+              : props.position.x,
+          y: props.position.y + 250,
+        },
         data: {
           ...(parentHandleDataIdHandleToAddMultiple !== undefined && {
             idHandleToAddMultiple: parentHandleDataIdHandleToAddMultiple,
@@ -123,9 +129,9 @@ export function useNodeAddition() {
           addEdges({
             id: `edge-${(Math.random() * 1000).toFixed(5)}`,
             label: ``,
-            type: "straight",
             source: `node-${newChildNodeId}`,
             target: value,
+            type: outgoerIds.length > 1 ? "smoothstep" : "straight",
             animated: true,
             markerEnd: MarkerType.ArrowClosed,
             style: { stroke: generateRandomColor() },
@@ -150,7 +156,6 @@ export function useNodeAddition() {
 
       IdsNodeToShift.forEach((id) => {
         const tempNode = findNode(id);
-        console.log(tempNode);
 
         addNodes({
           id: tempNode.id,
