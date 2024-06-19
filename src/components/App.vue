@@ -14,6 +14,7 @@ import {
 import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
+import DecisionNode from "./custom_nodes/DecisionNode.vue";
 import { generateRandomColor } from "@/composables/helpers/randomColor";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
@@ -91,6 +92,10 @@ const isModalVisible = ref(false);
 
       <template #node-handle="props">
         <HandleNode :data="props.data" v-bind="props"></HandleNode>
+      </template>
+
+      <template #node-decision="props">
+        <DecisionNode :data="props.data" v-bind="props"></DecisionNode>
       </template>
 
       <Background />

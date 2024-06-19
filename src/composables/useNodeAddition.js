@@ -26,7 +26,16 @@ export function useNodeAddition() {
   const { getAllDescendants } = useVueFlowHelper();
 
   // 1.
-  function addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props) {
+  function addOneChild(
+    nodeId,
+    outgoingEdgesOfClickedNode,
+    offset,
+    props,
+    inputNodeType = "child",
+    inputLabel
+  ) {
+    console.log("inputNodeType:", inputNodeType);
+    console.log("inputLabel:", inputLabel);
     const outgoerIds = getOutgoers(nodeId).map((node) => node.id);
     console.log("outgoerIds", outgoerIds);
     const outgoingEdgesId = outgoingEdgesOfClickedNode.value.map(
@@ -49,8 +58,8 @@ export function useNodeAddition() {
       console.log(newChildNodeId);
       addNodes({
         id: `node-${newChildNodeId}`,
-        label: `node-${newChildNodeId}`,
-        type: "child",
+        label: inputLabel,
+        type: inputNodeType,
         position: {
           x:
             findNode(nodeId).type === "handle"
@@ -82,7 +91,7 @@ export function useNodeAddition() {
         },
       ]);
     } else {
-      const newChildNodeId = (Math.random() * 1000).toFixed(2);
+      const newChildNodeId = (Math.random() * 100).toFixed(2);
       console.log("newChildNodeId", newChildNodeId);
       console.log("outgoerIds", outgoerIds);
 
@@ -91,8 +100,8 @@ export function useNodeAddition() {
 
       const newNode = {
         id: `node-${newChildNodeId}`,
-        label: `node-${newChildNodeId}`,
-        type: "child",
+        label: inputLabel,
+        type: inputNodeType,
         position: {
           x:
             findNode(nodeId).type === "handle"

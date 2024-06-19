@@ -79,6 +79,7 @@ function handleSubmit() {
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
   >
+    <p class="decision-node-label">Decision {{ props.label }}</p>
     <div class="handle-node-content">
       <form @submit.prevent="handleSubmit">
         <input
@@ -126,6 +127,12 @@ function handleSubmit() {
   border-radius: 10px;
   padding: 10px;
   font-size: 24px;
+}
+
+.decision-node-label {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
 }
 
 .goto-btn {
