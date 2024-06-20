@@ -31,11 +31,11 @@ export function useNodeAddition() {
     outgoingEdgesOfClickedNode,
     offset,
     props,
-    inputNodeType = "child",
-    inputLabel
+    inputNodeType1 = "child",
+    inputLabel1
   ) {
-    console.log("inputNodeType:", inputNodeType);
-    console.log("inputLabel:", inputLabel);
+    console.log("inputNodeType1:", inputNodeType1);
+    console.log("inputLabel1:", inputLabel1);
     const outgoerIds = getOutgoers(nodeId).map((node) => node.id);
     console.log("outgoerIds", outgoerIds);
     const outgoingEdgesId = outgoingEdgesOfClickedNode.value.map(
@@ -58,8 +58,8 @@ export function useNodeAddition() {
       console.log(newChildNodeId);
       addNodes({
         id: `node-${newChildNodeId}`,
-        label: inputLabel,
-        type: inputNodeType,
+        label: inputLabel1,
+        type: inputNodeType1,
         position: {
           x:
             findNode(nodeId).type === "handle"
@@ -100,8 +100,8 @@ export function useNodeAddition() {
 
       const newNode = {
         id: `node-${newChildNodeId}`,
-        label: inputLabel,
-        type: inputNodeType,
+        label: inputLabel1,
+        type: inputNodeType1,
         position: {
           x:
             findNode(nodeId).type === "handle"
@@ -177,7 +177,16 @@ export function useNodeAddition() {
   }
 
   //2.
-  function addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props) {
+  function addMultipleChild(
+    inputNodeType1 = "child",
+    inputNodeType2 = "child",
+    inputLabel1,
+    inputLabel2,
+    outgoingEdgesOfClickedNode,
+    nodeId,
+    props
+  ) {
+    console.log(outgoingEdgesOfClickedNode);
     const outgoingEdgesOfClickedNodeIds = outgoingEdgesOfClickedNode.value.map(
       (edge) => edge.edgeId
     );
@@ -197,15 +206,15 @@ export function useNodeAddition() {
       addNodes([
         {
           id: `node-${nodeIdForNewChildNode1}`,
-          label: `node-${nodeIdForNewChildNode1}`,
-          type: "child",
+          label: inputLabel1,
+          type: inputNodeType1,
           position: { x: props.position.x - 200, y: props.position.y + 125 },
           data: { hasSibling: true },
         },
         {
           id: `node-${nodeIdForNewChildNode2}`,
-          label: `node-${nodeIdForNewChildNode2}`,
-          type: "child",
+          label: inputLabel2,
+          type: inputNodeType2,
           position: { x: props.position.x + 200, y: props.position.y + 125 },
           data: { hasSibling: true },
         },
@@ -357,6 +366,7 @@ export function useNodeAddition() {
       }
     } else {
       console.log("multiple outgoers po xan ta");
+      console.log(inputLabel1, inputNodeType1);
       const handleIdToBeConnected = findNode(nodeId).data.idHandleToAddMultiple;
       console.log(findNode(nodeId).data);
       console.log("handleId", handleIdToBeConnected);
@@ -367,8 +377,8 @@ export function useNodeAddition() {
 
       addNodes({
         id: `node-${newNode}`,
-        label: `node-${newNode}`,
-        type: "child",
+        label: inputLabel1,
+        type: inputNodeType1,
         position: {
           x: referenceNode.position.x + 250,
           y: referenceNode.position.y,

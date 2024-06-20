@@ -11,7 +11,7 @@ import {
 } from "@vue-flow/core";
 import { useNodeAddition } from "@/composables/useNodeAddition";
 
-const { addEdges, getNodes } = useVueFlow();
+const { addEdges, getNodes, findNode } = useVueFlow();
 const { addOneChild, addMultipleChild } = useNodeAddition();
 
 const props = defineProps(["label", "position", "data", "type"]);
@@ -51,19 +51,18 @@ function add2ChildrenNode() {
 
 function handleSubmit() {
   const allNodeIDs = getNodes.value.map((node) => node.id);
-  console.log(allNodeIDs);
-  if (allNodeIDs.includes(gotoId.value)) {
-    console.log(gotoId.value);
+  console.log("getting nodes", findNode(gotoId.value));
 
+  if (allNodeIDs.includes(gotoId.value)) {
     addEdges({
       id: "goto-edge",
       label: "goto-edge",
-      source: nodeId,
-      target: gotoId.value,
+      source: nodeId, //nodeId = useNodeId()
       type: "smoothstep",
-      sourcePosition: Position.Right,
-      targetPosition: Position.Right,
+      target: gotoId.value,
+      style: { stroke: "red", strokeWidth: 4 },
       markerEnd: MarkerType.ArrowClosed,
+      targetHandle: "a",
     });
   } else {
     alert("Enter the correct id of the node which you want to connect to");

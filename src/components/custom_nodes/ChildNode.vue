@@ -138,7 +138,12 @@ const handleDeleteNode = () => deleteNode(nodeId);
   background-color: #ddd;
   border: none;
   border-radius: 10px;
-  font-size: 24px;
+  font-size: 22px;
+  width: 110px;
+  font-weight: bold;
+  color: white;
+
+  width: 150px;
 }
 
 .hasSibling {
@@ -146,7 +151,7 @@ const handleDeleteNode = () => deleteNode(nodeId);
 }
 
 .node-content {
-  padding: 10px 20px;
+  padding: 10px 10px;
   margin: 0;
 }
 
@@ -160,6 +165,10 @@ form {
   flex-direction: column;
   gap: 5px;
   align-items: start;
+}
+
+form input {
+  width: 90%;
 }
 
 .btn-submit {

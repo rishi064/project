@@ -58,6 +58,11 @@ export function useVueFlowHelper(nodes, edges) {
     edges.value = JSON.parse(localStorage.getItem("edges"));
   }
 
+  // 8.
+  function hasMoreThanEqual2Child(nodeID) {
+    return getOutgoers(nodeID).map((node) => node.id).length >= 2;
+  }
+
   return {
     hasSiblingNode,
     hasMoreThanEqual2Sibling,
@@ -66,5 +71,6 @@ export function useVueFlowHelper(nodes, edges) {
     getAllDescendants,
     saveFlowchart,
     restoreFromLocal,
+    hasMoreThanEqual2Child,
   };
 }
