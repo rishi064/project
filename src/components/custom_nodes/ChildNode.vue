@@ -6,8 +6,17 @@ import Icon from "./../Icon.vue";
 
 import { useNodeDeletion } from "../../composables/useNodeDeletion";
 import { useNodeAddition } from "@/composables/useNodeAddition";
+import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
 const showButtons = ref(false);
+
+const showModal = ref(false);
+const show2InputModal = ref(false);
+const inputNodeType1 = ref("");
+const inputLabel1 = ref("");
+const inputNodeType2 = ref("");
+const inputLabel2 = ref("");
+const clickedBtn = ref("");
 
 const { getNodes, updateNode } = useVueFlow();
 
@@ -15,12 +24,15 @@ const props = defineProps(["data", "label", "position", "type"]);
 
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
+const { hasMoreThanEqual2Child } = useVueFlowHelper();
 
 const offset = ref(0);
 
 const showLabelInput = ref(false);
 const label = ref(props.label);
 const password = ref("");
+
+const nodeId = useNodeId();
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
@@ -29,19 +41,32 @@ if (endNodeYPosition - props.position.y < 250) {
   offset.value = endNodeYPosition - props.position.y;
 }
 
-const nodeId = useNodeId();
-
 const outgoingEdgesOfClickedNode = useHandleConnections({
   type: "source",
   nodeId,
 });
 
 function addChildrenNode() {
-  addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props);
+  addOneChild(
+    nodeId,
+    outgoingEdgesOfClickedNode,
+    offset,
+    props,
+    inputNodeType1.value,
+    inputLabel1.value
+  );
 }
 
 function add2ChildrenNode() {
-  addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props);
+  addMultipleChild(
+    inputNodeType1.value,
+    inputNodeType2.value,
+    inputLabel1.value,
+    inputLabel2.value,
+    outgoingEdgesOfClickedNode,
+    nodeId,
+    props
+  );
 }
 
 function onDoubleClick() {
@@ -60,6 +85,37 @@ function handleLabelSubmit() {
 }
 
 const handleDeleteNode = () => deleteNode(nodeId);
+
+function closeModalForm() {
+  inputNodeType1.value =
+    inputLabel1.value =
+    inputNodeType2.value =
+    inputLabel2.value =
+      "";
+
+  showModal.value = show2InputModal.value = false;
+}
+
+function handleShowModal(clicked) {
+  clickedBtn.value = clicked;
+  console.log(clickedBtn.value);
+
+  clickedBtn.value === "single" || hasMoreThanEqual2Child(nodeId)
+    ? (showModal.value = true)
+    : (show2InputModal.value = showModal.value = true);
+}
+
+function handleModalSubmit() {
+  console.log(
+    inputNodeType2.value,
+    inputNodeType1.value,
+    inputLabel1.value,
+    inputLabel2.value
+  );
+  clickedBtn.value === "single" ? addChildNode() : add2ChildrenNode();
+
+  closeModalForm();
+}
 </script>
 
 <template>
@@ -110,7 +166,7 @@ const handleDeleteNode = () => deleteNode(nodeId);
             <Icon
               name="circle"
               class="circle-icon"
-              @click.stop="addChildrenNode"
+              @click.stop="handleShowModal('single')"
             />
           </button>
         </div>
@@ -119,7 +175,7 @@ const handleDeleteNode = () => deleteNode(nodeId);
             <Icon
               name="multiple"
               class="multiple-icon"
-              @click.stop="add2ChildrenNode"
+              @click.stop="handleShowModal('multiple')"
             />
           </button>
         </div>
@@ -127,6 +183,50 @@ const handleDeleteNode = () => deleteNode(nodeId);
     </div>
   </div>
   <!-- <Handle id="a" type="target" :position="Position.Right" /> -->
+
+  <div class="modal" v-if="showModal">
+    <div class="modal-close">
+      <button class="modal-close-btn" @click="closeModalForm">&times;</button>
+    </div>
+    <div class="modal-content">
+      <form
+        @submit.prevent="handleModalSubmit"
+        :class="{ 'modal-form': show2InputModal }"
+      >
+        <div>
+          <p v-if="show2InputModal">For 1st node</p>
+          <select required class="input-select" v-model.trim="inputNodeType1">
+            <option value="">Select nodetype ...</option>
+            <option value="decision">Decision Node</option>
+            <option value="child">Child Node</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Enter label ..."
+            class="input-label"
+            v-model.trim="inputLabel1"
+            required
+          />
+        </div>
+        <div v-if="show2InputModal">
+          <p>For 2nd node</p>
+          <select required class="input-select" v-model.trim="inputNodeType2">
+            <option value="">Select nodetype ...</option>
+            <option value="decision">Decision Node</option>
+            <option value="child">Child Node</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Enter label ..."
+            class="input-label"
+            v-model.trim="inputLabel2"
+            required
+          />
+        </div>
+        <button type="submit" class="btn-submit">ADD</button>
+      </form>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -277,5 +377,49 @@ form input {
 
 .delete-icon:hover {
   box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, 0.7);
+}
+
+/* Modal form appearing before adding nodes */
+.modal {
+  position: absolute;
+  left: 10px;
+  background-color: #b8df81;
+  border-radius: 10px;
+  padding: 0 4px;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+
+.modal-content {
+  padding: 6px;
+}
+
+.modal-close {
+  text-align: end;
+}
+
+.modal-close-btn {
+  font-weight: 600;
+  font-size: 24px;
+  color: red;
+  cursor: pointer;
+}
+
+.modal-form p {
+  margin: 0;
+}
+
+.modal-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 24px;
+}
+
+.input-select,
+.input-label {
+  padding: 4px;
+  border-radius: 5px;
+  border: 1px solid;
+  outline: none;
 }
 </style>

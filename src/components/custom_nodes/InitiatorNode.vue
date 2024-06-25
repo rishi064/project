@@ -366,6 +366,8 @@ form {
   background-color: #b8df81;
   border-radius: 10px;
   padding: 0 4px;
+  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.7);
+  z-index: 10;
 }
 
 .modal-content {
