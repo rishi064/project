@@ -1,7 +1,14 @@
-import { useVueFlow } from "@vue-flow/core";
+import { useHandleConnections, useVueFlow, useNodeId } from "@vue-flow/core";
 
 export function useVueFlowHelper(nodes, edges) {
   const { getIncomers, getOutgoers, toObject } = useVueFlow();
+
+  // Calculation for hasMoreThanEqual2ChildNoGoTo() function
+  const nodeId = useNodeId();
+  const outgoingEdgesOfClickedNode = useHandleConnections({
+    type: "source",
+    nodeId,
+  });
 
   //   1.
   function hasSiblingNode(nodeID) {
@@ -59,8 +66,13 @@ export function useVueFlowHelper(nodes, edges) {
   }
 
   // 8.
-  function hasMoreThanEqual2Child(nodeID) {
-    return getOutgoers(nodeID).map((node) => node.id).length >= 2;
+  function hasMoreThanEqual2ChildNoGoTo(nodeID) {
+    console.log(outgoingEdgesOfClickedNode.value);
+    const outgoerNoGoTo = outgoingEdgesOfClickedNode.value.filter(
+      (edge) => !edge.edgeId.includes("goto")
+    );
+    console.log("outgoer no go to", outgoerNoGoTo);
+    return outgoerNoGoTo.length >= 2;
   }
 
   return {
@@ -71,6 +83,6 @@ export function useVueFlowHelper(nodes, edges) {
     getAllDescendants,
     saveFlowchart,
     restoreFromLocal,
-    hasMoreThanEqual2Child,
+    hasMoreThanEqual2ChildNoGoTo,
   };
 }

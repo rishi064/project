@@ -8,6 +8,31 @@ import { useNodeDeletion } from "../../composables/useNodeDeletion";
 import { useNodeAddition } from "@/composables/useNodeAddition";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
+const props = defineProps({
+  //To resolve warning , we input extra elements too
+  position: Object,
+  type: String,
+  label: String,
+  data: Object,
+  id: String,
+  events: Object,
+  selected: Boolean,
+  resizing: Boolean,
+  dragging: Boolean,
+  connectable: Boolean,
+  dimensions: Object,
+  isValidTargetPos: Boolean,
+  isValidSourcePos: Boolean,
+  parent: Object,
+  parentNodeId: String,
+  zIndex: Number,
+  targetPosition: String,
+  sourcePosition: String,
+  dragHandle: String,
+});
+
+const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
+
 const showButtons = ref(false);
 
 const showModal = ref(false);
@@ -20,11 +45,9 @@ const clickedBtn = ref("");
 
 const { getNodes, updateNode } = useVueFlow();
 
-const props = defineProps(["data", "label", "position", "type"]);
-
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { hasMoreThanEqual2Child } = useVueFlowHelper();
+const { hasMoreThanEqual2ChildNoGoTo } = useVueFlowHelper();
 
 const offset = ref(0);
 
@@ -46,7 +69,7 @@ const outgoingEdgesOfClickedNode = useHandleConnections({
   nodeId,
 });
 
-function addChildrenNode() {
+function addChildNode() {
   addOneChild(
     nodeId,
     outgoingEdgesOfClickedNode,
@@ -100,7 +123,7 @@ function handleShowModal(clicked) {
   clickedBtn.value = clicked;
   console.log(clickedBtn.value);
 
-  clickedBtn.value === "single" || hasMoreThanEqual2Child(nodeId)
+  clickedBtn.value === "single" || hasMoreThanEqual2ChildNoGoTo(nodeId)
     ? (showModal.value = true)
     : (show2InputModal.value = showModal.value = true);
 }
@@ -149,7 +172,7 @@ function handleModalSubmit() {
             <button class="btn-submit" type="submit">submit</button>
           </form></span
         >
-        <span v-else> {{ label || nodeId }}</span>
+        <span v-else> {{ label || nodeId }}{{ nodeId }}</span>
       </div>
 
       <button class="trash-btn" v-if="showButtons" @click="handleDeleteNode">

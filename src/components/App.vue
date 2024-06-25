@@ -68,8 +68,7 @@ const edges = ref([
 ]);
 
 const { saveFlowchart, restoreFromLocal } = useVueFlowHelper(nodes, edges);
-
-const isModalVisible = ref(false);
+provide("allGotoEdgesArray", []);
 </script>
 
 <template>

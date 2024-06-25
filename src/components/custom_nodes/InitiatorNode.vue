@@ -25,7 +25,7 @@ const inputLabel2 = ref("");
 const clickedBtn = ref("");
 
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { hasMoreThanEqual2Child } = useVueFlowHelper();
+const { hasMoreThanEqual2ChildNoGoTo } = useVueFlowHelper();
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -108,12 +108,13 @@ function handleShowModal(clicked) {
   clickedBtn.value = clicked;
   console.log(clickedBtn.value);
 
-  clickedBtn.value === "single" || hasMoreThanEqual2Child(nodeId)
+  clickedBtn.value === "single" || hasMoreThanEqual2ChildNoGoTo(nodeId)
     ? (showModal.value = true)
     : (show2InputModal.value = showModal.value = true);
 }
 
 function handleModalSubmit() {
+  console.log("clickedBtn ko value", clickedBtn);
   console.log(
     inputNodeType2.value,
     inputNodeType1.value,
@@ -163,7 +164,12 @@ function handleModalSubmit() {
   </div>
 
   <Handle class="handle-at-top" type="target" :position="Position.Top" />
-  <Handle id="a" type="target" :position="Position.Right" />
+  <Handle
+    class="handle-at-right"
+    id="a"
+    type="target"
+    :position="Position.Right"
+  />
   <Handle class="handle-at-bottom" type="source" :position="Position.Bottom" />
 
   <div class="modal" v-if="showModal">
@@ -355,7 +361,8 @@ form {
 
 /* Handles  */
 .handle-at-top,
-.handle-at-bottom {
+.handle-at-bottom,
+.handle-at-right {
   opacity: 0;
 }
 

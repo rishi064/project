@@ -1,6 +1,7 @@
 import { generateRandomColor } from "./helpers/randomColor";
 import { useVueFlow, MarkerType } from "@vue-flow/core";
 import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
+import { inject } from "vue";
 
 export function useNodeAddition() {
   const {
@@ -12,6 +13,8 @@ export function useNodeAddition() {
     updateNodeData,
     findNode,
   } = useVueFlow();
+
+  const allGotoEdgesArray = inject("allGotoEdgesArray");
 
   function updateEndNodePosition(newYPosition) {
     console.log(newYPosition);
@@ -34,13 +37,23 @@ export function useNodeAddition() {
     inputNodeType1 = "child",
     inputLabel1
   ) {
-    console.log("inputNodeType1:", inputNodeType1);
-    console.log("inputLabel1:", inputLabel1);
+    //remove all the gotoedge first:
+    allGotoEdgesArray.forEach((gotoEdge) => removeEdges(gotoEdge.id));
+
+    //perform addition:
+
+    console.log("clicked node", nodeId);
+
     const outgoerIds = getOutgoers(nodeId).map((node) => node.id);
+    console.log("outgoer haru", getOutgoers(nodeId));
     console.log("outgoerIds", outgoerIds);
-    const outgoingEdgesId = outgoingEdgesOfClickedNode.value.map(
-      (edge) => edge.edgeId
-    );
+
+    const outgoingEdgesId = outgoingEdgesOfClickedNode.value
+      .filter((edge) => !edge.edgeId.includes("goto"))
+      .map((edge) => edge.edgeId);
+
+    console.log("outgoingEdges ", outgoingEdgesOfClickedNode.value);
+    console.log("outgoingEdges ids", outgoingEdgesId);
 
     const endNode = getNodes.value.find((node) => node.id === "end");
     const endNodeYPosition = endNode.position.y;
@@ -174,6 +187,9 @@ export function useNodeAddition() {
         });
       });
     }
+
+    //now add all those edges as they were
+    addEdges(allGotoEdgesArray);
   }
 
   //2.
@@ -186,7 +202,10 @@ export function useNodeAddition() {
     nodeId,
     props
   ) {
-    console.log(outgoingEdgesOfClickedNode);
+    //remove all goto edges first
+    allGotoEdgesArray.forEach((gotoEdge) => removeEdges(gotoEdge.id));
+
+    //then add the multiple child
     const outgoingEdgesOfClickedNodeIds = outgoingEdgesOfClickedNode.value.map(
       (edge) => edge.edgeId
     );
@@ -415,6 +434,9 @@ export function useNodeAddition() {
         },
       ]);
     }
+
+    //now redraw those edges as they are
+    addEdges(allGotoEdgesArray);
   }
 
   return { addOneChild, addMultipleChild };
