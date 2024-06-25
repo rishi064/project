@@ -17,7 +17,6 @@ export function useNodeAddition() {
   const allGotoEdgesArray = inject("allGotoEdgesArray");
 
   function updateEndNodePosition(newYPosition) {
-    console.log(newYPosition);
     addNodes({
       id: "end",
       type: "output",
@@ -42,18 +41,11 @@ export function useNodeAddition() {
 
     //perform addition:
 
-    console.log("clicked node", nodeId);
-
     const outgoerIds = getOutgoers(nodeId).map((node) => node.id);
-    console.log("outgoer haru", getOutgoers(nodeId));
-    console.log("outgoerIds", outgoerIds);
 
     const outgoingEdgesId = outgoingEdgesOfClickedNode.value
       .filter((edge) => !edge.edgeId.includes("goto"))
       .map((edge) => edge.edgeId);
-
-    console.log("outgoingEdges ", outgoingEdgesOfClickedNode.value);
-    console.log("outgoingEdges ids", outgoingEdgesId);
 
     const endNode = getNodes.value.find((node) => node.id === "end");
     const endNodeYPosition = endNode.position.y;
@@ -68,7 +60,6 @@ export function useNodeAddition() {
       }
 
       const newChildNodeId = (Math.random() * 100).toFixed(2);
-      console.log(newChildNodeId);
       addNodes({
         id: `node-${newChildNodeId}`,
         label: inputLabel1,
@@ -105,8 +96,6 @@ export function useNodeAddition() {
       ]);
     } else {
       const newChildNodeId = (Math.random() * 100).toFixed(2);
-      console.log("newChildNodeId", newChildNodeId);
-      console.log("outgoerIds", outgoerIds);
 
       const parentHandleDataIdHandleToAddMultiple =
         findNode(nodeId).data.idHandleToAddMultiple;
@@ -147,7 +136,6 @@ export function useNodeAddition() {
 
       if (!outgoerIds.includes("end")) {
         outgoerIds.forEach((value) => {
-          console.log("value", value);
           addEdges({
             id: `edge-${(Math.random() * 1000).toFixed(5)}`,
             label: ``,
@@ -163,18 +151,9 @@ export function useNodeAddition() {
 
       removeEdges([...outgoingEdgesId]);
 
-      console.log(
-        "descendants of",
-        nodeId,
-        getAllDescendants(nodeId),
-        newChildNodeId
-      );
-
       const IdsNodeToShift = getAllDescendants(nodeId).filter(
         (id) => id !== `node-${newChildNodeId}`
       );
-
-      console.log("id of node to shift", IdsNodeToShift);
 
       IdsNodeToShift.forEach((id) => {
         const tempNode = findNode(id);
@@ -221,7 +200,6 @@ export function useNodeAddition() {
       const nodeIdForNewChildNode2 = (Math.random() * 1000).toFixed(3);
       const nodeIdForNewHandleNode = (Math.random() * 1000).toFixed(3);
 
-      console.log("props.type", props);
       addNodes([
         {
           id: `node-${nodeIdForNewChildNode1}`,
@@ -255,15 +233,11 @@ export function useNodeAddition() {
         idHandleToAddMultiple: `handle-${nodeIdForNewHandleNode}`,
       });
 
-      console.log(findNode(nodeId));
-
       const endNodeYPosition = findNode("end").position.y;
-      console.log("endNodeYPosition", endNodeYPosition);
       const handleNodePositionY = getNodes.value.find(
         (node) => node.id === `handle-${nodeIdForNewHandleNode}`
       ).position.y;
       const offset = endNodeYPosition - handleNodePositionY;
-      console.log(offset, endNodeYPosition, handleNodePositionY);
 
       //it would re-render the node. won't have to worry of first removing the node before doing it.
       offset < 251 &&
@@ -361,11 +335,9 @@ export function useNodeAddition() {
         let goerIds = getNodes.value
           .filter((node) => node.id === `handle-${nodeIdForNewHandleNode}`)
           .map((node) => node.id);
-        console.log(goerIds, "outgoer");
 
         while (!goerIds.includes("end")) {
           const tempNodes = getOutgoers(goerIds[0]); //0 coz numHandle always gonna be 1
-          console.log(tempNodes);
 
           tempNodes.map((tempNode) => {
             //redrawing of nodes(not edges) coz edges will arrange w.r.t. nodes

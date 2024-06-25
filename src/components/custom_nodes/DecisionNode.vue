@@ -104,8 +104,6 @@ function closeModalForm() {
 
 function handleShowModal(clicked) {
   clickedBtn.value = clicked;
-  console.log("clicked btn", clickedBtn.value);
-  console.log(hasMoreThanEqual2ChildNoGoTo(nodeId));
 
   clickedBtn.value === "single" || hasMoreThanEqual2ChildNoGoTo(nodeId)
     ? (showModal.value = true)
@@ -113,12 +111,6 @@ function handleShowModal(clicked) {
 }
 
 function handleModalSubmit() {
-  console.log(
-    inputNodeType2.value,
-    inputNodeType1.value,
-    inputLabel1.value,
-    inputLabel2.value
-  );
   clickedBtn.value === "single" ? addChildNode() : add2ChildrenNode();
 
   closeModalForm();

@@ -94,17 +94,11 @@ function add2ChildrenNode() {
 
 function onDoubleClick() {
   showLabelInput.value = true;
-  console.log("double clicked", nodeId);
 }
 
 function handleLabelSubmit() {
   showLabelInput.value = false;
   updateNode(nodeId, { label: label.value });
-
-  console.log(
-    getNodes.value.map((node) => node.label),
-    password.value
-  );
 }
 
 const handleDeleteNode = () => deleteNode(nodeId);
@@ -121,7 +115,6 @@ function closeModalForm() {
 
 function handleShowModal(clicked) {
   clickedBtn.value = clicked;
-  console.log(clickedBtn.value);
 
   clickedBtn.value === "single" || hasMoreThanEqual2ChildNoGoTo(nodeId)
     ? (showModal.value = true)

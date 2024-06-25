@@ -67,11 +67,9 @@ export function useVueFlowHelper(nodes, edges) {
 
   // 8.
   function hasMoreThanEqual2ChildNoGoTo(nodeID) {
-    console.log(outgoingEdgesOfClickedNode.value);
     const outgoerNoGoTo = outgoingEdgesOfClickedNode.value.filter(
       (edge) => !edge.edgeId.includes("goto")
     );
-    console.log("outgoer no go to", outgoerNoGoTo);
     return outgoerNoGoTo.length >= 2;
   }
 

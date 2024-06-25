@@ -62,10 +62,6 @@ if (endNodeYPosition - props.position.y < 250) {
   offset.value = endNodeYPosition - props.position.y;
 }
 
-const sourceConnections = useHandleConnections({
-  type: "source",
-});
-
 const outgoingEdgesOfClickedNode = useHandleConnections({
   type: "source",
   nodeId,
@@ -106,7 +102,6 @@ function closeModalForm() {
 
 function handleShowModal(clicked) {
   clickedBtn.value = clicked;
-  console.log(clickedBtn.value);
 
   clickedBtn.value === "single" || hasMoreThanEqual2ChildNoGoTo(nodeId)
     ? (showModal.value = true)
@@ -114,13 +109,6 @@ function handleShowModal(clicked) {
 }
 
 function handleModalSubmit() {
-  console.log("clickedBtn ko value", clickedBtn);
-  console.log(
-    inputNodeType2.value,
-    inputNodeType1.value,
-    inputLabel1.value,
-    inputLabel2.value
-  );
   clickedBtn.value === "single" ? addChildNode() : add2ChildrenNode();
 
   closeModalForm();
