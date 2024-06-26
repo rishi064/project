@@ -122,7 +122,22 @@ function handleModalSubmit() {
     @mouseleave="showButtons = false"
   >
     <div class="node">
-      <div class="node-content">initiator</div>
+      <div class="node-content">
+        <div class="node-title">
+          <Icon name="play" class="play-icon" />
+          <p>Initiate Request</p>
+        </div>
+
+        <div class="node-description">
+          Kishore and 5 more can initiate this request
+        </div>
+      </div>
+
+      <div class="node-footer">
+        <div class="btns">
+          <button class="node-btn btn-change">change</button>
+        </div>
+      </div>
 
       <div class="extended-handle">
         <strong>+</strong>
@@ -160,6 +175,8 @@ function handleModalSubmit() {
   />
   <Handle class="handle-at-bottom" type="source" :position="Position.Bottom" />
 
+
+  <!-- Modal to get the type and label of node that is going to be added -->
   <div class="modal" v-if="showModal">
     <div class="modal-close">
       <button class="modal-close-btn" @click="closeModalForm">&times;</button>
@@ -203,27 +220,67 @@ function handleModalSubmit() {
       </form>
     </div>
   </div>
+
 </template>
 
 <style scoped>
 .node {
-  margin: 0;
-  position: relative;
+  background-color: #4bb4aa;
 
+  margin: 0;
   width: fit-content;
-  background-color: #ddd;
-  border: none;
-  border-radius: 10px;
-  font-size: 24px;
+  border-radius: 4px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  position: relative;
+color: #fff;
 }
 
 .node-content {
-  background-color: aqua;
-  border-radius: 10px;
-  font-size: 20px;
-  border: 2px solid orange;
-  padding: 10px 20px;
+  padding: 16px 24px 8px 8px;
   margin: 0;
+}
+
+.play-icon{
+  fill: white;
+  height: 20px;
+  width: 20px;
+}
+
+.node-title{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.node-description{
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.node-footer{
+  margin-top: 10px;
+  padding:4px 0;
+  border-top: 1px solid #fff;
+}
+
+.btns{
+  text-align: end;
+  padding: 6px 4px;
+}
+
+.node-btn{
+  cursor: pointer;
+  font-size: 14px;
+  color:white;
+  text-transform: uppercase;
+  text-align: end;
+  letter-spacing: 1px;
+}
+
+.node-btn:hover{
+  font-weight: bold
 }
 
 button {
@@ -247,14 +304,15 @@ form {
 }
 
 .extended-handle {
-  height: 20px;
-  width: 20px;
-  background-color: gold;
-  border-radius: 4px;
+  height: 24px;
+  width: 24px;
+  background-color:#C0C0C0 ;
+  border-radius: 100%;
   transform: translate(-50%, 10%);
 
   position: absolute;
   left: 50%;
+  bottom: -48px;
 
   display: flex;
   align-items: center;
@@ -265,6 +323,7 @@ form {
   position: absolute;
   bottom: 0;
   left: 50%;
+  bottom: -32px;
 
   transform: translate(-50%, 36px);
 
@@ -363,6 +422,7 @@ form {
   padding: 0 4px;
   box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.7);
   z-index: 10;
+  width:min-content;
 }
 
 .modal-content {
@@ -397,4 +457,6 @@ form {
   border: 1px solid;
   outline: none;
 }
+
+
 </style>

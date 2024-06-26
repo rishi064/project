@@ -8,7 +8,7 @@
 } */
 
 .vue-flow {
-  background-color: #e9f9f9;
+  background-color: #f0eee9;
   height: 900px;
   width: 100%;
   font-family: "Courier New", Courier, monospace;
@@ -23,4 +23,9 @@
 .vue-flow__controls .vue-flow__controls-button {
   border: none;
   border-right: 1px solid #eee;
+}
+
+p{
+  margin: 0;
+  padding: 0;
 }

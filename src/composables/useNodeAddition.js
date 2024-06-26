@@ -19,7 +19,7 @@ export function useNodeAddition() {
   function updateEndNodePosition(newYPosition) {
     addNodes({
       id: "end",
-      type: "output",
+      type: "startend",
       label: "Stop",
       position: { x: 300, y: newYPosition },
     });
@@ -243,7 +243,7 @@ export function useNodeAddition() {
       offset < 251 &&
         addNodes({
           id: "end",
-          type: "output",
+          type: "startend",
           label: "Stop",
           position: { x: 310, y: handleNodePositionY + 250 },
         });

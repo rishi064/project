@@ -1,7 +1,6 @@
 <script setup>
 import { provide, ref } from "vue";
 
-import { Background } from "@vue-flow/background";
 import { ControlButton, Controls } from "@vue-flow/controls";
 import {
   MarkerType,
@@ -11,6 +10,7 @@ import {
   useVueFlow,
 } from "@vue-flow/core";
 
+import StartNode from "./custom_nodes/StartNode.vue";
 import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
@@ -21,8 +21,8 @@ import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 const nodes = ref([
   {
     id: "start",
-    type: "input",
-    position: { x: 300, y: 0 },
+    type: "startend",
+    position: { x: 458, y: 25 },
     label: "Start",
     data: {},
   },
@@ -30,40 +30,32 @@ const nodes = ref([
     id: "initiator",
     label: "initiator",
     type: "initiator",
-    position: { x: 300, y: 100 },
+    position: { x: 314, y: 100 },
     data: {
       color: "red",
     },
   },
   {
     id: "end",
-    type: "output",
+    type: "startend",
     label: "Stop",
-    position: { x: 300, y: 500 },
+    position: { x: 458, y: 500 },
   },
 ]);
 
 const edges = ref([
   {
     id: "first-edge",
-    label: "first-edge",
     source: "start",
     target: "initiator",
     type: "straight",
-    style: { strokeWidth: 4 },
-    markerEnd: MarkerType.ArrowClosed,
-    style: { stroke: generateRandomColor() },
   },
   {
     id: `end-edge`,
-    label: "end-edge",
+    label: "",
     type: "straight",
     source: `initiator`,
     target: "end",
-    markerEnd: MarkerType.ArrowClosed,
-    style: {
-      stroke: generateRandomColor(),
-    },
   },
 ]);
 
@@ -81,6 +73,11 @@ provide("allGotoEdgesArray", []);
       :zoom-on-double-click="false"
       :delete-key-code="null"
     >
+
+    <template #node-startend="props">
+        <StartNode :data="props.data" v-bind="props" />
+      </template>
+
       <template #node-initiator="props">
         <InitiatorNode :data="props.data" v-bind="props" />
       </template>
@@ -97,7 +94,6 @@ provide("allGotoEdgesArray", []);
         <DecisionNode :data="props.data" v-bind="props"></DecisionNode>
       </template>
 
-      <Background />
       <Controls position="top-right">
         <ControlButton title="Save " @click="saveFlowchart">S</ControlButton>
 
