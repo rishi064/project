@@ -207,7 +207,7 @@ export function useNodeAddition() {
           id: `node-${nodeIdForNewChildNode2}`,
           label: inputLabel2,
           type: inputNodeType2,
-          position: { x: props.position.x + 450, y: props.position.y + 225 },
+          position: { x: props.position.x + 400, y: props.position.y + 225 },
           data: { hasSibling: true },
         },
         {
@@ -218,7 +218,7 @@ export function useNodeAddition() {
             x:
               props.type === "handle"
                 ? props.position.x
-                : props.position.x + 162,
+                : props.position.x + 150,
             y: props.position.y + 450,
           },
         },
@@ -240,7 +240,7 @@ export function useNodeAddition() {
           id: "end",
           type: "startend",
           label: "Stop",
-          position: { x: 310, y: handleNodePositionY + 250 },
+          position: { x: 498, y: handleNodePositionY + 250 },
         });
 
       const edgeIdForNewEdge1 = (Math.random() * 1000).toFixed(4);
@@ -287,12 +287,9 @@ export function useNodeAddition() {
         //handlenode to end node. addEdge isn't over-written so no need to worry about removing it if the node clicked isn't parent of end edge
         {
           id: "end-edge",
-          label: `end-edge`,
           type: "straight",
           source: `handle-${nodeIdForNewHandleNode}`,
           target: "end",
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: generateRandomColor() },
         },
       ]);
 

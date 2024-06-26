@@ -175,7 +175,6 @@ function handleModalSubmit() {
   />
   <Handle class="handle-at-bottom" type="source" :position="Position.Bottom" />
 
-
   <!-- Modal to get the type and label of node that is going to be added -->
   <div class="modal" v-if="showModal">
     <div class="modal-close">
@@ -205,7 +204,7 @@ function handleModalSubmit() {
           <p>For 2nd node</p>
           <select required class="input-select" v-model.trim="inputNodeType2">
             <option value="">Select nodetype ...</option>
-            <option value="decision">Decision Node</option>
+            <option value="managerbranch">Manager Branch Node</option>
             <option value="child">Child Node</option>
           </select>
           <input
@@ -220,7 +219,6 @@ function handleModalSubmit() {
       </form>
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -230,9 +228,9 @@ function handleModalSubmit() {
   margin: 0;
   width: fit-content;
   border-radius: 4px;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   position: relative;
-color: #fff;
+  color: #fff;
 }
 
 .node-content {
@@ -240,13 +238,13 @@ color: #fff;
   margin: 0;
 }
 
-.play-icon{
+.play-icon {
   fill: white;
   height: 20px;
   width: 20px;
 }
 
-.node-title{
+.node-title {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -254,33 +252,33 @@ color: #fff;
   margin-bottom: 16px;
 }
 
-.node-description{
+.node-description {
   font-size: 14px;
   font-weight: bold;
 }
 
-.node-footer{
+.node-footer {
   margin-top: 10px;
-  padding:4px 0;
+  padding: 4px 0;
   border-top: 1px solid #fff;
 }
 
-.btns{
+.btns {
   text-align: end;
   padding: 6px 4px;
 }
 
-.node-btn{
+.node-btn {
   cursor: pointer;
   font-size: 14px;
-  color:white;
+  color: white;
   text-transform: uppercase;
   text-align: end;
   letter-spacing: 1px;
 }
 
-.node-btn:hover{
-  font-weight: bold
+.node-btn:hover {
+  font-weight: bold;
 }
 
 button {
@@ -306,7 +304,7 @@ form {
 .extended-handle {
   height: 24px;
   width: 24px;
-  background-color:#C0C0C0 ;
+  background-color: #c0c0c0;
   border-radius: 100%;
   transform: translate(-50%, 10%);
 
@@ -422,7 +420,7 @@ form {
   padding: 0 4px;
   box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.7);
   z-index: 10;
-  width:min-content;
+  width: min-content;
 }
 
 .modal-content {
@@ -457,6 +455,4 @@ form {
   border: 1px solid;
   outline: none;
 }
-
-
 </style>

@@ -10,7 +10,7 @@ import {
   useVueFlow,
 } from "@vue-flow/core";
 
-import StartNode from "./custom_nodes/StartNode.vue";
+import StartEndNode from "./custom_nodes/StartEndNode.vue";
 import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
@@ -74,7 +74,7 @@ provide("allGotoEdgesArray", []);
       :delete-key-code="null"
     >
       <template #node-startend="props">
-        <StartNode :data="props.data" v-bind="props" />
+        <StartEndNode :data="props.data" v-bind="props" />
       </template>
 
       <template #node-initiator="props">
