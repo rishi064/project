@@ -15,14 +15,14 @@ import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
 import ChildNode from "./custom_nodes/ChildNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
 import DecisionNode from "./custom_nodes/DecisionNode.vue";
-import { generateRandomColor } from "@/composables/helpers/randomColor";
+import ManagerBranchNode from "./custom_nodes/ManagerBranchNode.vue";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
 const nodes = ref([
   {
     id: "start",
     type: "startend",
-    position: { x: 458, y: 25 },
+    position: { x: 498, y: 25 },
     label: "Start",
     data: {},
   },
@@ -30,7 +30,7 @@ const nodes = ref([
     id: "initiator",
     label: "initiator",
     type: "initiator",
-    position: { x: 314, y: 100 },
+    position: { x: 354, y: 100 },
     data: {
       color: "red",
     },
@@ -39,7 +39,7 @@ const nodes = ref([
     id: "end",
     type: "startend",
     label: "Stop",
-    position: { x: 458, y: 500 },
+    position: { x: 498, y: 600 },
   },
 ]);
 
@@ -73,8 +73,7 @@ provide("allGotoEdgesArray", []);
       :zoom-on-double-click="false"
       :delete-key-code="null"
     >
-
-    <template #node-startend="props">
+      <template #node-startend="props">
         <StartNode :data="props.data" v-bind="props" />
       </template>
 
@@ -92,6 +91,13 @@ provide("allGotoEdgesArray", []);
 
       <template #node-decision="props">
         <DecisionNode :data="props.data" v-bind="props"></DecisionNode>
+      </template>
+
+      <template #node-managerbranch="props">
+        <ManagerBranchNode
+          :data="props.data"
+          v-bind="props"
+        ></ManagerBranchNode>
       </template>
 
       <Controls position="top-right">

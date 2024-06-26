@@ -80,18 +80,13 @@ export function useNodeAddition() {
           type: "straight",
           source: nodeId,
           target: `node-${newChildNodeId}`,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: generateRandomColor() },
         },
         {
           id: `end-edge`,
-          label: "end-edge",
+          label: "",
           type: "straight",
           source: `node-${newChildNodeId}`,
           target: "end",
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: generateRandomColor() },
         },
       ]);
     } else {
@@ -205,14 +200,14 @@ export function useNodeAddition() {
           id: `node-${nodeIdForNewChildNode1}`,
           label: inputLabel1,
           type: inputNodeType1,
-          position: { x: props.position.x - 200, y: props.position.y + 125 },
+          position: { x: props.position.x - 350, y: props.position.y + 225 },
           data: { hasSibling: true },
         },
         {
           id: `node-${nodeIdForNewChildNode2}`,
           label: inputLabel2,
           type: inputNodeType2,
-          position: { x: props.position.x + 200, y: props.position.y + 125 },
+          position: { x: props.position.x + 450, y: props.position.y + 225 },
           data: { hasSibling: true },
         },
         {
@@ -223,8 +218,8 @@ export function useNodeAddition() {
             x:
               props.type === "handle"
                 ? props.position.x
-                : props.position.x + 80,
-            y: props.position.y + 250,
+                : props.position.x + 162,
+            y: props.position.y + 450,
           },
         },
       ]);
@@ -264,9 +259,6 @@ export function useNodeAddition() {
           type: "smoothstep",
           source: nodeId,
           target: `node-${nodeIdForNewChildNode1}`,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: randColor1 },
         },
         //second childnode to current node
         {
@@ -275,31 +267,22 @@ export function useNodeAddition() {
           type: "smoothstep",
           source: nodeId,
           target: `node-${nodeIdForNewChildNode2}`,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: randColor2 },
         },
         //first childnode to handle node
         {
           id: `handle-edge-${edgeIdForNewEndEdge1}`,
           label: ``,
-          type: "default",
+          type: "smoothstep",
           source: `node-${nodeIdForNewChildNode1}`,
           target: `handle-${nodeIdForNewHandleNode}`,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: randColor1 },
         },
         //second childnode to handle node
         {
           id: `handle-edge-${edgeIdForNewEndEdge2}`,
           label: ``,
-          type: "default",
+          type: "smoothstep",
           source: `node-${nodeIdForNewChildNode2}`,
           target: `handle-${nodeIdForNewHandleNode}`,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: randColor2 },
         },
         //handlenode to end node. addEdge isn't over-written so no need to worry about removing it if the node clicked isn't parent of end edge
         {

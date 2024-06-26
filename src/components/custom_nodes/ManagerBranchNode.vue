@@ -117,27 +117,20 @@ function handleModalSubmit() {
 
 <template>
   <div
-    class="initiator-node"
+    class="managerbranch-node"
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
   >
     <div class="node">
-      <div class="node-content">
-        <div class="node-title">
-          <Icon name="play" class="play-icon" />
-          <p>Initiate Request</p>
-        </div>
-
-        <div class="node-description">
-          Kishore and 5 more can initiate this request
-        </div>
+      <div class="arrowhead">
+        <p class="node-title">Manager Branch</p>
+        <p class="task">Execute: Always</p>
+        <p>
+          <Icon name="chevronDown" class="btn-chevron-down" />
+        </p>
       </div>
 
-      <div class="node-footer">
-        <div class="btns">
-          <button class="node-btn btn-change">change</button>
-        </div>
-      </div>
+      <div class="button"></div>
 
       <div class="extended-handle">
         <strong>+</strong>
@@ -175,7 +168,6 @@ function handleModalSubmit() {
   />
   <Handle class="handle-at-bottom" type="source" :position="Position.Bottom" />
 
-
   <!-- Modal to get the type and label of node that is going to be added -->
   <div class="modal" v-if="showModal">
     <div class="modal-close">
@@ -190,7 +182,7 @@ function handleModalSubmit() {
           <p v-if="show2InputModal">For 1st node</p>
           <select required class="input-select" v-model.trim="inputNodeType1">
             <option value="">Select nodetype ...</option>
-            <option value="managerbranch">Manager Branch Node</option>
+            <option value="decision">Decision Node</option>
             <option value="child">Child Node</option>
           </select>
           <input
@@ -220,67 +212,75 @@ function handleModalSubmit() {
       </form>
     </div>
   </div>
-
 </template>
 
 <style scoped>
 .node {
-  background-color: #4bb4aa;
-
   margin: 0;
   width: fit-content;
   border-radius: 4px;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   position: relative;
-color: #fff;
+  color: #fff;
 }
 
-.node-content {
-  padding: 16px 24px 8px 8px;
-  margin: 0;
-}
-
-.play-icon{
-  fill: white;
-  height: 20px;
-  width: 20px;
-}
-
-.node-title{
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.node-title {
+  padding-top: 24px;
   font-size: 16px;
   margin-bottom: 16px;
 }
 
-.node-description{
+.arrowhead .task {
   font-size: 14px;
+  font-weight: normal;
+  margin-bottom: 16px;
+}
+
+.arrowhead {
+  position: relative;
+  background-color: #badefb;
+  min-width: 324px;
+  text-align: center;
+  color: black;
+  font-family: Arial, sans-serif;
   font-weight: bold;
+  border-radius: 4px;
 }
 
-.node-footer{
-  margin-top: 10px;
-  padding:4px 0;
-  border-top: 1px solid #fff;
+.arrowhead:after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 160px solid transparent;
+  border-right: 160px solid transparent;
+  border-top: 20px solid #badefb;
 }
 
-.btns{
-  text-align: end;
+.btn-chevron-down {
+  height: 36px;
+  fill: #357e77;
+}
+
+.btns {
+  text-align: center;
   padding: 6px 4px;
 }
 
-.node-btn{
+.node-btn {
   cursor: pointer;
   font-size: 14px;
-  color:white;
+  color: white;
   text-transform: uppercase;
   text-align: end;
   letter-spacing: 1px;
 }
 
-.node-btn:hover{
-  font-weight: bold
+.node-btn:hover {
+  font-weight: bold;
 }
 
 button {
@@ -306,7 +306,7 @@ form {
 .extended-handle {
   height: 24px;
   width: 24px;
-  background-color:#C0C0C0 ;
+  background-color: #c0c0c0;
   border-radius: 100%;
   transform: translate(-50%, 10%);
 
@@ -422,7 +422,7 @@ form {
   padding: 0 4px;
   box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.7);
   z-index: 10;
-  width:min-content;
+  width: min-content;
 }
 
 .modal-content {
@@ -457,6 +457,4 @@ form {
   border: 1px solid;
   outline: none;
 }
-
-
 </style>
