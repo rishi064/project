@@ -64,8 +64,6 @@ export function useNodeDeletion() {
             source: sourceOfSelected[0], //coz source always gonna be single except for handle
             target: targetId,
             type: targetOfSelected.length > 1 ? "smoothstep" : "straight",
-            markerEnd: MarkerType.ArrowClosed,
-            animated: "true",
           },
         ]);
       });
@@ -95,8 +93,6 @@ export function useNodeDeletion() {
                 source: sourceOfSelected[0], //coz source always gonna be single except for handle
                 target: targetId,
                 type: "smoothstep",
-                animated: true,
-                markerEnd: MarkerType.ArrowClosed,
               },
             ]);
           });

@@ -35,6 +35,11 @@ const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
 
 const showButtons = ref(false);
 
+//Node vitra
+const inputWho = ref("");
+const showQuestion = ref(true);
+
+//Modal that popups up on clicking extended-handle
 const showModal = ref(false);
 const show2InputModal = ref(false);
 const inputNodeType1 = ref("");
@@ -132,6 +137,10 @@ function handleModalSubmit() {
 
   closeModalForm();
 }
+
+function handleDone() {
+  showQuestion.value = !showQuestion.value;
+}
 </script>
 
 <template>
@@ -152,17 +161,29 @@ function handleModalSubmit() {
           <div class="title-text">Manager Approval</div>
         </div>
 
-        <p class="question">Who can provide input?</p>
-        <input type="text" id="inputWho" placeholder="Start typing..." />
+        <div v-if="showQuestion">
+          <p class="question">Who can provide input?</p>
+          <input
+            type="text"
+            id="inputWho"
+            v-model="inputWho"
+            placeholder="Start typing..."
+          />
+        </div>
+        <div v-else>
+          <p class="assigned">Assigned to: {{ inputWho || "none" }}</p>
+        </div>
       </div>
 
       <div class="node-footer">
         <div class="btns">
-          <button class="node-btn btn-done">done</button>
+          <button class="node-btn btn-done" @click="handleDone">
+            {{ showQuestion ? "Done" : "Change" }}
+          </button>
         </div>
       </div>
 
-      <button class="trash-btn" v-if="showButtons" @click="handleDeleteNode">
+      <button class="trash-btn" @click="handleDeleteNode">
         <Icon name="trash" class="delete-icon" />
       </button>
 
@@ -207,7 +228,7 @@ function handleModalSubmit() {
           <p v-if="show2InputModal">For 1st node</p>
           <select required class="input-select" v-model.trim="inputNodeType1">
             <option value="">Select nodetype ...</option>
-            <option value="decision">Decision Node</option>
+            <option value="managerbranch">Manager Branch Node</option>
             <option value="process">Process Node</option>
           </select>
           <input
@@ -222,7 +243,7 @@ function handleModalSubmit() {
           <p>For 2nd node</p>
           <select required class="input-select" v-model.trim="inputNodeType2">
             <option value="">Select nodetype ...</option>
-            <option value="decision">Decision Node</option>
+            <option value="managerbranch">Manager Branch Node</option>
             <option value="child">Child Node</option>
           </select>
           <input
@@ -273,16 +294,17 @@ function handleModalSubmit() {
   font-size: 20px;
 }
 
-.question {
+.question,
+.assigned {
   font-size: 16px;
-  margin: 24px 0 16px 0;
+  margin: 18px 0 14px 0;
 }
 
 #inputWho {
   width: 90%;
   border: none;
   border-bottom: 2px solid gray;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   font-size: 18px;
 }
 
@@ -299,6 +321,7 @@ button {
   height: 24px;
   width: 24px;
   background-color: #c0c0c0;
+  color: white;
   border-radius: 100%;
   transform: translate(-50%, 10%);
 
@@ -378,24 +401,20 @@ button {
 
 .trash-btn {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 6px;
+  right: 18px;
   transform: translate(-50%, -50%);
 }
 
 .delete-icon {
-  height: 18px;
+  height: 24px;
   cursor: pointer;
   position: absolute;
-  background-color: #ddd;
-  border: 1px solid black;
-
-  padding: 2px;
-  border-radius: 10px;
+  fill: #777;
 }
 
 .delete-icon:hover {
-  box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, 0.7);
+  fill: #000;
 }
 
 /* Node footer  */
@@ -433,6 +452,7 @@ button {
   padding: 0 4px;
   box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.7);
   z-index: 10;
+  width: min-content;
 }
 
 .modal-content {
