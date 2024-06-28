@@ -12,7 +12,7 @@ import {
 
 import StartEndNode from "./custom_nodes/StartEndNode.vue";
 import InitiatorNode from "./custom_nodes/InitiatorNode.vue";
-import ChildNode from "./custom_nodes/ChildNode.vue";
+import ProcessNode from "./custom_nodes/ProcessNode.vue";
 import HandleNode from "./custom_nodes/HandleNode.vue";
 import DecisionNode from "./custom_nodes/DecisionNode.vue";
 import ManagerBranchNode from "./custom_nodes/ManagerBranchNode.vue";
@@ -81,8 +81,8 @@ provide("allGotoEdgesArray", []);
         <InitiatorNode :data="props.data" v-bind="props" />
       </template>
 
-      <template #node-child="props">
-        <ChildNode :data="props.data" v-bind="props"></ChildNode>
+      <template #node-process="props">
+        <ProcessNode :data="props.data" v-bind="props"></ProcessNode>
       </template>
 
       <template #node-handle="props">

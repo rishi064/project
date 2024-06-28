@@ -1,34 +1,15 @@
 <script setup>
-import {
-  Handle,
-  Position,
-  useHandleConnections,
-  useNodeId,
-  useVueFlow,
-} from "@vue-flow/core";
-import Icon from "../Icon.vue";
+import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
+
 import { ref } from "vue";
+import Icon from "./../Icon.vue";
+
+import { useNodeDeletion } from "../../composables/useNodeDeletion";
 import { useNodeAddition } from "@/composables/useNodeAddition";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
-const { getNodes } = useVueFlow();
-
-const offset = ref(0);
-const showButtons = ref(false);
-
-const showModal = ref(false);
-const show2InputModal = ref(false);
-const inputNodeType1 = ref("");
-const inputLabel1 = ref("");
-const inputNodeType2 = ref("");
-const inputLabel2 = ref("");
-const clickedBtn = ref("");
-
-const { addOneChild, addMultipleChild } = useNodeAddition();
-const { hasMoreThanEqual2ChildNoGoTo } = useVueFlowHelper();
-
-//To resolve warning , we input extra elements too
 const props = defineProps({
+  //To resolve warning , we input extra elements too
   position: Object,
   type: String,
   label: String,
@@ -50,8 +31,29 @@ const props = defineProps({
   dragHandle: String,
 });
 
-//To resolve the warning
-const emit = defineEmits(["updateNodeInternals"]);
+const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
+
+const showButtons = ref(false);
+
+const showModal = ref(false);
+const show2InputModal = ref(false);
+const inputNodeType1 = ref("");
+const inputLabel1 = ref("");
+const inputNodeType2 = ref("");
+const inputLabel2 = ref("");
+const clickedBtn = ref("");
+
+const { getNodes, updateNode } = useVueFlow();
+
+const { deleteNode } = useNodeDeletion();
+const { addOneChild, addMultipleChild } = useNodeAddition();
+const { hasMoreThanEqual2ChildNoGoTo } = useVueFlowHelper();
+
+const offset = ref(0);
+
+const showLabelInput = ref(false);
+const label = ref(props.label);
+const password = ref("");
 
 const nodeId = useNodeId();
 
@@ -90,6 +92,17 @@ function add2ChildrenNode() {
   );
 }
 
+function onDoubleClick() {
+  showLabelInput.value = true;
+}
+
+function handleLabelSubmit() {
+  showLabelInput.value = false;
+  updateNode(nodeId, { label: label.value });
+}
+
+const handleDeleteNode = () => deleteNode(nodeId);
+
 function closeModalForm() {
   inputNodeType1.value =
     inputLabel1.value =
@@ -109,6 +122,12 @@ function handleShowModal(clicked) {
 }
 
 function handleModalSubmit() {
+  console.log(
+    inputNodeType2.value,
+    inputNodeType1.value,
+    inputLabel1.value,
+    inputLabel2.value
+  );
   clickedBtn.value === "single" ? addChildNode() : add2ChildrenNode();
 
   closeModalForm();
@@ -117,27 +136,35 @@ function handleModalSubmit() {
 
 <template>
   <div
-    class="initiator-node"
+    class="child-node"
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
   >
-    <div class="node">
+    <!-- 1.// For being the target of previous node -->
+    <!-- <Handle id="b" type="target" :position="Position.Top" /> -->
+
+    <div class="node" @dblclick="onDoubleClick">
       <div class="node-content">
         <div class="node-title">
-          <Icon name="play" class="play-icon" />
-          <p>Initiate Request</p>
+          <div class="title-icon">
+            <Icon name="messageText" class="message-text" />
+          </div>
+          <div class="title-text">Manager Approval</div>
         </div>
 
-        <div class="node-description">
-          Kishore and 5 more can initiate this request
-        </div>
+        <p class="question">Who can provide input?</p>
+        <input type="text" id="inputWho" placeholder="Start typing..." />
       </div>
 
       <div class="node-footer">
         <div class="btns">
-          <button class="node-btn btn-change">change</button>
+          <button class="node-btn btn-done">done</button>
         </div>
       </div>
+
+      <button class="trash-btn" v-if="showButtons" @click="handleDeleteNode">
+        <Icon name="trash" class="delete-icon" />
+      </button>
 
       <div class="extended-handle">
         <strong>+</strong>
@@ -165,17 +192,8 @@ function handleModalSubmit() {
       </div>
     </div>
   </div>
+  <!-- <Handle id="a" type="target" :position="Position.Right" /> -->
 
-  <Handle class="handle-at-top" type="target" :position="Position.Top" />
-  <Handle
-    class="handle-at-right"
-    id="a"
-    type="target"
-    :position="Position.Right"
-  />
-  <Handle class="handle-at-bottom" type="source" :position="Position.Bottom" />
-
-  <!-- Modal to get the type and label of node that is going to be added -->
   <div class="modal" v-if="showModal">
     <div class="modal-close">
       <button class="modal-close-btn" @click="closeModalForm">&times;</button>
@@ -189,7 +207,7 @@ function handleModalSubmit() {
           <p v-if="show2InputModal">For 1st node</p>
           <select required class="input-select" v-model.trim="inputNodeType1">
             <option value="">Select nodetype ...</option>
-            <option value="managerbranch">Manager Branch Node</option>
+            <option value="decision">Decision Node</option>
             <option value="process">Process Node</option>
           </select>
           <input
@@ -204,7 +222,7 @@ function handleModalSubmit() {
           <p>For 2nd node</p>
           <select required class="input-select" v-model.trim="inputNodeType2">
             <option value="">Select nodetype ...</option>
-            <option value="managerbranch">Manager Branch Node</option>
+            <option value="decision">Decision Node</option>
             <option value="child">Child Node</option>
           </select>
           <input
@@ -223,82 +241,58 @@ function handleModalSubmit() {
 
 <style scoped>
 .node {
-  background-color: #4bb4aa;
-
   margin: 0;
-  width: fit-content;
-  border-radius: 4px;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   position: relative;
-  color: #fff;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  width: fit-content;
+  background-color: #fff;
+  border: none;
+  border-radius: 4px;
+  width: 322px;
 }
 
 .node-content {
-  padding: 16px 24px 8px 8px;
+  padding: 10px 10px;
   margin: 0;
-}
-
-.play-icon {
-  fill: white;
-  height: 20px;
-  width: 20px;
 }
 
 .node-title {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
+}
+
+.title-icon {
+  height: 24px;
+  width: 24px;
+  fill: purple;
+}
+
+.title-text {
+  color: purple;
+  font-size: 20px;
+}
+
+.question {
   font-size: 16px;
-  margin-bottom: 16px;
+  margin: 24px 0 16px 0;
 }
 
-.node-description {
-  font-size: 14px;
-  font-weight: bold;
+#inputWho {
+  width: 90%;
+  border: none;
+  border-bottom: 2px solid gray;
+  padding-bottom: 8px;
+  font-size: 18px;
 }
 
-.node-footer {
-  margin-top: 10px;
-  padding: 4px 0;
-  border-top: 1px solid #fff;
-}
-
-.btns {
-  text-align: end;
-  padding: 6px 4px;
-}
-
-.node-btn {
-  cursor: pointer;
-  font-size: 14px;
-  color: white;
-  text-transform: uppercase;
-  text-align: end;
-  letter-spacing: 1px;
-}
-
-.node-btn:hover {
-  font-weight: bold;
+#inputWho:focus {
+  outline: none;
 }
 
 button {
   background: none;
   border: none;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: start;
-}
-
-.btn-submit {
-  cursor: pointer;
-  width: fit-content;
-  background-color: orange;
-  padding: 5px;
-  border-radius: 4px;
 }
 
 .extended-handle {
@@ -404,11 +398,30 @@ form {
   box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, 0.7);
 }
 
-/* Handles  */
-.handle-at-top,
-.handle-at-bottom,
-.handle-at-right {
-  opacity: 0;
+/* Node footer  */
+
+.node-footer {
+  margin-top: 6px;
+  padding: 4px 0;
+  border-top: 1px solid #808080;
+}
+
+.btns {
+  text-align: end;
+  padding: 6px 4px;
+}
+
+.node-btn {
+  cursor: pointer;
+  font-size: 14px;
+  color: #808080;
+  text-transform: uppercase;
+  text-align: end;
+  letter-spacing: 1px;
+}
+
+.node-btn:hover {
+  font-weight: bold;
 }
 
 /* Modal form appearing before adding nodes */
@@ -420,7 +433,6 @@ form {
   padding: 0 4px;
   box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.7);
   z-index: 10;
-  width: min-content;
 }
 
 .modal-content {

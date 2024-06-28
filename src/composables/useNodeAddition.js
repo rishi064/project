@@ -33,7 +33,7 @@ export function useNodeAddition() {
     outgoingEdgesOfClickedNode,
     offset,
     props,
-    inputNodeType1 = "child",
+    inputNodeType1 = "process",
     inputLabel1
   ) {
     //remove all the gotoedge first:
@@ -122,10 +122,6 @@ export function useNodeAddition() {
           source: nodeId,
           type: "straight",
           target: `node-${newChildNodeId}`,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: generateRandomColor() },
-          style: { strokeWidth: 2 },
         },
       ]);
 
@@ -137,9 +133,6 @@ export function useNodeAddition() {
             source: `node-${newChildNodeId}`,
             target: value,
             type: outgoerIds.length > 1 ? "smoothstep" : "straight",
-            animated: true,
-            markerEnd: MarkerType.ArrowClosed,
-            style: { stroke: generateRandomColor() },
           });
         });
       }
@@ -168,8 +161,8 @@ export function useNodeAddition() {
 
   //2.
   function addMultipleChild(
-    inputNodeType1 = "child",
-    inputNodeType2 = "child",
+    inputNodeType1 = "process",
+    inputNodeType2 = "process",
     inputLabel1,
     inputLabel2,
     outgoingEdgesOfClickedNode,
@@ -248,8 +241,6 @@ export function useNodeAddition() {
 
       const edgeIdForNewEndEdge1 = (Math.random() * 1000).toFixed(5);
       const edgeIdForNewEndEdge2 = (Math.random() * 1000).toFixed(5);
-      const randColor1 = generateRandomColor();
-      const randColor2 = generateRandomColor();
 
       addEdges([
         //first childnode to current node
@@ -351,7 +342,7 @@ export function useNodeAddition() {
         label: inputLabel1,
         type: inputNodeType1,
         position: {
-          x: referenceNode.position.x + 250,
+          x: referenceNode.position.x + 420,
           y: referenceNode.position.y,
         },
         data: {
@@ -370,19 +361,13 @@ export function useNodeAddition() {
           type: "smoothstep",
           source: nodeId,
           target: `node-${newNode}`,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: randColor },
         },
         {
           id: `edge-${curToHandle}`,
           label: ``,
-          type: "default",
+          type: "smoothstep",
           source: `node-${newNode}`,
           target: handleIdToBeConnected,
-          animated: true,
-          markerEnd: MarkerType.ArrowClosed,
-          style: { stroke: randColor },
         },
       ]);
     }

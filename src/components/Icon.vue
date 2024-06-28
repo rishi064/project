@@ -43,7 +43,32 @@ defineProps({
     />
   </svg>
 
-  <svg v-else-if="name==='play'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>play</title><path d="M8,5.14V19.14L19,12.14L8,5.14Z" /></svg>
+  <svg
+    v-else-if="name === 'play'"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <title>play</title>
+    <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+  </svg>
 
-  <svg v-else-if="name==='chevronDown'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-down</title><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
+  <svg
+    v-else-if="name === 'chevronDown'"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <title>chevron-down</title>
+    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'messageText'"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <title>message-text</title>
+    <path
+      d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18"
+    />
+  </svg>
 </template>
