@@ -35,13 +35,25 @@ export function useVueFlowHelper(nodes, edges) {
   }
 
   //   5.
-  function getAllDescendants(nodeID) {
+  function getAllDescendantIds(nodeID) {
     let descendants = [];
     const children = getOutgoers(nodeID);
 
     children.forEach((child) => {
       descendants.push(child.id);
-      descendants = descendants.concat(getAllDescendants(child.id));
+      descendants = descendants.concat(getAllDescendantIds(child.id));
+    });
+    return [...new Set(descendants)];
+  }
+
+  //5.1
+  function getAllDescendants(nodeID) {
+    let descendants = [];
+    const children = getOutgoers(nodeID);
+
+    children.forEach((child) => {
+      descendants.push(child);
+      descendants = descendants.concat(getAllDescendants(child));
     });
     return [...new Set(descendants)];
   }
@@ -78,6 +90,7 @@ export function useVueFlowHelper(nodes, edges) {
     hasMoreThanEqual2Sibling,
     getAllSiblings,
     isHandleDirectChild,
+    getAllDescendantIds,
     getAllDescendants,
     saveFlowchart,
     restoreFromLocal,

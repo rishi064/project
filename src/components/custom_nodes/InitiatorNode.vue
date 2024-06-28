@@ -79,15 +79,7 @@ function addChildNode() {
 }
 
 function add2ChildrenNode() {
-  addMultipleChild(
-    inputNodeType1.value,
-    inputNodeType2.value,
-    inputLabel1.value,
-    inputLabel2.value,
-    outgoingEdgesOfClickedNode,
-    nodeId,
-    props
-  );
+  addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props);
 }
 
 function closeModalForm() {
@@ -149,7 +141,7 @@ function handleModalSubmit() {
             <Icon
               name="circle"
               class="circle-icon"
-              @click.stop="handleShowModal('single')"
+              @click.stop="addChildNode"
             />
           </button>
         </div>
@@ -158,7 +150,7 @@ function handleModalSubmit() {
             <Icon
               name="multiple"
               class="multiple-icon"
-              @click.stop="handleShowModal('multiple')"
+              @click.stop="add2ChildrenNode"
             />
           </button>
         </div>
@@ -176,7 +168,7 @@ function handleModalSubmit() {
   <Handle class="handle-at-bottom" type="source" :position="Position.Bottom" />
 
   <!-- Modal to get the type and label of node that is going to be added -->
-  <div class="modal" v-if="showModal">
+  <!-- <div class="modal" v-if="showModal">
     <div class="modal-close">
       <button class="modal-close-btn" @click="closeModalForm">&times;</button>
     </div>
@@ -218,7 +210,7 @@ function handleModalSubmit() {
         <button type="submit" class="btn-submit">ADD</button>
       </form>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>

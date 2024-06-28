@@ -15,7 +15,7 @@ export function useNodeDeletion() {
     hasSiblingNode,
     hasMoreThanEqual2Sibling,
     isHandleDirectChild,
-    getAllDescendants,
+    getAllDescendantIds,
   } = useVueFlowHelper();
 
   function deleteNode(nodeId) {
@@ -24,10 +24,10 @@ export function useNodeDeletion() {
 
     //case-I: there are no sibling nodes of the clicked node.[ie. No multiple node case]
     if (!hasSiblingNode(nodeId)) {
-      console.log("descendant of ", nodeId, getAllDescendants(nodeId));
+      console.log("descendant of ", nodeId, getAllDescendantIds(nodeId));
 
       //1st:Redraw every node above previous position wrt nodeId
-      getAllDescendants(nodeId)
+      getAllDescendantIds(nodeId)
         .reverse()
         .forEach((id) => {
           const newPositionY = getIncomers(id)[0].position.y;
@@ -58,9 +58,7 @@ export function useNodeDeletion() {
             id: targetOfSelected.includes("end")
               ? "end-edge"
               : `edge-${edgeId}`,
-            label: targetOfSelected.includes("end")
-              ? "end-edge"
-              : `edge-${edgeId}`,
+            label: ``,
             source: sourceOfSelected[0], //coz source always gonna be single except for handle
             target: targetId,
             type: targetOfSelected.length > 1 ? "smoothstep" : "straight",
@@ -118,10 +116,10 @@ export function useNodeDeletion() {
             console.log(newTargetIds);
 
             const descendantIdsDirectHandleNode =
-              getAllDescendants(directHandleNodeId);
+              getAllDescendantIds(directHandleNodeId);
 
             // Get all nodes between parentNodeId and directHandleNodeId
-            const nodesToRemove = getAllDescendants(parentNodeId).filter(
+            const nodesToRemove = getAllDescendantIds(parentNodeId).filter(
               (node) => !descendantIdsDirectHandleNode.includes(node)
             );
 
@@ -133,7 +131,7 @@ export function useNodeDeletion() {
 
               addEdges({
                 id: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
-                label: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
+                label: ``,
                 source: parentNodeId,
                 target: targetId,
                 animated: targetId === "end" ? false : true,
@@ -159,7 +157,7 @@ export function useNodeDeletion() {
               const edgeId = (Math.random() * 100).toFixed(4);
               addEdges({
                 id: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
-                label: targetId === "end" ? "end-edge" : `edge-${edgeId}`,
+                label: ``,
                 source: idParentNodeToBe,
                 target: targetId,
                 animated: targetId === "end" ? false : true,

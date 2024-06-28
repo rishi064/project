@@ -77,26 +77,11 @@ const outgoingEdgesOfClickedNode = useHandleConnections({
 });
 
 function addChildNode() {
-  addOneChild(
-    nodeId,
-    outgoingEdgesOfClickedNode,
-    offset,
-    props,
-    inputNodeType1.value,
-    inputLabel1.value
-  );
+  addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props);
 }
 
 function add2ChildrenNode() {
-  addMultipleChild(
-    inputNodeType1.value,
-    inputNodeType2.value,
-    inputLabel1.value,
-    inputLabel2.value,
-    outgoingEdgesOfClickedNode,
-    nodeId,
-    props
-  );
+  addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props);
 }
 
 function onDoubleClick() {
@@ -212,7 +197,7 @@ onMounted(() => {
             <Icon
               name="circle"
               class="circle-icon"
-              @click.stop="handleShowModal('single')"
+              @click.stop="addChildNode"
             />
           </button>
         </div>
@@ -221,7 +206,7 @@ onMounted(() => {
             <Icon
               name="multiple"
               class="multiple-icon"
-              @click.stop="handleShowModal('multiple')"
+              @click.stop="add2ChildrenNode"
             />
           </button>
         </div>
@@ -229,50 +214,6 @@ onMounted(() => {
     </div>
   </div>
   <!-- <Handle id="a" type="target" :position="Position.Right" /> -->
-
-  <div class="modal" v-if="showModal">
-    <div class="modal-close">
-      <button class="modal-close-btn" @click="closeModalForm">&times;</button>
-    </div>
-    <div class="modal-content">
-      <form
-        @submit.prevent="handleModalSubmit"
-        :class="{ 'modal-form': show2InputModal }"
-      >
-        <div>
-          <p v-if="show2InputModal">For 1st node</p>
-          <select required class="input-select" v-model.trim="inputNodeType1">
-            <option value="">Select nodetype ...</option>
-            <option value="managerbranch">Manager Branch Node</option>
-            <option value="process">Process Node</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Enter label ..."
-            class="input-label"
-            v-model.trim="inputLabel1"
-            required
-          />
-        </div>
-        <div v-if="show2InputModal">
-          <p>For 2nd node</p>
-          <select required class="input-select" v-model.trim="inputNodeType2">
-            <option value="">Select nodetype ...</option>
-            <option value="managerbranch">Manager Branch Node</option>
-            <option value="child">Child Node</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Enter label ..."
-            class="input-label"
-            v-model.trim="inputLabel2"
-            required
-          />
-        </div>
-        <button type="submit" class="btn-submit">ADD</button>
-      </form>
-    </div>
-  </div>
 </template>
 
 <style scoped>

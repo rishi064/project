@@ -25,17 +25,10 @@ export function useNodeAddition() {
     });
   }
 
-  const { getAllDescendants } = useVueFlowHelper();
+  const { getAllDescendantIds } = useVueFlowHelper();
 
   // 1.
-  function addOneChild(
-    nodeId,
-    outgoingEdgesOfClickedNode,
-    offset,
-    props,
-    inputNodeType1 = "process",
-    inputLabel1
-  ) {
+  function addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props) {
     //remove all the gotoedge first:
     allGotoEdgesArray.forEach((gotoEdge) => removeEdges(gotoEdge.id));
 
@@ -51,6 +44,7 @@ export function useNodeAddition() {
     const endNodeYPosition = endNode.position.y;
 
     if (outgoerIds.includes("end")) {
+      console.log("si", 47);
       removeEdges([...outgoingEdgesId]);
 
       offset.value = endNodeYPosition - props.position.y;
@@ -62,12 +56,11 @@ export function useNodeAddition() {
       const newChildNodeId = (Math.random() * 100).toFixed(2);
       addNodes({
         id: `node-${newChildNodeId}`,
-        label: inputLabel1,
-        type: inputNodeType1,
+        type: "process",
         position: {
           x:
             findNode(nodeId).type === "handle"
-              ? props.position.x - 160
+              ? props.position.x - 147
               : props.position.x,
           y: props.position.y + 250,
         },
@@ -97,8 +90,7 @@ export function useNodeAddition() {
 
       const newNode = {
         id: `node-${newChildNodeId}`,
-        label: inputLabel1,
-        type: inputNodeType1,
+        type: "process",
         position: {
           x:
             findNode(nodeId).type === "handle"
@@ -132,14 +124,14 @@ export function useNodeAddition() {
             label: ``,
             source: `node-${newChildNodeId}`,
             target: value,
-            type: outgoerIds.length > 1 ? "smoothstep" : "straight",
+            type: "smoothstep",
           });
         });
       }
 
       removeEdges([...outgoingEdgesId]);
 
-      const IdsNodeToShift = getAllDescendants(nodeId).filter(
+      const IdsNodeToShift = getAllDescendantIds(nodeId).filter(
         (id) => id !== `node-${newChildNodeId}`
       );
 
@@ -160,15 +152,7 @@ export function useNodeAddition() {
   }
 
   //2.
-  function addMultipleChild(
-    inputNodeType1 = "process",
-    inputNodeType2 = "process",
-    inputLabel1,
-    inputLabel2,
-    outgoingEdgesOfClickedNode,
-    nodeId,
-    props
-  ) {
+  function addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props) {
     //remove all goto edges first
     allGotoEdgesArray.forEach((gotoEdge) => removeEdges(gotoEdge.id));
 
@@ -191,15 +175,13 @@ export function useNodeAddition() {
       addNodes([
         {
           id: `node-${nodeIdForNewChildNode1}`,
-          label: inputLabel1,
-          type: inputNodeType1,
+          type: "managerbranch",
           position: { x: props.position.x - 350, y: props.position.y + 225 },
           data: { hasSibling: true },
         },
         {
           id: `node-${nodeIdForNewChildNode2}`,
-          label: inputLabel2,
-          type: inputNodeType2,
+          type: "managerbranch",
           position: { x: props.position.x + 400, y: props.position.y + 225 },
           data: { hasSibling: true },
         },
@@ -293,12 +275,9 @@ export function useNodeAddition() {
           addEdges({
             id: `edge-${newEdgeHandle}`,
             label: ``,
-            type: "smoothstep",
+            type: "straight",
             source: `handle-${nodeIdForNewHandleNode}`,
             target: value,
-            animated: true,
-            markerEnd: MarkerType.ArrowClosed,
-            style: { stroke: generateRandomColor() },
           });
         });
 
@@ -328,7 +307,6 @@ export function useNodeAddition() {
       }
     } else {
       console.log("multiple outgoers po xan ta");
-      console.log(inputLabel1, inputNodeType1);
       const handleIdToBeConnected = findNode(nodeId).data.idHandleToAddMultiple;
       console.log(findNode(nodeId).data);
       console.log("handleId", handleIdToBeConnected);
@@ -339,8 +317,7 @@ export function useNodeAddition() {
 
       addNodes({
         id: `node-${newNode}`,
-        label: inputLabel1,
-        type: inputNodeType1,
+        type: "managerbranch",
         position: {
           x: referenceNode.position.x + 420,
           y: referenceNode.position.y,

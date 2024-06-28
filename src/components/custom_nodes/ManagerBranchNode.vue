@@ -11,7 +11,7 @@ import { ref } from "vue";
 import { useNodeAddition } from "@/composables/useNodeAddition";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
-const { getNodes } = useVueFlow();
+const { getNodes, addNodes } = useVueFlow();
 
 const offset = ref(0);
 const showButtons = ref(false);
@@ -117,7 +117,30 @@ function handleModalSubmit() {
 
 function handleChevron() {
   showDescription.value = !showDescription.value;
-  console.log(getAllDescendants(nodeId));
+
+  if (showDescription.value) {
+    getAllDescendants(nodeId).forEach((node) => {
+      const newNode = {
+        ...node,
+        position: {
+          ...node.position,
+          y: node.position.y + 72,
+        },
+      };
+      addNodes(newNode);
+    });
+  } else {
+    getAllDescendants(nodeId).forEach((node) => {
+      const newNode = {
+        ...node,
+        position: {
+          ...node.position,
+          y: node.position.y - 72,
+        },
+      };
+      addNodes(newNode);
+    });
+  }
 }
 </script>
 
