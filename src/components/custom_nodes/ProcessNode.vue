@@ -1,7 +1,7 @@
 <script setup>
 import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
 
-import { ref } from "vue";
+import { onBeforeMount, onMounted, ref } from "vue";
 import Icon from "./../Icon.vue";
 
 import { useNodeDeletion } from "../../composables/useNodeDeletion";
@@ -36,6 +36,8 @@ const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
 const showButtons = ref(false);
 
 //Node vitra
+const nodeTitleInput = ref(null);
+const nodeTitleText = ref("Manager Approval");
 const inputWho = ref("");
 const showQuestion = ref(true);
 
@@ -141,6 +143,18 @@ function handleModalSubmit() {
 function handleDone() {
   showQuestion.value = !showQuestion.value;
 }
+
+onMounted(() => {
+  console.log("Component mounted");
+  setTimeout(() => {
+    if (nodeTitleInput.value) {
+      nodeTitleInput.value.focus();
+      console.log("Input field focused");
+    } else {
+      console.log("Input field not found");
+    }
+  }, 100);
+});
 </script>
 
 <template>
@@ -158,7 +172,11 @@ function handleDone() {
           <div class="title-icon">
             <Icon name="messageText" class="message-text" />
           </div>
-          <div class="title-text">Manager Approval</div>
+          <input
+            class="title-text"
+            ref="nodeTitleInput"
+            v-model="nodeTitleText"
+          />
         </div>
 
         <div v-if="showQuestion">
@@ -290,8 +308,13 @@ function handleDone() {
 }
 
 .title-text {
+  border: none;
   color: purple;
   font-size: 20px;
+}
+
+.title-text:focus {
+  outline: green;
 }
 
 .question,
@@ -306,9 +329,6 @@ function handleDone() {
   border-bottom: 2px solid gray;
   padding-bottom: 6px;
   font-size: 18px;
-}
-
-#inputWho:focus {
   outline: none;
 }
 
