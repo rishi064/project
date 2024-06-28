@@ -145,13 +145,9 @@ function handleDone() {
 }
 
 onMounted(() => {
-  console.log("Component mounted");
   setTimeout(() => {
     if (nodeTitleInput.value) {
       nodeTitleInput.value.focus();
-      console.log("Input field focused");
-    } else {
-      console.log("Input field not found");
     }
   }, 100);
 });
@@ -177,6 +173,7 @@ onMounted(() => {
             ref="nodeTitleInput"
             v-model="nodeTitleText"
           />
+          <p class="absolute-dev">{{ nodeId }}</p>
         </div>
 
         <div v-if="showQuestion">
@@ -314,7 +311,8 @@ onMounted(() => {
 }
 
 .title-text:focus {
-  outline: green;
+  outline: none;
+  cursor: default;
 }
 
 .question,
@@ -347,7 +345,7 @@ button {
 
   position: absolute;
   left: 50%;
-  bottom: -48px;
+  bottom: -36px;
 
   display: flex;
   align-items: center;
@@ -358,7 +356,7 @@ button {
   position: absolute;
   bottom: 0;
   left: 50%;
-  bottom: -32px;
+  bottom: -22px;
 
   transform: translate(-50%, 36px);
 
@@ -506,5 +504,11 @@ button {
   border-radius: 5px;
   border: 1px solid;
   outline: none;
+}
+
+.absolute-dev {
+  position: absolute;
+  top: 0;
+  font-size: 12px;
 }
 </style>

@@ -15,6 +15,7 @@ const { getNodes } = useVueFlow();
 
 const offset = ref(0);
 const showButtons = ref(false);
+const showDescription = ref(false);
 
 const showModal = ref(false);
 const show2InputModal = ref(false);
@@ -25,7 +26,7 @@ const inputLabel2 = ref("");
 const clickedBtn = ref("");
 
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { hasMoreThanEqual2ChildNoGoTo } = useVueFlowHelper();
+const { hasMoreThanEqual2ChildNoGoTo, getAllDescendants } = useVueFlowHelper();
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -113,6 +114,11 @@ function handleModalSubmit() {
 
   closeModalForm();
 }
+
+function handleChevron() {
+  showDescription.value = !showDescription.value;
+  console.log(getAllDescendants(nodeId));
+}
 </script>
 
 <template>
@@ -123,11 +129,21 @@ function handleModalSubmit() {
   >
     <div class="node">
       <div class="arrowhead">
-        <p class="node-title">Manager Branch</p>
+        <p class="node-title">Manager Branch{{ nodeId }}</p>
         <p class="task">Execute: Always</p>
         <p>
-          <Icon name="chevronDown" class="btn-chevron-down" />
+          <Icon
+            :name="showDescription ? 'chevronUp' : 'chevronDown'"
+            :title="showDescription ? 'Hide Description' : 'Show Description'"
+            class="btn-chevron-down"
+            @click="handleChevron"
+          />
         </p>
+
+        <div class="node-description" v-show="showDescription">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam
+          aut quidem totam cumque laboriosam eaque iusto dicta facere iste odio.
+        </div>
       </div>
 
       <div class="button"></div>
@@ -182,7 +198,7 @@ function handleModalSubmit() {
           <p v-if="show2InputModal">For 1st node</p>
           <select required class="input-select" v-model.trim="inputNodeType1">
             <option value="">Select nodetype ...</option>
-            <option value="decision">Decision Node</option>
+            <option value="managerbranch">ManagerBranch Node</option>
             <option value="process">Process Node</option>
           </select>
           <input
@@ -197,8 +213,8 @@ function handleModalSubmit() {
           <p>For 2nd node</p>
           <select required class="input-select" v-model.trim="inputNodeType2">
             <option value="">Select nodetype ...</option>
-            <option value="decision">Decision Node</option>
-            <option value="child">Child Node</option>
+            <option value="managerbranch">Manager branch Node</option>
+            <option value="process">Process Node</option>
           </select>
           <input
             type="text"
@@ -239,7 +255,7 @@ function handleModalSubmit() {
 .arrowhead {
   position: relative;
   background-color: #badefb;
-  min-width: 324px;
+  width: 324px;
   text-align: center;
   color: black;
   font-family: Arial, sans-serif;
@@ -261,8 +277,20 @@ function handleModalSubmit() {
 }
 
 .btn-chevron-down {
+  cursor: pointer;
   height: 36px;
   fill: #357e77;
+}
+
+.btn-chevron-down:hover {
+  fill: #204c47;
+}
+
+.node-description {
+  padding: 0 18px 8px;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: justify;
 }
 
 .btns {

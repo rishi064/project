@@ -67,7 +67,7 @@ export function useNodeAddition() {
         position: {
           x:
             findNode(nodeId).type === "handle"
-              ? props.position.x - 70
+              ? props.position.x - 160
               : props.position.x,
           y: props.position.y + 250,
         },
@@ -77,7 +77,7 @@ export function useNodeAddition() {
         {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
           label: ``,
-          type: "straight",
+          type: "smoothstep",
           source: nodeId,
           target: `node-${newChildNodeId}`,
         },
@@ -120,7 +120,7 @@ export function useNodeAddition() {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
           label: ``,
           source: nodeId,
-          type: "straight",
+          type: "smoothstep",
           target: `node-${newChildNodeId}`,
         },
       ]);
@@ -293,7 +293,7 @@ export function useNodeAddition() {
           addEdges({
             id: `edge-${newEdgeHandle}`,
             label: ``,
-            type: "straight",
+            type: "smoothstep",
             source: `handle-${nodeIdForNewHandleNode}`,
             target: value,
             animated: true,

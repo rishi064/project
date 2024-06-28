@@ -205,7 +205,7 @@ function handleModalSubmit() {
           <select required class="input-select" v-model.trim="inputNodeType2">
             <option value="">Select nodetype ...</option>
             <option value="managerbranch">Manager Branch Node</option>
-            <option value="child">Child Node</option>
+            <option value="process">Process Node</option>
           </select>
           <input
             type="text"
