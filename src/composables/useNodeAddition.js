@@ -361,7 +361,7 @@ export function useNodeAddition() {
     //now update view
     //update
     setViewport(
-      { x: 0, y: 300 - endNodeYPosition, zoom: 1 },
+      { x: 0, y: 500 - findNode("end").position.y, zoom: 1 },
       { duration: 800 }
     );
   }
