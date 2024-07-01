@@ -305,10 +305,11 @@ form {
   background-color: #c0c0c0;
   border-radius: 100%;
   transform: translate(-50%, 10%);
+  border: 10px solid #f0eee9;
 
   position: absolute;
   left: 50%;
-  bottom: -48px;
+  bottom: -64px;
 
   display: flex;
   align-items: center;
@@ -319,7 +320,7 @@ form {
   position: absolute;
   bottom: 0;
   left: 50%;
-  bottom: -32px;
+  bottom: -44px;
 
   transform: translate(-50%, 36px);
 

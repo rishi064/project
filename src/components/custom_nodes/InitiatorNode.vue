@@ -299,6 +299,7 @@ form {
   background-color: #c0c0c0;
   border-radius: 100%;
   transform: translate(-50%, 10%);
+  border: 10px solid #f0eee9;
 
   position: absolute;
   left: 50%;

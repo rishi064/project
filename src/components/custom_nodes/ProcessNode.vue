@@ -95,36 +95,6 @@ function handleLabelSubmit() {
 
 const handleDeleteNode = () => deleteNode(nodeId);
 
-function closeModalForm() {
-  inputNodeType1.value =
-    inputLabel1.value =
-    inputNodeType2.value =
-    inputLabel2.value =
-      "";
-
-  showModal.value = show2InputModal.value = false;
-}
-
-function handleShowModal(clicked) {
-  clickedBtn.value = clicked;
-
-  clickedBtn.value === "single" || hasMoreThanEqual2ChildNoGoTo(nodeId)
-    ? (showModal.value = true)
-    : (show2InputModal.value = showModal.value = true);
-}
-
-function handleModalSubmit() {
-  console.log(
-    inputNodeType2.value,
-    inputNodeType1.value,
-    inputLabel1.value,
-    inputLabel2.value
-  );
-  clickedBtn.value === "single" ? addChildNode() : add2ChildrenNode();
-
-  closeModalForm();
-}
-
 function handleDone() {
   showQuestion.value = !showQuestion.value;
 }
@@ -281,10 +251,11 @@ button {
   color: white;
   border-radius: 100%;
   transform: translate(-50%, 10%);
+  border: 10px solid #f0eee9;
 
   position: absolute;
   left: 50%;
-  bottom: -36px;
+  bottom: -42px;
 
   display: flex;
   align-items: center;
