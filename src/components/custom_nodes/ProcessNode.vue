@@ -158,7 +158,6 @@ onMounted(() => {
             ref="nodeTitleInput"
             v-model="nodeTitleText"
           />
-          <p class="absolute-dev">{{ nodeId }}</p>
         </div>
 
         <div v-if="showQuestion">
@@ -221,7 +220,6 @@ onMounted(() => {
   margin: 0;
   position: relative;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  width: fit-content;
   background-color: #fff;
   border: none;
   border-radius: 4px;
@@ -445,11 +443,5 @@ button {
   border-radius: 5px;
   border: 1px solid;
   outline: none;
-}
-
-.absolute-dev {
-  position: absolute;
-  top: 0;
-  font-size: 12px;
 }
 </style>

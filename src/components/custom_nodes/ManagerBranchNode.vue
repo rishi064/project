@@ -152,7 +152,7 @@ function handleChevron() {
   >
     <div class="node">
       <div class="arrowhead">
-        <p class="node-title">Manager Branch{{ nodeId }}</p>
+        <p class="node-title">Manager Branch</p>
         <p class="task">Execute: Always</p>
         <p>
           <Icon
@@ -181,7 +181,7 @@ function handleChevron() {
             <Icon
               name="circle"
               class="circle-icon"
-              @click.stop="handleShowModal('single')"
+              @click.stop="addChildNode"
             />
           </button>
         </div>
@@ -190,7 +190,7 @@ function handleChevron() {
             <Icon
               name="multiple"
               class="multiple-icon"
-              @click.stop="handleShowModal('multiple')"
+              @click.stop="add2ChildrenNode"
             />
           </button>
         </div>
@@ -208,49 +208,6 @@ function handleChevron() {
   <Handle class="handle-at-bottom" type="source" :position="Position.Bottom" />
 
   <!-- Modal to get the type and label of node that is going to be added -->
-  <div class="modal" v-if="showModal">
-    <div class="modal-close">
-      <button class="modal-close-btn" @click="closeModalForm">&times;</button>
-    </div>
-    <div class="modal-content">
-      <form
-        @submit.prevent="handleModalSubmit"
-        :class="{ 'modal-form': show2InputModal }"
-      >
-        <div>
-          <p v-if="show2InputModal">For 1st node</p>
-          <select required class="input-select" v-model.trim="inputNodeType1">
-            <option value="">Select nodetype ...</option>
-            <option value="managerbranch">ManagerBranch Node</option>
-            <option value="process">Process Node</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Enter label ..."
-            class="input-label"
-            v-model.trim="inputLabel1"
-            required
-          />
-        </div>
-        <div v-if="show2InputModal">
-          <p>For 2nd node</p>
-          <select required class="input-select" v-model.trim="inputNodeType2">
-            <option value="">Select nodetype ...</option>
-            <option value="managerbranch">Manager branch Node</option>
-            <option value="process">Process Node</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Enter label ..."
-            class="input-label"
-            v-model.trim="inputLabel2"
-            required
-          />
-        </div>
-        <button type="submit" class="btn-submit">ADD</button>
-      </form>
-    </div>
-  </div>
 </template>
 
 <style scoped>
@@ -278,7 +235,7 @@ function handleChevron() {
 .arrowhead {
   position: relative;
   background-color: #badefb;
-  width: 324px;
+  width: 322px;
   text-align: center;
   color: black;
   font-family: Arial, sans-serif;

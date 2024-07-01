@@ -218,11 +218,11 @@ function handleModalSubmit() {
   background-color: #4bb4aa;
 
   margin: 0;
-  width: fit-content;
   border-radius: 4px;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   position: relative;
   color: #fff;
+  width: 322px;
 }
 
 .node-content {

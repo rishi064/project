@@ -21,7 +21,7 @@ export function useNodeAddition() {
       id: "end",
       type: "startend",
       label: "Stop",
-      position: { x: 300, y: newYPosition },
+      position: { x: 498, y: newYPosition },
     });
   }
 
@@ -44,12 +44,11 @@ export function useNodeAddition() {
     const endNodeYPosition = endNode.position.y;
 
     if (outgoerIds.includes("end")) {
-      console.log("si", 47);
       removeEdges([...outgoingEdgesId]);
 
       offset.value = endNodeYPosition - props.position.y;
 
-      if (offset.value < 251) {
+      if (offset.value < 351) {
         updateEndNodePosition(endNodeYPosition + 250);
       }
 
@@ -94,7 +93,7 @@ export function useNodeAddition() {
         position: {
           x:
             findNode(nodeId).type === "handle"
-              ? props.position.x - 70
+              ? props.position.x - 147
               : props.position.x,
           y: props.position.y + 250,
         },
@@ -193,7 +192,7 @@ export function useNodeAddition() {
             x:
               props.type === "handle"
                 ? props.position.x
-                : props.position.x + 150,
+                : props.position.x + 147,
             y: props.position.y + 450,
           },
         },
@@ -210,7 +209,7 @@ export function useNodeAddition() {
       const offset = endNodeYPosition - handleNodePositionY;
 
       //it would re-render the node. won't have to worry of first removing the node before doing it.
-      offset < 251 &&
+      offset < 351 &&
         addNodes({
           id: "end",
           type: "startend",
