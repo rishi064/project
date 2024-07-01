@@ -1,7 +1,11 @@
 import { useHandleConnections, useVueFlow, useNodeId } from "@vue-flow/core";
+import { ref } from "vue";
 
 export function useVueFlowHelper(nodes, edges) {
   const { getIncomers, getOutgoers, toObject } = useVueFlow();
+
+  //for tracking the viewport position:
+  const viewportPositionY = ref(0);
 
   // Calculation for hasMoreThanEqual2ChildNoGoTo() function
   const nodeId = useNodeId();

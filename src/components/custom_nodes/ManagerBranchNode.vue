@@ -26,7 +26,8 @@ const inputLabel2 = ref("");
 const clickedBtn = ref("");
 
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { hasMoreThanEqual2ChildNoGoTo, getAllDescendants } = useVueFlowHelper();
+const { hasMoreThanEqual2ChildNoGoTo, getAllDescendants, updateView } =
+  useVueFlowHelper();
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -69,26 +70,13 @@ const outgoingEdgesOfClickedNode = useHandleConnections({
 });
 
 function addChildNode() {
-  addOneChild(
-    nodeId,
-    outgoingEdgesOfClickedNode,
-    offset,
-    props,
-    inputNodeType1.value,
-    inputLabel1.value
-  );
+  addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props);
+  updateView("add");
 }
 
 function add2ChildrenNode() {
-  addMultipleChild(
-    inputNodeType1.value,
-    inputNodeType2.value,
-    inputLabel1.value,
-    inputLabel2.value,
-    outgoingEdgesOfClickedNode,
-    nodeId,
-    props
-  );
+  addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props);
+  updateView("add");
 }
 
 function closeModalForm() {

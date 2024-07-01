@@ -12,6 +12,7 @@ export function useNodeAddition() {
     getOutgoers,
     updateNodeData,
     findNode,
+    setViewport,
   } = useVueFlow();
 
   const allGotoEdgesArray = inject("allGotoEdgesArray");
@@ -25,7 +26,7 @@ export function useNodeAddition() {
     });
   }
 
-  const { getAllDescendantIds } = useVueFlowHelper();
+  const { getAllDescendantIds, updateView } = useVueFlowHelper();
 
   // 1.
   function addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props) {
@@ -148,6 +149,12 @@ export function useNodeAddition() {
 
     //now add all those edges as they were
     addEdges(allGotoEdgesArray);
+
+    //update
+    setViewport(
+      { x: 0, y: 300 - endNodeYPosition, zoom: 1 },
+      { duration: 800 }
+    );
   }
 
   //2.
@@ -350,6 +357,13 @@ export function useNodeAddition() {
 
     //now redraw those edges as they are
     addEdges(allGotoEdgesArray);
+
+    //now update view
+    //update
+    setViewport(
+      { x: 0, y: 300 - endNodeYPosition, zoom: 1 },
+      { duration: 800 }
+    );
   }
 
   return { addOneChild, addMultipleChild };
