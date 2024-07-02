@@ -66,6 +66,7 @@ provide("allGotoEdgesArray", []);
 
 const { saveFlowchart, restoreFromLocal } = useVueFlowHelper(nodes, edges);
 const { layout } = useLayout();
+const { fitView } = useVueFlow();
 
 async function layoutGraph() {
   nodes.value = layout(nodes.value, edges.value);
