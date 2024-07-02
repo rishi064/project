@@ -127,7 +127,7 @@ function handleSubmit() {
       id: `goto-${newGotoId}`,
       label: `goto-${newGotoId}`,
       source: nodeId, //nodeId = useNodeId()
-      type: "smoothstep",
+      type: "default",
       target: gotoId.value,
       style: { stroke: "red", strokeWidth: 4 },
       markerEnd: MarkerType.ArrowClosed,

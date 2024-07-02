@@ -71,7 +71,7 @@ const outgoingEdgesOfClickedNode = useHandleConnections({
 
 function addChildNode() {
   addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props);
-  updateView("add");
+  // updateView("add");
 }
 
 function add2ChildrenNode() {
@@ -156,6 +156,7 @@ function handleChevron() {
           aut quidem totam cumque laboriosam eaque iusto dicta facere iste odio.
         </div>
       </div>
+      <div class="arrowhead-bg"></div>
 
       <div class="button"></div>
 
@@ -231,10 +232,14 @@ function handleChevron() {
   border-radius: 4px;
 }
 
+.arrowhead-bg {
+  height: 16px;
+}
+
 .arrowhead:after {
   content: "";
   position: absolute;
-  bottom: -20px;
+  bottom: -18px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
@@ -308,7 +313,7 @@ form {
 
   position: absolute;
   left: 50%;
-  bottom: -64px;
+  bottom: -28px;
 
   display: flex;
   align-items: center;
@@ -324,7 +329,7 @@ form {
   position: absolute;
   bottom: 0;
   left: 50%;
-  bottom: -44px;
+  bottom: -12px;
 
   transform: translate(-50%, 36px);
 

@@ -61,7 +61,7 @@ export function useNodeDeletion() {
             label: ``,
             source: sourceOfSelected[0], //coz source always gonna be single except for handle
             target: targetId,
-            type: targetOfSelected.length > 1 ? "smoothstep" : "straight",
+            type: targetOfSelected.length > 1 ? "default" : "straight",
           },
         ]);
       });
@@ -90,7 +90,7 @@ export function useNodeDeletion() {
                 label: `edge-${edgeId}`,
                 source: sourceOfSelected[0], //coz source always gonna be single except for handle
                 target: targetId,
-                type: "smoothstep",
+                type: "default",
               },
             ]);
           });

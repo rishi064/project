@@ -6,6 +6,7 @@ import { inject } from "vue";
 export function useNodeAddition() {
   const {
     getNodes,
+    getEdges,
     addNodes,
     addEdges,
     removeEdges,
@@ -16,6 +17,8 @@ export function useNodeAddition() {
   } = useVueFlow();
 
   const allGotoEdgesArray = inject("allGotoEdgesArray");
+  const nodes = inject("nodes");
+  const edges = inject("edges");
 
   function updateEndNodePosition(newYPosition) {
     addNodes({
@@ -70,7 +73,7 @@ export function useNodeAddition() {
         {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
           label: ``,
-          type: "smoothstep",
+          type: "default",
           source: nodeId,
           target: `node-${newChildNodeId}`,
         },
@@ -112,7 +115,7 @@ export function useNodeAddition() {
           id: `edge-${(Math.random() * 1000).toFixed(3)}`,
           label: ``,
           source: nodeId,
-          type: "smoothstep",
+          type: "default",
           target: `node-${newChildNodeId}`,
         },
       ]);
@@ -124,7 +127,7 @@ export function useNodeAddition() {
             label: ``,
             source: `node-${newChildNodeId}`,
             target: value,
-            type: "smoothstep",
+            type: "default",
           });
         });
       }
@@ -151,10 +154,13 @@ export function useNodeAddition() {
     addEdges(allGotoEdgesArray);
 
     //update
-    setViewport(
-      { x: 0, y: 300 - endNodeYPosition, zoom: 1 },
-      { duration: 800 }
-    );
+    // setViewport(
+    //   { x: 0, y: 300 - endNodeYPosition, zoom: 1 },
+    //   { duration: 800 }
+    // );
+
+    nodes.value = getNodes.value;
+    edges.value = getEdges.value;
   }
 
   //2.
@@ -235,7 +241,7 @@ export function useNodeAddition() {
         {
           id: `edge-${edgeIdForNewEdge1}`,
           label: ``,
-          type: "smoothstep",
+          type: "default",
           source: nodeId,
           target: `node-${nodeIdForNewChildNode1}`,
         },
@@ -243,7 +249,7 @@ export function useNodeAddition() {
         {
           id: `edge-${edgeIdForNewEdge2}`,
           label: ``,
-          type: "smoothstep",
+          type: "default",
           source: nodeId,
           target: `node-${nodeIdForNewChildNode2}`,
         },
@@ -251,7 +257,7 @@ export function useNodeAddition() {
         {
           id: `handle-edge-${edgeIdForNewEndEdge1}`,
           label: ``,
-          type: "smoothstep",
+          type: "default",
           source: `node-${nodeIdForNewChildNode1}`,
           target: `handle-${nodeIdForNewHandleNode}`,
         },
@@ -259,7 +265,7 @@ export function useNodeAddition() {
         {
           id: `handle-edge-${edgeIdForNewEndEdge2}`,
           label: ``,
-          type: "smoothstep",
+          type: "default",
           source: `node-${nodeIdForNewChildNode2}`,
           target: `handle-${nodeIdForNewHandleNode}`,
         },
@@ -335,20 +341,19 @@ export function useNodeAddition() {
 
       const edgeNewtoCur = (Math.random() * 10000).toFixed(2);
       const curToHandle = (Math.random() * 10000).toFixed(2);
-      const randColor = generateRandomColor();
 
       addEdges([
         {
           id: `edge-${edgeNewtoCur}`,
           label: ``,
-          type: "smoothstep",
+          type: "default",
           source: nodeId,
           target: `node-${newNode}`,
         },
         {
           id: `edge-${curToHandle}`,
           label: ``,
-          type: "smoothstep",
+          type: "default",
           source: `node-${newNode}`,
           target: handleIdToBeConnected,
         },
@@ -360,10 +365,13 @@ export function useNodeAddition() {
 
     //now update view
     //update
-    setViewport(
-      { x: 0, y: 500 - findNode("end").position.y, zoom: 1 },
-      { duration: 800 }
-    );
+    // setViewport(
+    //   { x: 0, y: 500 - findNode("end").position.y, zoom: 1 },
+    //   { duration: 800 }
+    // );
+
+    nodes.value = getNodes.value;
+    edges.value = getEdges.value;
   }
 
   return { addOneChild, addMultipleChild };

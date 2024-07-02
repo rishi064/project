@@ -1,5 +1,5 @@
 <script setup>
-import { provide, ref } from "vue";
+import { nextTick, provide, ref } from "vue";
 
 import { ControlButton, Controls } from "@vue-flow/controls";
 import {
@@ -17,6 +17,7 @@ import HandleNode from "./custom_nodes/HandleNode.vue";
 import DecisionNode from "./custom_nodes/DecisionNode.vue";
 import ManagerBranchNode from "./custom_nodes/ManagerBranchNode.vue";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
+import { useLayout } from "@/composables/useLayout";
 
 const nodes = ref([
   {
@@ -39,7 +40,7 @@ const nodes = ref([
     id: "end",
     type: "startend",
     label: "Stop",
-    position: { x: 498, y: 600 },
+    position: { x: 498, y: 400 },
   },
 ]);
 
@@ -59,8 +60,20 @@ const edges = ref([
   },
 ]);
 
-const { saveFlowchart, restoreFromLocal } = useVueFlowHelper(nodes, edges);
+provide("nodes", nodes);
+provide("edges", edges);
 provide("allGotoEdgesArray", []);
+
+const { saveFlowchart, restoreFromLocal } = useVueFlowHelper(nodes, edges);
+const { layout } = useLayout();
+
+async function layoutGraph() {
+  nodes.value = layout(nodes.value, edges.value);
+
+  nextTick(() => {
+    fitView();
+  });
+}
 </script>
 
 <template>
@@ -72,6 +85,7 @@ provide("allGotoEdgesArray", []);
       @apply-changes="false"
       :zoom-on-double-click="false"
       :delete-key-code="null"
+      @nodes-initialized="layoutGraph"
     >
       <template #node-startend="props">
         <StartEndNode :data="props.data" v-bind="props" />

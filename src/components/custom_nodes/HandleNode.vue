@@ -39,28 +39,30 @@ function add2ChildrenNode() {
 </script>
 
 <template>
-  <div
-    class="handle-node"
-    @mouseenter="showButtons = true"
-    @mouseleave="showButtons = false"
-  >
-    <div class="handle-node-content">
-      <strong>{{ props.label }}</strong>
-    </div>
-    <div class="line-container" v-if="showButtons">
-      <div class="line-one">
-        <button class="btn-add">
-          <Icon name="circle" class="circle-icon" @click="addChildrenNode" />
-        </button>
+  <div class="handle-node">
+    <div
+      class="handle-node-container"
+      @mouseenter="showButtons = true"
+      @mouseleave="showButtons = false"
+    >
+      <div class="handle-node-content">
+        <strong>{{ props.label }}</strong>
       </div>
-      <div class="line-two">
-        <button class="btn-add">
-          <Icon
-            name="multiple"
-            class="multiple-icon"
-            @click="add2ChildrenNode"
-          />
-        </button>
+      <div class="line-container" v-if="showButtons">
+        <div class="line-one">
+          <button class="btn-add">
+            <Icon name="circle" class="circle-icon" @click="addChildrenNode" />
+          </button>
+        </div>
+        <div class="line-two">
+          <button class="btn-add">
+            <Icon
+              name="multiple"
+              class="multiple-icon"
+              @click="add2ChildrenNode"
+            />
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -68,6 +70,13 @@ function add2ChildrenNode() {
 
 <style scoped>
 .handle-node {
+  width: 322px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.handle-node-container {
   margin: 0;
   position: relative;
 
@@ -80,9 +89,14 @@ function add2ChildrenNode() {
 }
 
 .handle-node-content {
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.handle-node-content strong {
+  padding: 28px;
 }
 
 button {
@@ -127,7 +141,7 @@ button {
 
 .circle-icon:hover {
   stroke: palevioletred;
-  stroke-width: 5px;
+  stroke-width: 3px;
 }
 
 .line-two {

@@ -1,11 +1,19 @@
 <template>
   <div class="start-node">
-    <div class="inner-circle"></div>
+    <div class="node-content">
+      <div class="inner-circle"></div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .start-node {
+  width: 322px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.node-content {
   padding: 4px;
   height: 28px;
   width: 28px;

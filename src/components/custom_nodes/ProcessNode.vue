@@ -254,7 +254,7 @@ button {
 
   position: absolute;
   left: 50%;
-  bottom: -42px;
+  bottom: -24px;
 
   display: flex;
   align-items: center;
@@ -262,7 +262,7 @@ button {
 }
 
 .extended-handle strong {
-  padding: 32px;
+  padding: 24px;
   border-radius: 100%;
 }
 
@@ -270,7 +270,7 @@ button {
   position: absolute;
   bottom: 0;
   left: 50%;
-  bottom: -22px;
+  bottom: -12px;
 
   transform: translate(-50%, 36px);
 

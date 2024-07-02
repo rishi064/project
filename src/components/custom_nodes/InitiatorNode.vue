@@ -56,7 +56,7 @@ const emit = defineEmits(["updateNodeInternals"]);
 const nodeId = useNodeId();
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
-const endNodeYPosition = endNode[0].position.y;
+const endNodeYPosition = endNode[0]?.position?.y || 600;
 
 if (endNodeYPosition - props.position.y < 250) {
   offset.value = endNodeYPosition - props.position.y;
@@ -302,7 +302,7 @@ form {
 
   position: absolute;
   left: 50%;
-  bottom: -48px;
+  bottom: -32px;
 
   display: flex;
   align-items: center;
@@ -318,7 +318,7 @@ form {
   position: absolute;
   bottom: 0;
   left: 50%;
-  bottom: -32px;
+  bottom: -12px;
 
   transform: translate(-50%, 36px);
 
