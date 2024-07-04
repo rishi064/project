@@ -1,4 +1,4 @@
-import { useVueFlow, MarkerType } from "@vue-flow/core";
+import { useVueFlow } from "@vue-flow/core";
 import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
 
 export function useNodeDeletion() {

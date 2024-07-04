@@ -2,14 +2,9 @@
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/core@1.33.7/dist/theme-default.css";
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/controls@latest/dist/style.css";
 
-/* .vueflow-container {
-  height: 900px;
-  width: 100%;
-} */
-
 .vue-flow {
   background-color: #f0eee9;
-  height: 900px;
+  height: 100vh;
   width: 100%;
 }
 

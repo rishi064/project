@@ -1,7 +1,7 @@
 <script setup>
 import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
 
-import { onBeforeMount, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import Icon from "./../Icon.vue";
 
 import { useNodeDeletion } from "../../composables/useNodeDeletion";
@@ -37,30 +37,16 @@ const showButtons = ref(false);
 
 //Node vitra
 const nodeTitleInput = ref(null);
-const nodeTitleText = ref("Manager Approval");
-const inputWho = ref("");
-const showQuestion = ref(true);
+const nodeTitleText = ref(props.label);
+const inputWho = ref(props.data.assignedTo);
+const showQuestion = ref(!Boolean(props.data.assignedTo));
 
-//Modal that popups up on clicking extended-handle
-const showModal = ref(false);
-const show2InputModal = ref(false);
-const inputNodeType1 = ref("");
-const inputLabel1 = ref("");
-const inputNodeType2 = ref("");
-const inputLabel2 = ref("");
-const clickedBtn = ref("");
-
-const { getNodes, updateNode } = useVueFlow();
+const { getNodes, updateNode, updateNodeData, findNode } = useVueFlow();
 
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { hasMoreThanEqual2ChildNoGoTo } = useVueFlowHelper();
 
 const offset = ref(0);
-
-const showLabelInput = ref(false);
-const label = ref(props.label);
-const password = ref("");
 
 const nodeId = useNodeId();
 
@@ -84,21 +70,16 @@ function add2ChildrenNode() {
   addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props);
 }
 
-function onDoubleClick() {
-  showLabelInput.value = true;
-}
-
-function handleLabelSubmit() {
-  showLabelInput.value = false;
-  updateNode(nodeId, { label: label.value });
-}
-
 const handleDeleteNode = () => deleteNode(nodeId);
 
 function handleDone() {
   showQuestion.value = !showQuestion.value;
+  const assignedTo = inputWho.value;
+  updateNodeData(nodeId, { assignedTo, showQuestion: showQuestion.value });
+  console.log(findNode(nodeId).data);
 }
 
+//to focus on the title of process node.
 onMounted(() => {
   setTimeout(() => {
     if (nodeTitleInput.value) {
@@ -106,6 +87,12 @@ onMounted(() => {
     }
   }, 100);
 });
+
+function handleNodeTitleChange(e) {
+  console.log("change", e.target.value);
+  updateNode(nodeId, { label: e.target.value });
+  console.log("node", findNode(nodeId));
+}
 </script>
 
 <template>
@@ -118,6 +105,7 @@ onMounted(() => {
     <!-- <Handle id="b" type="target" :position="Position.Top" /> -->
 
     <div class="node" @dblclick="onDoubleClick">
+      <!-- <div class="absolute-p">{{ nodeId }}</div> -->
       <div class="node-content">
         <div class="node-title">
           <div class="title-icon">
@@ -127,6 +115,7 @@ onMounted(() => {
             class="title-text"
             ref="nodeTitleInput"
             v-model="nodeTitleText"
+            @input="handleNodeTitleChange"
           />
         </div>
 

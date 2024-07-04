@@ -59,7 +59,12 @@ export function useNodeAddition() {
       const newChildNodeId = (Math.random() * 100).toFixed(2);
       addNodes({
         id: `node-${newChildNodeId}`,
+        label: "Manager Approval",
         type: "process",
+        data: {
+          showQuestion: true,
+          assignedTo: "",
+        },
         position: {
           x:
             findNode(nodeId).type === "handle"
@@ -93,7 +98,12 @@ export function useNodeAddition() {
 
       const newNode = {
         id: `node-${newChildNodeId}`,
+        label: "Manager Approval",
         type: "process",
+        data: {
+          showQuestion: false,
+          assignedTo,
+        },
         position: {
           x:
             findNode(nodeId).type === "handle"

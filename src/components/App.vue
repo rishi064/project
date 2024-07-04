@@ -83,7 +83,6 @@ async function layoutGraph() {
       :nodes="nodes"
       :edges="edges"
       :nodes-draggable="false"
-      @apply-changes="false"
       :zoom-on-double-click="false"
       :delete-key-code="null"
       @nodes-initialized="layoutGraph"
