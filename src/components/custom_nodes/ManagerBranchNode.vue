@@ -70,7 +70,7 @@ function addChildNode() {
 
 function add2ChildrenNode() {
   addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props);
-  updateView("add");
+  // updateView("add");
 }
 
 function handleChevron() {

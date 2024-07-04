@@ -91,11 +91,27 @@ export function useVueFlowHelper(nodes, edges) {
 
   // 9.
   function getImmediateParents(nodeID) {
-    return getIncomers(nodeID);
+    let immediateParents = [];
+
+    function findParents(nodeId) {
+      let parents = getIncomers(nodeId);
+
+      parents.forEach((parent) => {
+        if (parent.type !== "handle") {
+          immediateParents.push(parent);
+        } else {
+          // If the parent is of type 'handle', we need to find its parents
+          findParents(parent.id);
+        }
+      });
+    }
+
+    findParents(nodeID);
+    return immediateParents;
   }
 
   //10.
-  function getAllChildren(nodeID) {
+  function getImmediateChildren(nodeID) {
     return getOutgoers(nodeID);
   }
 
@@ -110,6 +126,6 @@ export function useVueFlowHelper(nodes, edges) {
     restoreFromLocal,
     hasMoreThanEqual2ChildNoGoTo,
     getImmediateParents,
-    getAllChildren,
+    getImmediateChildren,
   };
 }
