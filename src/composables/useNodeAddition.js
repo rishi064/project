@@ -199,7 +199,7 @@ export function useNodeAddition() {
           id: `node-${nodeIdForNewChildNode1}`,
           type: "managerbranch",
           position: { x: props.position.x - 350, y: props.position.y + 225 },
-          data: { hasSibling: true, branchName: "ji" },
+          data: { hasSibling: true, branchName: "" },
         },
         {
           id: `node-${nodeIdForNewChildNode2}`,

@@ -18,7 +18,7 @@ const showButtons = ref(false);
 const showDescription = ref(false);
 
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { getAllDescendants, updateView } = useVueFlowHelper();
+const { getAllDescendants, getImmediateParents } = useVueFlowHelper();
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -102,10 +102,20 @@ function handleChevron() {
 }
 
 function handleBranchNameFormSubmit() {
-  if (!branchName.value) branchName.value = findNode(nodeId).data.branchName;
+  if (!branchName.value) {
+    branchName.value = findNode(nodeId).data.branchName;
+    showBranchNameForm.value = branchName.value
+      ? !showBranchNameForm.value
+      : showBranchNameForm.value;
+    return;
+  }
   showBranchNameForm.value = !showBranchNameForm.value;
   updateNodeData(nodeId, { branchName: branchName.value });
   console.log(findNode(nodeId));
+}
+
+function showParents() {
+  console.log(getImmediateParents(nodeId).map((node) => node.id));
 }
 </script>
 
@@ -114,9 +124,11 @@ function handleBranchNameFormSubmit() {
     class="managerbranch-node"
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
+    @click="showParents"
   >
     <div class="node">
       <div class="arrowhead">
+        <div class="absolute-p" @click="">{{ nodeId }}</div>
         <p class="node-title">
           Manage
 
@@ -475,5 +487,11 @@ form {
   border-radius: 5px;
   border: 1px solid;
   outline: none;
+}
+
+.absolute-p {
+  position: absolute;
+  font-size: 12px;
+  font-weight: normal;
 }
 </style>

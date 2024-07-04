@@ -89,6 +89,16 @@ export function useVueFlowHelper(nodes, edges) {
     return outgoerNoGoTo.length >= 2;
   }
 
+  // 9.
+  function getImmediateParents(nodeID) {
+    return getIncomers(nodeID);
+  }
+
+  //10.
+  function getAllChildren(nodeID) {
+    return getOutgoers(nodeID);
+  }
+
   return {
     hasSiblingNode,
     hasMoreThanEqual2Sibling,
@@ -99,5 +109,7 @@ export function useVueFlowHelper(nodes, edges) {
     saveFlowchart,
     restoreFromLocal,
     hasMoreThanEqual2ChildNoGoTo,
+    getImmediateParents,
+    getAllChildren,
   };
 }
