@@ -11,23 +11,14 @@ import { ref } from "vue";
 import { useNodeAddition } from "@/composables/useNodeAddition";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 
-const { getNodes, addNodes } = useVueFlow();
+const { getNodes, addNodes, updateNodeData, findNode } = useVueFlow();
 
 const offset = ref(0);
 const showButtons = ref(false);
 const showDescription = ref(false);
 
-const showModal = ref(false);
-const show2InputModal = ref(false);
-const inputNodeType1 = ref("");
-const inputLabel1 = ref("");
-const inputNodeType2 = ref("");
-const inputLabel2 = ref("");
-const clickedBtn = ref("");
-
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { hasMoreThanEqual2ChildNoGoTo, getAllDescendants, updateView } =
-  useVueFlowHelper();
+const { getAllDescendants, updateView } = useVueFlowHelper();
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -55,6 +46,9 @@ const props = defineProps({
 //To resolve the warning
 const emit = defineEmits(["updateNodeInternals"]);
 
+const branchName = ref(props.data.branchName);
+const showBranchNameForm = ref(!Boolean(branchName.value));
+
 const nodeId = useNodeId();
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
@@ -77,30 +71,6 @@ function addChildNode() {
 function add2ChildrenNode() {
   addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props);
   updateView("add");
-}
-
-function closeModalForm() {
-  inputNodeType1.value =
-    inputLabel1.value =
-    inputNodeType2.value =
-    inputLabel2.value =
-      "";
-
-  showModal.value = show2InputModal.value = false;
-}
-
-function handleShowModal(clicked) {
-  clickedBtn.value = clicked;
-
-  clickedBtn.value === "single" || hasMoreThanEqual2ChildNoGoTo(nodeId)
-    ? (showModal.value = true)
-    : (show2InputModal.value = showModal.value = true);
-}
-
-function handleModalSubmit() {
-  clickedBtn.value === "single" ? addChildNode() : add2ChildrenNode();
-
-  closeModalForm();
 }
 
 function handleChevron() {
@@ -130,6 +100,13 @@ function handleChevron() {
     });
   }
 }
+
+function handleBranchNameFormSubmit() {
+  if (!branchName.value) branchName.value = findNode(nodeId).data.branchName;
+  showBranchNameForm.value = !showBranchNameForm.value;
+  updateNodeData(nodeId, { branchName: branchName.value });
+  console.log(findNode(nodeId));
+}
 </script>
 
 <template>
@@ -140,7 +117,25 @@ function handleChevron() {
   >
     <div class="node">
       <div class="arrowhead">
-        <p class="node-title">Manager Branch</p>
+        <p class="node-title">
+          Manage
+
+          <span v-if="showBranchNameForm">
+            <form
+              class="form-branch-name"
+              @submit.prevent="handleBranchNameFormSubmit"
+            >
+              <input
+                class="input-branch-name"
+                v-model.trim="branchName"
+                placeholder="Enter branch name..."
+              />
+            </form>
+          </span>
+          <span v-else @click="showBranchNameForm = true"
+            >{{ branchName }} <Icon name="edit" class="edit-branch-name"
+          /></span>
+        </p>
         <p class="task">Execute: Always</p>
         <p>
           <Icon
@@ -213,6 +208,24 @@ function handleChevron() {
   padding-top: 24px;
   font-size: 16px;
   margin-bottom: 16px;
+}
+
+.form-branch-name {
+  display: inline;
+}
+
+.input-branch-name {
+  border: none;
+  font-size: 20px;
+  background: none;
+  border-bottom: 1px solid gray;
+  outline: none;
+}
+
+.edit-branch-name {
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
 }
 
 .arrowhead .task {

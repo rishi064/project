@@ -199,13 +199,13 @@ export function useNodeAddition() {
           id: `node-${nodeIdForNewChildNode1}`,
           type: "managerbranch",
           position: { x: props.position.x - 350, y: props.position.y + 225 },
-          data: { hasSibling: true },
+          data: { hasSibling: true, branchName: "ji" },
         },
         {
           id: `node-${nodeIdForNewChildNode2}`,
           type: "managerbranch",
           position: { x: props.position.x + 400, y: props.position.y + 225 },
-          data: { hasSibling: true },
+          data: { hasSibling: true, branchName: "" },
         },
         {
           id: `handle-${nodeIdForNewHandleNode}`,
@@ -346,6 +346,7 @@ export function useNodeAddition() {
         },
         data: {
           hasSibling: true,
+          branchName: "",
         },
       });
 
