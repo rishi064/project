@@ -112,7 +112,23 @@ export function useVueFlowHelper(nodes, edges) {
 
   //10.
   function getImmediateChildren(nodeID) {
-    return getOutgoers(nodeID);
+    let immediateChildren = [];
+
+    function findChildren(nodeId) {
+      let children = getOutgoers(nodeId);
+
+      children.forEach((child) => {
+        if (child.type !== "handle") {
+          immediateChildren.push(child);
+        } else {
+          // If the child is of type 'handle', we need to find its childs
+          findChildren(child.id);
+        }
+      });
+    }
+
+    findChildren(nodeID);
+    return immediateChildren;
   }
 
   return {

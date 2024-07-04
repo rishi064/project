@@ -45,7 +45,7 @@ const { getNodes, updateNode, updateNodeData, findNode } = useVueFlow();
 
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { getImmediateParents } = useVueFlowHelper();
+const { getImmediateParents, getImmediateChildren } = useVueFlowHelper();
 
 const offset = ref(0);
 
@@ -95,8 +95,13 @@ function handleNodeTitleChange(e) {
   console.log("node", findNode(nodeId));
 }
 
-function showParents() {
+function showImmediateParents() {
   console.log(getImmediateParents(nodeId).map((node) => node.id));
+}
+
+function showImmediateChildren() {
+  console.log("clicked");
+  console.log(getImmediateChildren(nodeId));
 }
 </script>
 
@@ -109,7 +114,11 @@ function showParents() {
     <!-- 1.// For being the target of previous node -->
     <!-- <Handle id="b" type="target" :position="Position.Top" /> -->
 
-    <div class="node" @click="showParents">
+    <div
+      class="node"
+      @click="showImmediateParents"
+      @dblclick="showImmediateChildren"
+    >
       <div class="absolute-p">
         {{ nodeId }}
       </div>

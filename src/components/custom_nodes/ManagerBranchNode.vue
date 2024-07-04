@@ -18,7 +18,8 @@ const showButtons = ref(false);
 const showDescription = ref(false);
 
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { getAllDescendants, getImmediateParents } = useVueFlowHelper();
+const { getAllDescendants, getImmediateParents, getImmediateChildren } =
+  useVueFlowHelper();
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -114,8 +115,18 @@ function handleBranchNameFormSubmit() {
   console.log(findNode(nodeId));
 }
 
-function showParents() {
-  console.log(getImmediateParents(nodeId).map((node) => node.id));
+function showImmediateParents() {
+  console.log(
+    "Immediate parent",
+    getImmediateParents(nodeId).map((node) => node.id)
+  );
+}
+
+function showImmediateChildren() {
+  console.log(
+    "Immediate children",
+    getImmediateChildren(nodeId).map((node) => node.id)
+  );
 }
 </script>
 
@@ -124,7 +135,8 @@ function showParents() {
     class="managerbranch-node"
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
-    @click="showParents"
+    @click="showImmediateParents"
+    @dblclick="showImmediateChildren"
   >
     <div class="node">
       <div class="arrowhead">
