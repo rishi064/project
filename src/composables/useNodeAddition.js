@@ -102,7 +102,7 @@ export function useNodeAddition() {
         type: "process",
         data: {
           showQuestion: false,
-          assignedTo,
+          assignedTo: "",
         },
         position: {
           x:
@@ -163,9 +163,9 @@ export function useNodeAddition() {
     //now add all those edges as they were
     addEdges(allGotoEdgesArray);
 
-    //update
+    // update;
     // setViewport(
-    //   { x: 0, y: 300 - endNodeYPosition, zoom: 1 },
+    //   { x: 0, y: 400 - endNodeYPosition, zoom: 1 },
     //   { duration: 800 }
     // );
 

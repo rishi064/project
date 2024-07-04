@@ -86,6 +86,8 @@ async function layoutGraph() {
       :zoom-on-double-click="false"
       :delete-key-code="null"
       @nodes-initialized="layoutGraph"
+      :max-zoom="4"
+      :min-zoom="0.5"
     >
       <template #node-startend="props">
         <StartEndNode :data="props.data" v-bind="props" />
