@@ -2,7 +2,8 @@ import { useHandleConnections, useVueFlow, useNodeId } from "@vue-flow/core";
 import { ref } from "vue";
 
 export function useVueFlowHelper(nodes, edges) {
-  const { getIncomers, getOutgoers, toObject } = useVueFlow();
+  const { getIncomers, getOutgoers, toObject, getNodes, findNode } =
+    useVueFlow();
 
   //for tracking the viewport position:
   const viewportPositionY = ref(0);
@@ -131,6 +132,14 @@ export function useVueFlowHelper(nodes, edges) {
     return immediateChildren;
   }
 
+  // 11.
+  function getAllNodeIdsExcept(nodeID) {
+    return getNodes.value.filter(
+      (node) =>
+        ![nodeID, "start", "end"].includes(node.id) && node.type !== "handle"
+    );
+  }
+
   return {
     hasSiblingNode,
     hasMoreThanEqual2Sibling,
@@ -143,5 +152,6 @@ export function useVueFlowHelper(nodes, edges) {
     hasMoreThanEqual2ChildNoGoTo,
     getImmediateParents,
     getImmediateChildren,
+    getAllNodeIdsExcept,
   };
 }

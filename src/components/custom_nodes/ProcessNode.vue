@@ -1,7 +1,7 @@
 <script setup>
 import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
 
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import Icon from "./../Icon.vue";
 
 import { useNodeDeletion } from "../../composables/useNodeDeletion";
@@ -33,23 +33,25 @@ const props = defineProps({
 
 const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
 
+const { deleteNode } = useNodeDeletion();
+const { addOneChild, addMultipleChild } = useNodeAddition();
+const { getImmediateParents, getImmediateChildren, getAllNodeIdsExcept } =
+  useVueFlowHelper();
+const nodeId = useNodeId();
+
 const showButtons = ref(false);
 
 //Node vitra
 const nodeTitleInput = ref(null);
 const nodeTitleText = ref(props.label);
 const inputWho = ref(props.data.assignedTo);
+const gotoId = ref("");
+const gotoOptions = computed(() => getAllNodeIdsExcept(nodeId));
 const showQuestion = ref(!Boolean(props.data.assignedTo));
 
 const { getNodes, updateNode, updateNodeData, findNode } = useVueFlow();
 
-const { deleteNode } = useNodeDeletion();
-const { addOneChild, addMultipleChild } = useNodeAddition();
-const { getImmediateParents, getImmediateChildren } = useVueFlowHelper();
-
 const offset = ref(0);
-
-const nodeId = useNodeId();
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
@@ -143,6 +145,28 @@ function showImmediateChildren() {
             v-model="inputWho"
             placeholder="Start typing..."
           />
+
+          <div class="goto-select">
+            <label for="gotoid">Goto</label>
+            <select
+              v-model="gotoId"
+              class="goto-id"
+              id="gotoid"
+              placeholder="Select node here..."
+            >
+              <option disabled value="" class="default-option">
+                Select the node
+              </option>
+              <option
+                v-for="node in gotoOptions"
+                :key="node.id"
+                :value="node.id"
+              >
+                {{ node.label || `Branch ${node.data.branchName}` }}
+              </option>
+              <option value="none">None</option>
+            </select>
+          </div>
         </div>
         <div v-else>
           <p class="assigned">Assigned to: {{ inputWho || "none" }}</p>
@@ -242,6 +266,35 @@ function showImmediateChildren() {
   padding-bottom: 6px;
   font-size: 18px;
   outline: none;
+}
+
+.goto-select {
+  margin-top: 24px;
+}
+
+.goto-select select {
+  padding: 4px;
+  font-size: large;
+}
+
+.goto-select label {
+  margin-right: 6px;
+  font-size: 20px;
+}
+
+.goto-select option {
+  font-size: 16px;
+}
+
+.default-option {
+  opacity: 0.5;
+}
+
+.goto-id {
+  border: none;
+  background: transparent;
+  outline: none;
+  border-bottom: 1px dashed gray;
 }
 
 button {
