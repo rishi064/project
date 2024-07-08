@@ -1,12 +1,20 @@
 <script setup>
-import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
+import {
+  useVueFlow,
+  useNodeId,
+  useHandleConnections,
+  MarkerType,
+  Position,
+  Handle,
+} from "@vue-flow/core";
 
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, inject } from "vue";
 import Icon from "./../Icon.vue";
 
 import { useNodeDeletion } from "../../composables/useNodeDeletion";
 import { useNodeAddition } from "@/composables/useNodeAddition";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
+import { generateRandomColor } from "@/composables/helpers/randomColor";
 
 const props = defineProps({
   //To resolve warning , we input extra elements too
@@ -33,6 +41,8 @@ const props = defineProps({
 
 const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
 
+const allGotoEdgesArray = inject("allGotoEdgesArray");
+
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
 const { getImmediateParents, getImmediateChildren, getAllNodeIdsExcept } =
@@ -49,7 +59,8 @@ const gotoId = ref("");
 const gotoOptions = computed(() => getAllNodeIdsExcept(nodeId));
 const showQuestion = ref(!Boolean(props.data.assignedTo));
 
-const { getNodes, updateNode, updateNodeData, findNode } = useVueFlow();
+const { getNodes, updateNode, updateNodeData, findNode, addEdges, findEdge } =
+  useVueFlow();
 
 const offset = ref(0);
 
@@ -98,12 +109,43 @@ function handleNodeTitleChange(e) {
 }
 
 function showImmediateParents() {
-  console.log(getImmediateParents(nodeId).map((node) => node.id));
+  // console.log(getImmediateParents(nodeId).map((node) => node.id));
 }
 
 function showImmediateChildren() {
   console.log("clicked");
   console.log(getImmediateChildren(nodeId));
+}
+
+function onGotoIdChange(e) {
+  console.log(e.target.value);
+  gotoId.value = e.target.value;
+
+  const allNodeIDs = getNodes.value.map((node) => node.id);
+
+  if (allNodeIDs.includes(gotoId.value)) {
+    const newGotoId = (Math.random() * 100).toFixed(3);
+    const randomColor = generateRandomColor();
+    console.log(randomColor);
+    addEdges({
+      id: `goto-${newGotoId}`,
+      label: `goto-${newGotoId}`,
+      source: nodeId, //nodeId = useNodeId()
+      type: "smoothstep",
+      target: gotoId.value,
+      style: { stroke: generateRandomColor(), strokeWidth: 2 },
+      markerEnd: MarkerType.ArrowClosed,
+      targetHandle: "a",
+      animated: true,
+    });
+
+    allGotoEdgesArray.push(findEdge(`goto-${newGotoId}`));
+    console.log("allGotoEdgesArray", allGotoEdgesArray);
+  } else {
+    alert("Enter the correct id of the node which you want to connect to");
+  }
+
+  gotoId.value = undefined;
 }
 </script>
 
@@ -113,8 +155,18 @@ function showImmediateChildren() {
     @mouseenter="showButtons = true"
     @mouseleave="showButtons = false"
   >
-    <!-- 1.// For being the target of previous node -->
-    <!-- <Handle id="b" type="target" :position="Position.Top" /> -->
+    <Handle class="handle-at-top" type="target" :position="Position.Top" />
+    <Handle
+      class="handle-at-right"
+      id="a"
+      type="target"
+      :position="Position.Right"
+    />
+    <Handle
+      class="handle-at-bottom"
+      type="source"
+      :position="Position.Bottom"
+    />
 
     <div
       class="node"
@@ -153,6 +205,7 @@ function showImmediateChildren() {
               class="goto-id"
               id="gotoid"
               placeholder="Select node here..."
+              @change="onGotoIdChange"
             >
               <option disabled value="" class="default-option">
                 Select the node
@@ -431,6 +484,14 @@ button {
 
 .node-btn:hover {
   font-weight: bold;
+}
+
+/* Handles */
+
+.handle-at-top,
+.handle-at-bottom,
+.handle-at-right {
+  opacity: 0;
 }
 
 /* Modal form appearing before adding nodes */
