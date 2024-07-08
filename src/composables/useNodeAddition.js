@@ -160,6 +160,10 @@ export function useNodeAddition() {
       });
     }
 
+    //we udpate node value in order to use dagre library effectively before adding those gotoEdges array
+    nodes.value = getNodes.value;
+    edges.value = getEdges.value;
+
     //now add all those edges as they were
     addEdges(allGotoEdgesArray);
 
@@ -168,9 +172,6 @@ export function useNodeAddition() {
     //   { x: 0, y: 400 - endNodeYPosition, zoom: 1 },
     //   { duration: 800 }
     // );
-
-    nodes.value = getNodes.value;
-    edges.value = getEdges.value;
   }
 
   //2.
@@ -371,6 +372,10 @@ export function useNodeAddition() {
       ]);
     }
 
+    //we udpate node value in order to use dagre library effectively before adding those gotoEdges array
+    nodes.value = getNodes.value;
+    edges.value = getEdges.value;
+
     //now redraw those edges as they are
     addEdges(allGotoEdgesArray);
 
@@ -380,9 +385,6 @@ export function useNodeAddition() {
     //   { x: 0, y: 500 - findNode("end").position.y, zoom: 1 },
     //   { duration: 800 }
     // );
-
-    nodes.value = getNodes.value;
-    edges.value = getEdges.value;
   }
 
   return { addOneChild, addMultipleChild };

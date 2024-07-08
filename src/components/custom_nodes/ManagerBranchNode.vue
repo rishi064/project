@@ -1,25 +1,38 @@
 <script setup>
+import { ref, computed, inject } from "vue";
 import {
   Handle,
   Position,
   useHandleConnections,
   useNodeId,
   useVueFlow,
+  MarkerType,
 } from "@vue-flow/core";
 import Icon from "../Icon.vue";
-import { ref } from "vue";
 import { useNodeAddition } from "@/composables/useNodeAddition";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
+import { generateRandomColor } from "@/composables/helpers/randomColor";
 
-const { getNodes, addNodes, updateNodeData, findNode } = useVueFlow();
+const { getNodes, addNodes, updateNodeData, findNode, findEdge, addEdges } =
+  useVueFlow();
+
+const { addOneChild, addMultipleChild } = useNodeAddition();
+const {
+  getAllDescendants,
+  getImmediateParents,
+  getImmediateChildren,
+  getAllNodeIdsExcept,
+} = useVueFlowHelper();
+
+const nodeId = useNodeId();
+const allGotoEdgesArray = inject("allGotoEdgesArray");
 
 const offset = ref(0);
 const showButtons = ref(false);
 const showDescription = ref(false);
 
-const { addOneChild, addMultipleChild } = useNodeAddition();
-const { getAllDescendants, getImmediateParents, getImmediateChildren } =
-  useVueFlowHelper();
+const gotoId = ref("");
+const gotoOptions = computed(() => getAllNodeIdsExcept(nodeId));
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -49,8 +62,6 @@ const emit = defineEmits(["updateNodeInternals"]);
 
 const branchName = ref(props.data.branchName);
 const showBranchNameForm = ref(!Boolean(branchName.value));
-
-const nodeId = useNodeId();
 
 const endNode = getNodes.value.filter((node) => node.id === "end");
 const endNodeYPosition = endNode[0].position.y;
@@ -128,6 +139,35 @@ function showImmediateChildren() {
     getImmediateChildren(nodeId).map((node) => node.id)
   );
 }
+
+function onGotoIdChange(e) {
+  console.log(e.target.value);
+  gotoId.value = e.target.value;
+
+  const allNodeIDs = getNodes.value.map((node) => node.id);
+
+  if (allNodeIDs.includes(gotoId.value)) {
+    const newGotoId = (Math.random() * 100).toFixed(3);
+    const randomColor = generateRandomColor();
+    console.log(randomColor);
+    addEdges({
+      id: `goto-${newGotoId}`,
+      label: `goto-${newGotoId}`,
+      source: nodeId, //nodeId = useNodeId()
+      type: "smoothstep",
+      target: gotoId.value,
+      style: { stroke: generateRandomColor(), strokeWidth: 2 },
+      markerEnd: MarkerType.ArrowClosed,
+      targetHandle: "a",
+      animated: true,
+    });
+
+    allGotoEdgesArray.push(findEdge(`goto-${newGotoId}`));
+    console.log("allGotoEdgesArray", allGotoEdgesArray);
+  } else {
+    alert("Enter the correct id of the node which you want to connect to");
+  }
+}
 </script>
 
 <template>
@@ -171,8 +211,30 @@ function showImmediateChildren() {
         </p>
 
         <div class="node-description" v-show="showDescription">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam
-          aut quidem totam cumque laboriosam eaque iusto dicta facere iste odio.
+          <div class="goto-select">
+            <label for="gotoid">Goto</label>
+            <select
+              v-model="gotoId"
+              class="goto-id"
+              id="gotoid"
+              placeholder="Select node here..."
+              @change="onGotoIdChange"
+            >
+              <option disabled value="" class="default-option">
+                Select the node
+              </option>
+
+              <option
+                v-for="node in gotoOptions"
+                :key="node.id"
+                :value="node.id"
+              >
+                {{ node.label || `Branch ${node.data.branchName}` }}
+              </option>
+
+              <option value="none">None</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="arrowhead-bg"></div>
@@ -301,6 +363,36 @@ function showImmediateChildren() {
   font-size: 14px;
   font-weight: 400;
   text-align: justify;
+}
+
+/* gotoId input  */
+.goto-select {
+  text-align: center;
+}
+
+.goto-select select {
+  padding: 4px;
+  font-size: large;
+}
+
+.goto-select label {
+  margin-right: 6px;
+  font-size: 20px;
+}
+
+.goto-select option {
+  font-size: 16px;
+}
+
+.default-option {
+  opacity: 0.5;
+}
+
+.goto-id {
+  border: none;
+  background: transparent;
+  outline: none;
+  border-bottom: 1px dashed gray;
 }
 
 .btns {

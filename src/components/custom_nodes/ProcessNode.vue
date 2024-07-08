@@ -319,6 +319,8 @@ function onGotoIdChange(e) {
   outline: none;
 }
 
+/* gotoId Input  */
+
 .goto-select {
   margin-top: 24px;
 }

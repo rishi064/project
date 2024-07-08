@@ -39,7 +39,7 @@ export function useVueFlowHelper(nodes, edges) {
     return childTypes.includes("handle");
   }
 
-  //   5.
+  //   5. same as getAllChiildrenIds(nodeID)
   function getAllDescendantIds(nodeID) {
     let descendants = [];
     const children = getOutgoers(nodeID);
@@ -51,7 +51,7 @@ export function useVueFlowHelper(nodes, edges) {
     return [...new Set(descendants)];
   }
 
-  //5.1
+  //5.1 same as getAllChildren(nodeID)
   function getAllDescendants(nodeID) {
     let descendants = [];
     const children = getOutgoers(nodeID);
@@ -140,6 +140,18 @@ export function useVueFlowHelper(nodes, edges) {
     );
   }
 
+  // 12.
+  function getAllParents(nodeID) {
+    let allParents = [];
+    const parents = getIncomers(nodeID);
+
+    parents.forEach((child) => {
+      allParents.push(child);
+      allParents = allParents.concat(getAllParents(child));
+    });
+    return [...new Set(allParents)];
+  }
+
   return {
     hasSiblingNode,
     hasMoreThanEqual2Sibling,
@@ -153,5 +165,6 @@ export function useVueFlowHelper(nodes, edges) {
     getImmediateParents,
     getImmediateChildren,
     getAllNodeIdsExcept,
+    getAllParents,
   };
 }
