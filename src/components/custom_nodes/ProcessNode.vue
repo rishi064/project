@@ -144,8 +144,6 @@ function onGotoIdChange(e) {
   } else {
     alert("Enter the correct id of the node which you want to connect to");
   }
-
-  gotoId.value = undefined;
 }
 </script>
 
