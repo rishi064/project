@@ -1,7 +1,13 @@
+<script setup>
+import { useNodeId } from "@vue-flow/core";
+
+const nodeId = useNodeId();
+</script>
+
 <template>
   <div class="start-node">
     <div class="node-content">
-      <div class="inner-circle"></div>
+      <div :class="['inner-circle', { 'inner-full': nodeId === 'end' }]"></div>
     </div>
   </div>
 </template>
@@ -29,5 +35,9 @@
   width: 20px;
   border-radius: 100%;
   border: 4px solid #4bb4aa;
+}
+
+.inner-full {
+  background-color: #4bb4aa;
 }
 </style>
