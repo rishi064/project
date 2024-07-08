@@ -45,7 +45,7 @@ const allGotoEdgesArray = inject("allGotoEdgesArray");
 
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { getImmediateParents, getImmediateChildren, getAllNodeIdsExcept } =
+const { getImmediateParents, getImmediateChildren, getParentsForGotoOptions } =
   useVueFlowHelper();
 const nodeId = useNodeId();
 
@@ -56,7 +56,7 @@ const nodeTitleInput = ref(null);
 const nodeTitleText = ref(props.label);
 const inputWho = ref(props.data.assignedTo);
 const gotoId = ref("");
-const gotoOptions = computed(() => getAllNodeIdsExcept(nodeId));
+const gotoOptions = computed(() => getParentsForGotoOptions(nodeId));
 const showQuestion = ref(!Boolean(props.data.assignedTo));
 
 const { getNodes, updateNode, updateNodeData, findNode, addEdges, findEdge } =
@@ -109,7 +109,8 @@ function handleNodeTitleChange(e) {
 }
 
 function showImmediateParents() {
-  // console.log(getImmediateParents(nodeId).map((node) => node.id));
+  console.log(getImmediateParents(nodeId).map((node) => node.id));
+  console.log("All parents", getParentsForGotoOptions(nodeId));
 }
 
 function showImmediateChildren() {
@@ -119,6 +120,7 @@ function showImmediateChildren() {
 
 function onGotoIdChange(e) {
   console.log(e.target.value);
+  if (e.target.value === "none") return;
   gotoId.value = e.target.value;
 
   const allNodeIDs = getNodes.value.map((node) => node.id);

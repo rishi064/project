@@ -141,15 +141,18 @@ export function useVueFlowHelper(nodes, edges) {
   }
 
   // 12.
-  function getAllParents(nodeID) {
+  function getParentsForGotoOptions(nodeID) {
     let allParents = [];
     const parents = getIncomers(nodeID);
 
     parents.forEach((child) => {
       allParents.push(child);
-      allParents = allParents.concat(getAllParents(child));
+      allParents = allParents.concat(getParentsForGotoOptions(child));
     });
-    return [...new Set(allParents)];
+    return [...new Set(allParents)].filter(
+      (node) =>
+        ![nodeID, "start", "end"].includes(node.id) && node.type !== "handle"
+    );
   }
 
   return {
@@ -165,6 +168,6 @@ export function useVueFlowHelper(nodes, edges) {
     getImmediateParents,
     getImmediateChildren,
     getAllNodeIdsExcept,
-    getAllParents,
+    getParentsForGotoOptions,
   };
 }

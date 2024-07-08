@@ -22,6 +22,7 @@ const {
   getImmediateParents,
   getImmediateChildren,
   getAllNodeIdsExcept,
+  getParentsForGotoOptions,
 } = useVueFlowHelper();
 
 const nodeId = useNodeId();
@@ -32,7 +33,7 @@ const showButtons = ref(false);
 const showDescription = ref(false);
 
 const gotoId = ref("");
-const gotoOptions = computed(() => getAllNodeIdsExcept(nodeId));
+const gotoOptions = computed(() => getParentsForGotoOptions(nodeId));
 
 //To resolve warning , we input extra elements too
 const props = defineProps({
@@ -131,6 +132,7 @@ function showImmediateParents() {
     "Immediate parent",
     getImmediateParents(nodeId).map((node) => node.id)
   );
+  console.log("All parents", getParentsForGotoOptions(nodeId));
 }
 
 function showImmediateChildren() {
@@ -142,6 +144,7 @@ function showImmediateChildren() {
 
 function onGotoIdChange(e) {
   console.log(e.target.value);
+  if (e.target.value === "none") return;
   gotoId.value = e.target.value;
 
   const allNodeIDs = getNodes.value.map((node) => node.id);
