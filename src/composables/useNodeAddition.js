@@ -1,4 +1,3 @@
-import { generateRandomColor } from "./helpers/randomColor";
 import { useVueFlow, MarkerType } from "@vue-flow/core";
 import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
 import { inject } from "vue";

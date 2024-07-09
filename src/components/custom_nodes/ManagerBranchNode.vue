@@ -143,33 +143,25 @@ function showImmediateChildren() {
 }
 
 function onGotoIdChange(e) {
-  console.log(e.target.value);
   if (e.target.value === "none") return;
+
   gotoId.value = e.target.value;
+  const newGotoId = (Math.random() * 100).toFixed(3);
+  const randomColor = generateRandomColor();
 
-  const allNodeIDs = getNodes.value.map((node) => node.id);
+  addEdges({
+    id: `goto-${newGotoId}`,
+    label: `goto-${newGotoId}`,
+    source: nodeId, //nodeId = useNodeId()
+    type: "smoothstep",
+    target: gotoId.value,
+    style: { stroke: randomColor, strokeWidth: 2 },
+    markerEnd: MarkerType.ArrowClosed,
+    targetHandle: "a",
+    animated: true,
+  });
 
-  if (allNodeIDs.includes(gotoId.value)) {
-    const newGotoId = (Math.random() * 100).toFixed(3);
-    const randomColor = generateRandomColor();
-    console.log(randomColor);
-    addEdges({
-      id: `goto-${newGotoId}`,
-      label: `goto-${newGotoId}`,
-      source: nodeId, //nodeId = useNodeId()
-      type: "smoothstep",
-      target: gotoId.value,
-      style: { stroke: generateRandomColor(), strokeWidth: 2 },
-      markerEnd: MarkerType.ArrowClosed,
-      targetHandle: "a",
-      animated: true,
-    });
-
-    allGotoEdgesArray.push(findEdge(`goto-${newGotoId}`));
-    console.log("allGotoEdgesArray", allGotoEdgesArray);
-  } else {
-    alert("Enter the correct id of the node which you want to connect to");
-  }
+  allGotoEdgesArray.push(findEdge(`goto-${newGotoId}`));
 }
 </script>
 
