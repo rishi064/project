@@ -43,6 +43,7 @@ const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
 
 const nodeId = useNodeId();
 
+//coz its changeable in removeGotoEdge
 const allGotoEdgesArray = inject("allGotoEdgesArray");
 
 const toUpdate = ref(true);
@@ -50,9 +51,9 @@ const toUpdate = ref(true);
 const connectedGotos = ref([]);
 
 watch(toUpdate, () => {
-  connectedGotos.value = allGotoEdgesArray
-    .filter((edge) => edge.source === nodeId)
-    .map((edge) => edge.id);
+  connectedGotos.value = allGotoEdgesArray.filter(
+    (edge) => edge?.source === nodeId
+  );
 });
 
 const { getImmediateParents, getImmediateChildren, getParentsForGotoOptions } =
@@ -71,8 +72,15 @@ const gotoId = ref("");
 const gotoOptions = computed(() => getParentsForGotoOptions(nodeId));
 const showQuestion = ref(!Boolean(props.data.assignedTo));
 
-const { getNodes, updateNode, updateNodeData, findNode, addEdges, findEdge } =
-  useVueFlow();
+const {
+  getNodes,
+  updateNode,
+  updateNodeData,
+  findNode,
+  addEdges,
+  findEdge,
+  removeEdges,
+} = useVueFlow();
 
 const offset = ref(0);
 
@@ -154,6 +162,11 @@ function onGotoIdChange(e) {
   });
 
   allGotoEdgesArray.push(findEdge(`goto-${newGotoId}`));
+  gotoId.value = "";
+}
+
+function removeGotoEdge(id) {
+  console.log("edge to remove", id);
 }
 </script>
 
@@ -230,7 +243,22 @@ function onGotoIdChange(e) {
           </div>
 
           <div class="goto-edge-container">
-            <div v-for="edge in connectedGotos">{{ edge }}</div>
+            <div
+              v-for="edge in connectedGotos"
+              :key="edge"
+              class="goto-edge-item"
+            >
+              {{
+                `${
+                  findNode(edge.target).type === "managerbranch"
+                    ? findNode(edge.target).data.branchName
+                    : findNode(edge.target).label
+                } `
+              }}
+              <button class="remove-goto" @click="removeGotoEdge(edge.id)">
+                &times;
+              </button>
+            </div>
           </div>
         </div>
         <div v-else>
@@ -367,6 +395,21 @@ function onGotoIdChange(e) {
 .goto-edge-container {
   display: flex;
   gap: 4px;
+  margin-top: 4px;
+}
+
+.goto-edge-item {
+  background-color: #93ee95;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.remove-goto {
+  font-size: 16px;
+  color: red;
 }
 
 button {
