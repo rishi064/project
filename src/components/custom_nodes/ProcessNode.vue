@@ -8,7 +8,7 @@ import {
   Handle,
 } from "@vue-flow/core";
 
-import { computed, onMounted, ref, inject } from "vue";
+import { computed, onMounted, ref, inject, watch } from "vue";
 import Icon from "./../Icon.vue";
 
 import { useNodeDeletion } from "../../composables/useNodeDeletion";
@@ -41,13 +41,25 @@ const props = defineProps({
 
 const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
 
+const nodeId = useNodeId();
+
 const allGotoEdgesArray = inject("allGotoEdgesArray");
+
+const toUpdate = ref(true);
+
+const connectedGotos = ref([]);
+
+watch(toUpdate, () => {
+  connectedGotos.value = allGotoEdgesArray
+    .filter((edge) => edge.source === nodeId)
+    .map((edge) => edge.id);
+});
+
+const { getImmediateParents, getImmediateChildren, getParentsForGotoOptions } =
+  useVueFlowHelper();
 
 const { deleteNode } = useNodeDeletion();
 const { addOneChild, addMultipleChild } = useNodeAddition();
-const { getImmediateParents, getImmediateChildren, getParentsForGotoOptions } =
-  useVueFlowHelper();
-const nodeId = useNodeId();
 
 const showButtons = ref(false);
 
@@ -123,6 +135,7 @@ function showImmediateChildren() {
 
 function onGotoIdChange(e) {
   if (e.target.value === "none") return;
+  toUpdate.value = !toUpdate.value;
 
   gotoId.value = e.target.value;
   const newGotoId = (Math.random() * 100).toFixed(3);
@@ -214,6 +227,10 @@ function onGotoIdChange(e) {
               </option>
               <option value="none">None</option>
             </select>
+          </div>
+
+          <div class="goto-edge-container">
+            <div v-for="edge in connectedGotos">{{ edge }}</div>
           </div>
         </div>
         <div v-else>
@@ -345,6 +362,11 @@ function onGotoIdChange(e) {
   background: transparent;
   outline: none;
   border-bottom: 1px dashed gray;
+}
+
+.goto-edge-container {
+  display: flex;
+  gap: 4px;
 }
 
 button {

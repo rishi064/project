@@ -165,6 +165,11 @@ export function useVueFlowHelper(nodes, edges) {
     );
   }
 
+  // 13.
+  function getNodeLevel(nodeID) {
+    const parentId = getIncomers();
+  }
+
   return {
     hasSiblingNode,
     hasMoreThanEqual2Sibling,
