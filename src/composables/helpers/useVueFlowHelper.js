@@ -141,14 +141,24 @@ export function useVueFlowHelper(nodes, edges) {
   }
 
   // 12.
-  function getParentsForGotoOptions(nodeID) {
+  function getParentsForGotoOptions(nodeID, visited = new Set()) {
+    if (visited.has(nodeID)) {
+      // If the node is already visited, stop recursion to avoid infinite loop
+      return [];
+    }
+
+    visited.add(nodeID); // Mark the current node as visited
+
     let allParents = [];
     const parents = getIncomers(nodeID);
 
-    parents.forEach((child) => {
-      allParents.push(child);
-      allParents = allParents.concat(getParentsForGotoOptions(child));
+    parents.forEach((parent) => {
+      allParents.push(parent);
+      allParents = allParents.concat(
+        getParentsForGotoOptions(parent.id, visited)
+      );
     });
+
     return [...new Set(allParents)].filter(
       (node) =>
         ![nodeID, "start", "end"].includes(node.id) && node.type !== "handle"
