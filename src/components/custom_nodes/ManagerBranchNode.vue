@@ -161,7 +161,7 @@ function onGotoIdChange(e) {
     animated: true,
   });
 
-  allGotoEdgesArray.push(findEdge(`goto-${newGotoId}`));
+  allGotoEdgesArray.value.push(findEdge(`goto-${newGotoId}`));
 }
 </script>
 

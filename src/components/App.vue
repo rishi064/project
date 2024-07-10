@@ -60,9 +60,11 @@ const edges = ref([
   },
 ]);
 
+const allGotoEdgesArray = ref([]);
+
 provide("nodes", nodes);
 provide("edges", edges);
-provide("allGotoEdgesArray", []);
+provide("allGotoEdgesArray", allGotoEdgesArray);
 
 const { saveFlowchart, restoreFromLocal } = useVueFlowHelper(nodes, edges);
 const { layout } = useLayout();

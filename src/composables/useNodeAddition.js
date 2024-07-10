@@ -33,7 +33,7 @@ export function useNodeAddition() {
   // 1.
   function addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props) {
     //remove all the gotoedge first:
-    allGotoEdgesArray.forEach((gotoEdge) => removeEdges(gotoEdge.id));
+    allGotoEdgesArray.value.forEach((gotoEdge) => removeEdges(gotoEdge?.id));
 
     //perform addition:
 
@@ -164,7 +164,7 @@ export function useNodeAddition() {
     edges.value = getEdges.value;
 
     //now add all those edges as they were
-    addEdges(allGotoEdgesArray);
+    addEdges(allGotoEdgesArray.value);
 
     // update;
     // setViewport(
@@ -176,7 +176,10 @@ export function useNodeAddition() {
   //2.
   function addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props) {
     //remove all goto edges first
-    allGotoEdgesArray.forEach((gotoEdge) => removeEdges(gotoEdge.id));
+    allGotoEdgesArray.value.forEach((gotoEdge) => {
+      console.log(gotoEdge);
+      removeEdges(gotoEdge.id);
+    });
 
     //then add the multiple child
     const outgoingEdgesOfClickedNodeIds = outgoingEdgesOfClickedNode.value.map(
@@ -376,7 +379,7 @@ export function useNodeAddition() {
     edges.value = getEdges.value;
 
     //now redraw those edges as they are
-    addEdges(allGotoEdgesArray);
+    addEdges(allGotoEdgesArray.value);
 
     //now update view
     //update

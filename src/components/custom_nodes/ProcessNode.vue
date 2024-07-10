@@ -43,7 +43,6 @@ const emit = defineEmits(["updateNodeInternals"]); //To resolve the warning
 
 const nodeId = useNodeId();
 
-//coz its changeable in removeGotoEdge
 const allGotoEdgesArray = inject("allGotoEdgesArray");
 
 const toUpdate = ref(true);
@@ -51,7 +50,7 @@ const toUpdate = ref(true);
 const connectedGotos = ref([]);
 
 watch(toUpdate, () => {
-  connectedGotos.value = allGotoEdgesArray.filter(
+  connectedGotos.value = allGotoEdgesArray.value.filter(
     (edge) => edge?.source === nodeId
   );
 });
@@ -161,12 +160,16 @@ function onGotoIdChange(e) {
     animated: true,
   });
 
-  allGotoEdgesArray.push(findEdge(`goto-${newGotoId}`));
+  allGotoEdgesArray.value.push(findEdge(`goto-${newGotoId}`));
   gotoId.value = "";
 }
 
-function removeGotoEdge(id) {
-  console.log("edge to remove", id);
+function onRemoveGotoEdge(id) {
+  allGotoEdgesArray.value = allGotoEdgesArray.value.filter(
+    (edge) => edge.id !== id
+  );
+  removeEdges(id);
+  toUpdate.value = !toUpdate.value;
 }
 </script>
 
@@ -255,7 +258,7 @@ function removeGotoEdge(id) {
                     : findNode(edge.target).label
                 } `
               }}
-              <button class="remove-goto" @click="removeGotoEdge(edge.id)">
+              <button class="remove-goto" @click="onRemoveGotoEdge(edge.id)">
                 &times;
               </button>
             </div>
@@ -410,6 +413,7 @@ function removeGotoEdge(id) {
 .remove-goto {
   font-size: 16px;
   color: red;
+  cursor: pointer;
 }
 
 button {
