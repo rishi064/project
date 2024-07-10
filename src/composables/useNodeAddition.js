@@ -32,6 +32,7 @@ export function useNodeAddition() {
 
   // 1.
   function addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props) {
+    console.log("level", props.data.level);
     //remove all the gotoedge first:
     allGotoEdgesArray.value.forEach((gotoEdge) => removeEdges(gotoEdge?.id));
 
@@ -63,6 +64,7 @@ export function useNodeAddition() {
         data: {
           showQuestion: true,
           assignedTo: "",
+          level: props.data.level + 1,
         },
         position: {
           x:
@@ -94,6 +96,10 @@ export function useNodeAddition() {
 
       const parentHandleDataIdHandleToAddMultiple =
         findNode(nodeId).data.idHandleToAddMultiple;
+      console.log(
+        "parentHandleDataIdHandleToAddMultiple",
+        parentHandleDataIdHandleToAddMultiple
+      );
 
       const newNode = {
         id: `node-${newChildNodeId}`,
@@ -102,6 +108,10 @@ export function useNodeAddition() {
         data: {
           showQuestion: false,
           assignedTo: "",
+          level: props.data.level + 1,
+          ...(parentHandleDataIdHandleToAddMultiple !== undefined && {
+            idHandleToAddMultiple: parentHandleDataIdHandleToAddMultiple,
+          }),
         },
         position: {
           x:
@@ -110,11 +120,11 @@ export function useNodeAddition() {
               : props.position.x,
           y: props.position.y + 250,
         },
-        data: {
-          ...(parentHandleDataIdHandleToAddMultiple !== undefined && {
-            idHandleToAddMultiple: parentHandleDataIdHandleToAddMultiple,
-          }),
-        },
+        // data: {
+        //   ...(parentHandleDataIdHandleToAddMultiple !== undefined && {
+        //     idHandleToAddMultiple: parentHandleDataIdHandleToAddMultiple,
+        //   }),
+        // },
       };
 
       addNodes(newNode);
@@ -156,6 +166,8 @@ export function useNodeAddition() {
           type: tempNode.type,
           position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
         });
+
+        updateNodeData(tempNode.id, { level: tempNode.data.level + 1 });
       });
     }
 

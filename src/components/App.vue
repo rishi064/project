@@ -25,7 +25,7 @@ const nodes = ref([
     type: "startend",
     position: { x: 498, y: 25 },
     label: "Start",
-    data: {},
+    data: { level: 0 },
   },
   {
     id: "initiator",
@@ -33,7 +33,7 @@ const nodes = ref([
     type: "initiator",
     position: { x: 354, y: 100 },
     data: {
-      color: "red",
+      level: 1,
     },
   },
   {
