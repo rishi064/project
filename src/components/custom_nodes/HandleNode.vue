@@ -46,7 +46,7 @@ function add2ChildrenNode() {
       @mouseleave="showButtons = false"
     >
       <div class="handle-node-content">
-        <strong>{{ props.label }}</strong>
+        <strong>{{ props.label }}{{ props.data.level }}</strong>
       </div>
       <div class="line-container" v-if="showButtons">
         <div class="line-one">

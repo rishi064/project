@@ -188,7 +188,7 @@ function onGotoIdChange(e) {
                 class="input-branch-name"
                 v-model.trim="branchName"
                 placeholder="Enter branch name..."
-              />
+              />{{ props.data.level }}
             </form>
           </span>
           <span v-else @click="showBranchNameForm = true"

@@ -153,11 +153,20 @@ export function useNodeAddition() {
 
       removeEdges([...outgoingEdgesId]);
 
-      const IdsNodeToShift = getAllDescendantIds(nodeId).filter(
+      const idsNodeToShift = getAllDescendantIds(nodeId).filter(
         (id) => id !== `node-${newChildNodeId}`
       );
 
-      IdsNodeToShift.forEach((id) => {
+      console.log("nodeID to shift", idsNodeToShift);
+
+      const shouldUpdateNodeData =
+        !(
+          findNode(`node-${newChildNodeId}`).data.level <=
+          findNode(idsNodeToShift[0]).data.level
+        ) || findNode(idsNodeToShift[0]).type !== "handle";
+      console.log(shouldUpdateNodeData);
+
+      idsNodeToShift.forEach((id) => {
         const tempNode = findNode(id);
 
         addNodes({
@@ -167,7 +176,8 @@ export function useNodeAddition() {
           position: { x: tempNode.position.x, y: tempNode.position.y + 250 },
         });
 
-        updateNodeData(tempNode.id, { level: tempNode.data.level + 1 });
+        if (shouldUpdateNodeData)
+          updateNodeData(tempNode.id, { level: tempNode.data.level + 1 });
       });
     }
 
@@ -187,6 +197,7 @@ export function useNodeAddition() {
 
   //2.
   function addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props) {
+    console.log(props.data.level);
     //remove all goto edges first
     allGotoEdgesArray.value.forEach((gotoEdge) => {
       console.log(gotoEdge);
@@ -214,13 +225,21 @@ export function useNodeAddition() {
           id: `node-${nodeIdForNewChildNode1}`,
           type: "managerbranch",
           position: { x: props.position.x - 350, y: props.position.y + 225 },
-          data: { hasSibling: true, branchName: "" },
+          data: {
+            hasSibling: true,
+            branchName: "",
+            level: props.data.level + 1,
+          },
         },
         {
           id: `node-${nodeIdForNewChildNode2}`,
           type: "managerbranch",
           position: { x: props.position.x + 400, y: props.position.y + 225 },
-          data: { hasSibling: true, branchName: "" },
+          data: {
+            hasSibling: true,
+            branchName: "",
+            level: props.data.level + 1,
+          },
         },
         {
           id: `handle-${nodeIdForNewHandleNode}`,
@@ -233,6 +252,7 @@ export function useNodeAddition() {
                 : props.position.x + 147,
             y: props.position.y + 450,
           },
+          data: { level: props.data.level + 1 },
         },
       ]);
 
@@ -322,6 +342,21 @@ export function useNodeAddition() {
         let goerIds = getNodes.value
           .filter((node) => node.id === `handle-${nodeIdForNewHandleNode}`)
           .map((node) => node.id);
+        console.log("executed");
+
+        // console.log(findNode(`handle-${nodeIdForNewHandleNode}`).data.level);
+        // console.log(
+        //   getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].data.level,
+        //   getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].type
+        // );
+
+        const dontIncreaseLevel =
+          getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].type ===
+            "handle" &&
+          findNode(`handle-${nodeIdForNewHandleNode}`).data.level <=
+            getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].data.level;
+
+        console.log("increaseLeve", dontIncreaseLevel);
 
         while (!goerIds.includes("end")) {
           const tempNodes = getOutgoers(goerIds[0]); //0 coz numHandle always gonna be 1
@@ -335,6 +370,12 @@ export function useNodeAddition() {
               position: {
                 x: tempNode.position.x,
                 y: tempNode.position.y + 250,
+              },
+              data: {
+                ...tempNode.data,
+                level: dontIncreaseLevel
+                  ? tempNode.data.level
+                  : tempNode.data.level + 1,
               },
             });
 
@@ -362,6 +403,7 @@ export function useNodeAddition() {
         data: {
           hasSibling: true,
           branchName: "",
+          level: referenceNode.data.level,
         },
       });
 

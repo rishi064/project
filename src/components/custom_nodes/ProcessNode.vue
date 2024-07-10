@@ -210,7 +210,7 @@ function onRemoveGotoEdge(id) {
             ref="nodeTitleInput"
             v-model="nodeTitleText"
             @input="handleNodeTitleChange"
-          />
+          />{{ props.data.level }}
         </div>
 
         <div v-if="showQuestion">
