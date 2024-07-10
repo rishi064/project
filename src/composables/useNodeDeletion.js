@@ -1,7 +1,10 @@
+import { inject } from "vue";
 import { useVueFlow } from "@vue-flow/core";
 import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
 
 export function useNodeDeletion() {
+  const allGotoEdgesArray = inject("allGotoEdgesArray");
+
   const {
     removeNodes,
     addNodes,
@@ -9,6 +12,7 @@ export function useNodeDeletion() {
     getIncomers,
     getOutgoers,
     findNode,
+    removeEdges,
   } = useVueFlow();
 
   const {
@@ -16,34 +20,37 @@ export function useNodeDeletion() {
     hasMoreThanEqual2Sibling,
     isHandleDirectChild,
     getAllDescendantIds,
+    getAllDescendants,
   } = useVueFlowHelper();
 
   function deleteNode(nodeId) {
+    //remove all the gotoedge first:
+    allGotoEdgesArray.value.forEach((gotoEdge) => removeEdges(gotoEdge?.id));
+
     const targetOfSelected = getOutgoers(nodeId).map((node) => node.id);
     const sourceOfSelected = getIncomers(nodeId).map((node) => node.id);
 
     //case-I: there are no sibling nodes of the clicked node.[ie. No multiple node case]
     if (!hasSiblingNode(nodeId)) {
-      console.log("descendant of ", nodeId, getAllDescendantIds(nodeId));
+      console.log("descendant of ", nodeId, getAllDescendants(nodeId));
 
       //1st:Redraw every node above previous position wrt nodeId
-      getAllDescendantIds(nodeId)
+      getAllDescendants(nodeId)
         .reverse()
-        .forEach((id) => {
-          const newPositionY = getIncomers(id)[0].position.y;
+        .forEach((node) => {
+          const newPositionY = getIncomers(node.id)[0].position.y;
           addNodes({
-            id,
+            ...node,
             position: {
-              x: findNode(id).position.x,
+              ...node.position,
               y:
-                id === "end"
+                node.id === "end"
                   ? newPositionY > 400
                     ? newPositionY
                     : 400
                   : newPositionY,
             },
-            label: findNode(id).label,
-            type: findNode(id).type,
+            data: { ...node.data, level: node.data.level - 1 },
           });
         });
 
@@ -182,6 +189,9 @@ export function useNodeDeletion() {
         }
       }
     }
+
+    //now add all those edges as they were
+    addEdges(allGotoEdgesArray.value);
   }
 
   return { deleteNode };
