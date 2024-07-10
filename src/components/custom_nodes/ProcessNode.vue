@@ -73,6 +73,7 @@ const showQuestion = ref(!Boolean(props.data.assignedTo));
 
 const {
   getNodes,
+  getEdges,
   updateNode,
   updateNodeData,
   findNode,
@@ -142,7 +143,15 @@ function showImmediateChildren() {
 
 function onGotoIdChange(e) {
   if (e.target.value === "none") return;
-  toUpdate.value = !toUpdate.value;
+
+  const alreadyPresent = allGotoEdgesArray.value.some(
+    (edge) => edge.source === nodeId && edge.target === e.target.value
+  );
+
+  if (alreadyPresent) {
+    gotoId.value = "";
+    return alert("already connection present.");
+  }
 
   gotoId.value = e.target.value;
   const newGotoId = (Math.random() * 100).toFixed(3);
@@ -161,7 +170,10 @@ function onGotoIdChange(e) {
   });
 
   allGotoEdgesArray.value.push(findEdge(`goto-${newGotoId}`));
+  console.log(allGotoEdgesArray.value);
   gotoId.value = "";
+
+  toUpdate.value = !toUpdate.value;
 }
 
 function onRemoveGotoEdge(id) {
