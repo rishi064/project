@@ -32,7 +32,6 @@ export function useNodeAddition() {
 
   // 1.
   function addOneChild(nodeId, outgoingEdgesOfClickedNode, offset, props) {
-    console.log("level", props.data.level);
     //remove all the gotoedge first:
     allGotoEdgesArray.value.forEach((gotoEdge) => removeEdges(gotoEdge?.id));
 
@@ -96,10 +95,6 @@ export function useNodeAddition() {
 
       const parentHandleDataIdHandleToAddMultiple =
         findNode(nodeId).data.idHandleToAddMultiple;
-      console.log(
-        "parentHandleDataIdHandleToAddMultiple",
-        parentHandleDataIdHandleToAddMultiple
-      );
 
       const newNode = {
         id: `node-${newChildNodeId}`,
@@ -120,11 +115,6 @@ export function useNodeAddition() {
               : props.position.x,
           y: props.position.y + 250,
         },
-        // data: {
-        //   ...(parentHandleDataIdHandleToAddMultiple !== undefined && {
-        //     idHandleToAddMultiple: parentHandleDataIdHandleToAddMultiple,
-        //   }),
-        // },
       };
 
       addNodes(newNode);
@@ -157,14 +147,11 @@ export function useNodeAddition() {
         (id) => id !== `node-${newChildNodeId}`
       );
 
-      console.log("nodeID to shift", idsNodeToShift);
-
       const shouldUpdateNodeData =
         !(
           findNode(`node-${newChildNodeId}`).data.level <=
           findNode(idsNodeToShift[0]).data.level
         ) || findNode(idsNodeToShift[0]).type !== "handle";
-      console.log(shouldUpdateNodeData);
 
       idsNodeToShift.forEach((id) => {
         const tempNode = findNode(id);
@@ -197,7 +184,6 @@ export function useNodeAddition() {
 
   //2.
   function addMultipleChild(outgoingEdgesOfClickedNode, nodeId, props) {
-    console.log(props.data.level);
     //remove all goto edges first
     allGotoEdgesArray.value.forEach((gotoEdge) => {
       console.log(gotoEdge);
@@ -342,21 +328,12 @@ export function useNodeAddition() {
         let goerIds = getNodes.value
           .filter((node) => node.id === `handle-${nodeIdForNewHandleNode}`)
           .map((node) => node.id);
-        console.log("executed");
-
-        // console.log(findNode(`handle-${nodeIdForNewHandleNode}`).data.level);
-        // console.log(
-        //   getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].data.level,
-        //   getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].type
-        // );
 
         const dontIncreaseLevel =
           getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].type ===
             "handle" &&
           findNode(`handle-${nodeIdForNewHandleNode}`).data.level <=
             getOutgoers(`handle-${nodeIdForNewHandleNode}`)[0].data.level;
-
-        console.log("increaseLeve", dontIncreaseLevel);
 
         while (!goerIds.includes("end")) {
           const tempNodes = getOutgoers(goerIds[0]); //0 coz numHandle always gonna be 1
@@ -384,14 +361,10 @@ export function useNodeAddition() {
         }
       }
     } else {
-      console.log("multiple outgoers po xan ta");
       const handleIdToBeConnected = findNode(nodeId).data.idHandleToAddMultiple;
-      console.log(findNode(nodeId).data);
-      console.log("handleId", handleIdToBeConnected);
       const newNode = (Math.random() * 1000).toFixed(4);
 
       const referenceNode = getOutgoers(nodeId)[getOutgoers(nodeId).length - 1];
-      console.log("reference node", referenceNode);
 
       addNodes({
         id: `node-${newNode}`,
