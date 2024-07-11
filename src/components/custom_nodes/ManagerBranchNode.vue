@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from "vue";
+import { ref, computed, inject, watch } from "vue";
 import {
   Handle,
   Position,
@@ -13,8 +13,15 @@ import { useNodeAddition } from "@/composables/useNodeAddition";
 import { useVueFlowHelper } from "@/composables/helpers/useVueFlowHelper";
 import { generateRandomColor } from "@/composables/helpers/randomColor";
 
-const { getNodes, addNodes, updateNodeData, findNode, findEdge, addEdges } =
-  useVueFlow();
+const {
+  getNodes,
+  addNodes,
+  updateNodeData,
+  findNode,
+  findEdge,
+  addEdges,
+  removeEdges,
+} = useVueFlow();
 
 const { addOneChild, addMultipleChild } = useNodeAddition();
 const {
@@ -27,6 +34,15 @@ const {
 
 const nodeId = useNodeId();
 const allGotoEdgesArray = inject("allGotoEdgesArray");
+
+const toUpdate = inject("toUpdate");
+const connectedGotos = ref([]);
+
+watch(toUpdate, () => {
+  connectedGotos.value = allGotoEdgesArray.value.filter(
+    (edge) => edge?.source === nodeId
+  );
+});
 
 const offset = ref(0);
 const showButtons = ref(false);
@@ -132,7 +148,7 @@ function showImmediateParents() {
     "Immediate parent",
     getImmediateParents(nodeId).map((node) => node.id)
   );
-  console.log("All parents", getParentsForGotoOptions(nodeId));
+  console.log("goto options", getParentsForGotoOptions(nodeId));
 }
 
 function showImmediateChildren() {
@@ -144,6 +160,15 @@ function showImmediateChildren() {
 
 function onGotoIdChange(e) {
   if (e.target.value === "none") return;
+
+  const alreadyPresent = allGotoEdgesArray.value.some(
+    (edge) => edge.source === nodeId && edge.target === e.target.value
+  );
+
+  if (alreadyPresent) {
+    gotoId.value = "";
+    return alert("already connection present.");
+  }
 
   gotoId.value = e.target.value;
   const newGotoId = (Math.random() * 100).toFixed(3);
@@ -162,6 +187,18 @@ function onGotoIdChange(e) {
   });
 
   allGotoEdgesArray.value.push(findEdge(`goto-${newGotoId}`));
+  console.log(allGotoEdgesArray.value);
+  gotoId.value = "";
+
+  toUpdate.value = !toUpdate.value;
+}
+
+function onRemoveGotoEdge(id) {
+  allGotoEdgesArray.value = allGotoEdgesArray.value.filter(
+    (edge) => edge.id !== id
+  );
+  removeEdges(id);
+  toUpdate.value = !toUpdate.value;
 }
 </script>
 
@@ -192,8 +229,10 @@ function onGotoIdChange(e) {
             </form>
           </span>
           <span v-else @click="showBranchNameForm = true"
-            >{{ branchName }} <Icon name="edit" class="edit-branch-name"
-          /></span>
+            >{{ branchName }} <Icon name="edit" class="edit-branch-name" />{{
+              props.data.level
+            }}</span
+          >
         </p>
         <p class="task">Execute: Always</p>
         <p>
@@ -229,6 +268,25 @@ function onGotoIdChange(e) {
 
               <option value="none">None</option>
             </select>
+          </div>
+
+          <div class="goto-edge-container">
+            <div
+              v-for="edge in connectedGotos"
+              :key="edge"
+              class="goto-edge-item"
+            >
+              {{
+                `${
+                  findNode(edge.target).type === "managerbranch"
+                    ? findNode(edge.target).data.branchName
+                    : findNode(edge.target).label
+                } `
+              }}
+              <button class="remove-goto" @click="onRemoveGotoEdge(edge.id)">
+                &times;
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -388,6 +446,27 @@ function onGotoIdChange(e) {
   background: transparent;
   outline: none;
   border-bottom: 1px dashed gray;
+}
+
+.goto-edge-container {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.goto-edge-item {
+  background-color: purple;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.remove-goto {
+  font-size: 16px;
+  color: red;
+  cursor: pointer;
 }
 
 .btns {

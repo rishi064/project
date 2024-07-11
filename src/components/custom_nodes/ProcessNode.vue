@@ -413,7 +413,7 @@ function onRemoveGotoEdge(id) {
 }
 
 .goto-edge-item {
-  background-color: #93ee95;
+  background-color: purple;
   border-radius: 4px;
   padding: 2px 4px;
   font-size: 14px;
