@@ -3,18 +3,17 @@ import { useVueFlow } from "@vue-flow/core";
 import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
 
 export function useNodeDeletion() {
-  const allGotoEdgesArray = inject("allGotoEdgesArray");
-  const toUpdate = inject("toUpdate");
-
   const {
     removeNodes,
     addNodes,
     addEdges,
     getIncomers,
     getOutgoers,
-    findNode,
     removeEdges,
     getConnectedEdges,
+    getNodes,
+    findNode,
+    getEdges,
   } = useVueFlow();
 
   const {
@@ -23,7 +22,13 @@ export function useNodeDeletion() {
     isHandleDirectChild,
     getAllDescendantIds,
     getAllDescendants,
+    getImmediateParents,
   } = useVueFlowHelper();
+
+  const allGotoEdgesArray = inject("allGotoEdgesArray");
+  const toUpdate = inject("toUpdate");
+  const nodes = inject("nodes");
+  const edges = inject("edges");
 
   function deleteNode(nodeId) {
     const connectedGotoIds = getConnectedEdges(nodeId)
@@ -40,6 +45,12 @@ export function useNodeDeletion() {
     if (!hasSiblingNode(nodeId)) {
       console.log("descendant of ", nodeId, getAllDescendants(nodeId));
 
+      console.log(
+        "parent",
+        findNode(sourceOfSelected[0]).data,
+        sourceOfSelected[0]
+      );
+
       //1st.0: Remove all connected gotos of that node
       allGotoEdgesArray.value = allGotoEdgesArray.value.filter(
         (edge) => !connectedGotoIds.includes(edge.id)
@@ -47,22 +58,22 @@ export function useNodeDeletion() {
 
       toUpdate.value = !toUpdate.value;
 
-      //1st:Redraw every node above previous position wrt nodeId
+      // 1st:Redraw every node above previous position wrt nodeId
       getAllDescendants(nodeId)
         .reverse()
         .forEach((node) => {
           const newPositionY = getIncomers(node.id)[0].position.y;
           addNodes({
             ...node,
-            position: {
-              ...node.position,
-              y:
-                node.id === "end"
-                  ? newPositionY > 400
-                    ? newPositionY
-                    : 400
-                  : newPositionY,
-            },
+            // position: {
+            //   ...node.position,
+            //   // y:
+            //   //   node.id === "end"
+            //   //     ? newPositionY > 400
+            //   //       ? newPositionY
+            //   //       : 400
+            //   //     : newPositionY,
+            // },
             data: { ...node.data, level: node.data.level - 1 },
           });
         });
@@ -81,10 +92,12 @@ export function useNodeDeletion() {
             label: ``,
             source: sourceOfSelected[0], //coz source always gonna be single except for handle
             target: targetId,
-            type: targetOfSelected.length > 1 ? "default" : "straight",
           },
         ]);
       });
+
+      nodes.value = getNodes.value;
+      edges.value = getEdges.value;
     }
 
     //   case-II: There are sibling nodes of the clicked node. [ie. Multple node case]

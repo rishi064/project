@@ -76,7 +76,7 @@ async function layoutGraph() {
   nodes.value = layout(nodes.value, edges.value);
 
   nextTick(() => {
-    // fitView();
+    fitView();
   });
 }
 </script>

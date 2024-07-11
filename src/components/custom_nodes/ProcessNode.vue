@@ -45,8 +45,7 @@ const nodeId = useNodeId();
 
 const allGotoEdgesArray = inject("allGotoEdgesArray");
 
-const toUpdate = ref(true);
-
+const toUpdate = inject("toUpdate");
 const connectedGotos = ref([]);
 
 watch(toUpdate, () => {

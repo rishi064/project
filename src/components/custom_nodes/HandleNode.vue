@@ -7,7 +7,7 @@ import { useVueFlow, useNodeId, useHandleConnections } from "@vue-flow/core";
 const { getNodes } = useVueFlow();
 
 const showButtons = ref(false);
-const props = defineProps(["data", "label", "position", "type"]);
+const props = defineProps(["data", "label", "position", "type", "id"]);
 
 import { useNodeAddition } from "@/composables/useNodeAddition";
 
@@ -96,7 +96,7 @@ function add2ChildrenNode() {
 }
 
 .handle-node-content strong {
-  padding: 28px;
+  padding: 22px;
 }
 
 button {
@@ -166,5 +166,9 @@ button {
 
 .multiple-icon:hover {
   fill: palevioletred;
+}
+
+.text-sm {
+  font-size: 12px;
 }
 </style>
