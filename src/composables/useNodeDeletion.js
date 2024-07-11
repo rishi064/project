@@ -4,6 +4,7 @@ import { useVueFlowHelper } from "./helpers/useVueFlowHelper";
 
 export function useNodeDeletion() {
   const allGotoEdgesArray = inject("allGotoEdgesArray");
+  const toUpdate = inject("toUpdate");
 
   const {
     removeNodes,
@@ -13,6 +14,7 @@ export function useNodeDeletion() {
     getOutgoers,
     findNode,
     removeEdges,
+    getConnectedEdges,
   } = useVueFlow();
 
   const {
@@ -24,6 +26,10 @@ export function useNodeDeletion() {
   } = useVueFlowHelper();
 
   function deleteNode(nodeId) {
+    const connectedGotoIds = getConnectedEdges(nodeId)
+      .filter((edge) => edge.id.includes("goto"))
+      .map((edge) => edge.id);
+
     //remove all the gotoedge first:
     allGotoEdgesArray.value.forEach((gotoEdge) => removeEdges(gotoEdge?.id));
 
@@ -33,6 +39,13 @@ export function useNodeDeletion() {
     //case-I: there are no sibling nodes of the clicked node.[ie. No multiple node case]
     if (!hasSiblingNode(nodeId)) {
       console.log("descendant of ", nodeId, getAllDescendants(nodeId));
+
+      //1st.0: Remove all connected gotos of that node
+      allGotoEdgesArray.value = allGotoEdgesArray.value.filter(
+        (edge) => !connectedGotoIds.includes(edge.id)
+      );
+
+      toUpdate.value = !toUpdate.value;
 
       //1st:Redraw every node above previous position wrt nodeId
       getAllDescendants(nodeId)
